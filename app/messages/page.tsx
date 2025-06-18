@@ -1,11 +1,11 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Badge } from "@/components/ui/badge"
-import { Input } from "@/components/ui/input"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 import {
   ArrowLeft,
   Video,
@@ -21,14 +21,14 @@ import {
   User,
   Menu,
   Bell,
-} from "lucide-react"
-import Link from "next/link"
-import CameraModal from "@/components/camera-modal"
+} from "lucide-react";
+import Link from "next/link";
+import CameraModal from "@/components/camera-modal";
 
 export default function MessagesPage() {
-  const [selectedChat, setSelectedChat] = useState<number | null>(null)
-  const [newMessage, setNewMessage] = useState("")
-  const [isCameraOpen, setIsCameraOpen] = useState(false)
+  const [selectedChat, setSelectedChat] = useState<number | null>(null);
+  const [newMessage, setNewMessage] = useState("");
+  const [isCameraOpen, setIsCameraOpen] = useState(false);
 
   const conversations = [
     {
@@ -61,19 +61,21 @@ export default function MessagesPage() {
       avatar: "/placeholder.svg?height=40&width=40",
       online: true,
     },
-  ]
+  ];
 
   const messages = [
     {
       id: 1,
       sender: "fixer",
-      content: "Hi! I saw your repair request for the TV. I can help you with that.",
+      content:
+        "Hi! I saw your repair request for the TV. I can help you with that.",
       timestamp: "10:30 AM",
     },
     {
       id: 2,
       sender: "user",
-      content: "Great! The screen is cracked and there are some lines appearing.",
+      content:
+        "Great! The screen is cracked and there are some lines appearing.",
       timestamp: "10:32 AM",
     },
     {
@@ -82,23 +84,23 @@ export default function MessagesPage() {
       content: "I can fix your TV screen today. When would be convenient?",
       timestamp: "10:35 AM",
     },
-  ]
+  ];
 
   const handleSendMessage = () => {
     if (newMessage.trim()) {
-      setNewMessage("")
+      setNewMessage("");
     }
-  }
+  };
 
   // Handle camera capture
   const handleCameraCapture = (imageData: string) => {
-    console.log("Image captured:", imageData)
+    console.log("Image captured:", imageData);
     // Here you would typically send the image to your backend for processing
     // or add it to the current conversation
-  }
+  };
 
   if (selectedChat) {
-    const currentChat = conversations.find((c) => c.id === selectedChat)
+    const currentChat = conversations.find((c) => c.id === selectedChat);
 
     return (
       <div className="min-h-screen bg-gradient-to-br from-[#E0F7FA] via-[#B2EBF2] to-[#80DEEA] max-w-md mx-auto flex flex-col relative overflow-hidden">
@@ -119,16 +121,18 @@ export default function MessagesPage() {
                   />
                 ))}
                 {/* Longitude lines */}
-                {[...Array(16)].map((_, i) => (
-                  <div
-                    key={`lng-${i}`}
-                    className="absolute top-0 bottom-0 w-px bg-[#00BCD4]/15 transform origin-center"
-                    style={{
-                      left: "50%",
-                      transform: `translateX(-50%) rotateZ(${i * 11.25}deg)`,
-                    }}
-                  />
-                ))}
+                {Array(10)
+                  .fill(0)
+                  .map((_, i) => (
+                    <div
+                      key={`lng-${i}`}
+                      className="absolute top-0 bottom-0 w-px bg-[#00BCD4]/15 transform origin-center"
+                      style={{
+                        left: "50%",
+                        transform: `translateX(-50%) rotateZ(${i * 11.25}deg)`,
+                      }}
+                    />
+                  ))}
               </div>
 
               {/* Glowing Core */}
@@ -160,42 +164,6 @@ export default function MessagesPage() {
           </div>
         </div>
 
-        {/* Header */}
-        <header className="relative z-50 bg-white/70 backdrop-blur-[10px] border-b border-[#00BCD4]/20 px-4 py-3 sticky top-0">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Link href="/menu">
-                <Menu className="h-6 w-6 text-[#006064] hover:text-[#00838F] transition-colors" />
-              </Link>
-              {/* 3D Jazaro Logo */}
-              <div className="flex items-center gap-2">
-                <div className="relative">
-                  {/* 3D Cube Effect */}
-                  <div className="w-8 h-8 relative transform-gpu perspective-1000">
-                    <div className="w-full h-full bg-gradient-to-br from-[#00BCD4] to-[#26C6DA] rounded-lg shadow-lg transform rotate-12 animate-pulse">
-                      <div className="absolute inset-0 bg-gradient-to-br from-[#26C6DA] to-[#4DD0E1] rounded-lg opacity-80 transform translate-x-1 translate-y-1"></div>
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <span className="text-white font-bold text-sm transform -rotate-12 drop-shadow-lg">J</span>
-                      </div>
-                    </div>
-                  </div>
-                  {/* Glowing Core */}
-                  <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-2 h-2 bg-gradient-to-r from-[#00BCD4] to-[#26C6DA] rounded-full shadow-[0_0_10px_rgba(0,188,212,0.8)] animate-pulse"></div>
-                </div>
-                <h1 className="text-xl font-bold text-[#006064] drop-shadow-lg">Jazaro</h1>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <Link href="/notifications">
-                <Bell className="h-6 w-6 text-[#006064] hover:text-[#00838F] transition-colors" />
-              </Link>
-              <Link href="/profile">
-                <User className="h-6 w-6 text-[#006064] hover:text-[#00838F] transition-colors" />
-              </Link>
-            </div>
-          </div>
-        </header>
-
         {/* Chat Header */}
         <div className="relative z-10 bg-white/50 backdrop-blur-[10px] border-b border-[#00BCD4]/20 px-4 py-3">
           <div className="flex items-center gap-3">
@@ -216,8 +184,12 @@ export default function MessagesPage() {
               </Avatar>
             </div>
             <div className="flex-1 min-w-0">
-              <h2 className="font-semibold text-[#006064] truncate">{currentChat?.name}</h2>
-              <p className="text-sm text-[#00838F] truncate">{currentChat?.specialty}</p>
+              <h2 className="font-semibold text-[#006064] truncate">
+                {currentChat?.name}
+              </h2>
+              <p className="text-sm text-[#00838F] truncate">
+                {currentChat?.specialty}
+              </p>
             </div>
             <div className="flex items-center gap-2">
               <Button
@@ -234,7 +206,11 @@ export default function MessagesPage() {
               >
                 <Phone className="h-5 w-5" />
               </Button>
-              <Button size="sm" variant="ghost" className="p-2 text-[#006064] hover:text-[#00838F]">
+              <Button
+                size="sm"
+                variant="ghost"
+                className="p-2 text-[#006064] hover:text-[#00838F]"
+              >
                 <MoreVertical className="h-5 w-5" />
               </Button>
             </div>
@@ -248,8 +224,12 @@ export default function MessagesPage() {
               <Video className="h-5 w-5 text-white" />
             </div>
             <div className="flex-1">
-              <p className="text-sm font-medium text-[#006064]">Video Diagnostics Available</p>
-              <p className="text-xs text-[#00838F]">Get real-time assessment of your issue</p>
+              <p className="text-sm font-medium text-[#006064]">
+                Video Diagnostics Available
+              </p>
+              <p className="text-xs text-[#00838F]">
+                Get real-time assessment of your issue
+              </p>
             </div>
             <Button
               size="sm"
@@ -263,7 +243,12 @@ export default function MessagesPage() {
         {/* Messages */}
         <div className="relative z-10 flex-1 px-4 py-4 space-y-4 overflow-y-auto">
           {messages.map((message) => (
-            <div key={message.id} className={`flex ${message.sender === "user" ? "justify-end" : "justify-start"}`}>
+            <div
+              key={message.id}
+              className={`flex ${
+                message.sender === "user" ? "justify-end" : "justify-start"
+              }`}
+            >
               <div
                 className={`max-w-xs px-4 py-3 rounded-[10px] backdrop-blur-[10px] shadow-[0_4px_10px_rgba(0,188,212,0.3)] transition-all duration-300 hover:scale-105 ${
                   message.sender === "user"
@@ -272,7 +257,13 @@ export default function MessagesPage() {
                 }`}
               >
                 <p className="text-sm">{message.content}</p>
-                <p className={`text-xs mt-1 ${message.sender === "user" ? "text-white/70" : "text-[#00838F]"}`}>
+                <p
+                  className={`text-xs mt-1 ${
+                    message.sender === "user"
+                      ? "text-white/70"
+                      : "text-[#00838F]"
+                  }`}
+                >
                   {message.timestamp}
                 </p>
               </div>
@@ -328,58 +319,14 @@ export default function MessagesPage() {
           </div>
         </div>
 
-        {/* 3D Bottom Navigation */}
-        <nav className="relative z-40 bg-white/80 backdrop-blur-[10px] border-t border-[#00BCD4]/20 px-4 py-2 shadow-[0_4px_10px_rgba(0,188,212,0.3)]">
-          <div className="flex justify-around">
-            <Link
-              href="/"
-              className="flex flex-col items-center py-2 text-[#00838F] hover:text-[#006064] transform hover:scale-110 transition-all duration-300"
-            >
-              <div className="w-10 h-10 bg-white/40 rounded-[10px] flex items-center justify-center backdrop-blur-[10px] border border-[#00BCD4]/30">
-                <MapPin className="h-5 w-5" />
-              </div>
-              <span className="text-xs mt-1">Home</span>
-            </Link>
-            <Link
-              href="/messages"
-              className="flex flex-col items-center py-2 text-[#006064] transform hover:scale-110 transition-all duration-300"
-            >
-              <div className="w-10 h-10 bg-gradient-to-br from-[#00BCD4]/20 to-[#26C6DA]/20 rounded-[10px] flex items-center justify-center backdrop-blur-[10px] border border-[#00BCD4]/30 shadow-lg">
-                <MessageCircle className="h-5 w-5" />
-              </div>
-              <span className="text-xs mt-1">Messages</span>
-            </Link>
-            <Button
-              onClick={() => setIsCameraOpen(true)}
-              className="flex flex-col items-center py-2 bg-gradient-to-br from-[#00BCD4] to-[#26C6DA] hover:from-[#00ACC1] hover:to-[#00BCD4] rounded-[20px] w-14 h-14 -mt-2 shadow-[0_0_20px_rgba(0,188,212,0.5)] transform hover:scale-110 transition-all duration-300 border-2 border-white/30 active:scale-95"
-            >
-              <Camera className="h-6 w-6 text-white" />
-              <span className="text-xs text-white mt-1 font-bold">AI</span>
-            </Button>
-            <Link
-              href="/history"
-              className="flex flex-col items-center py-2 text-[#00838F] hover:text-[#006064] transform hover:scale-110 transition-all duration-300"
-            >
-              <div className="w-10 h-10 bg-white/40 rounded-[10px] flex items-center justify-center backdrop-blur-[10px] border border-[#00BCD4]/30">
-                <Search className="h-5 w-5" />
-              </div>
-              <span className="text-xs mt-1">History</span>
-            </Link>
-            <Link
-              href="/profile"
-              className="flex flex-col items-center py-2 text-[#00838F] hover:text-[#006064] transform hover:scale-110 transition-all duration-300"
-            >
-              <div className="w-10 h-10 bg-white/40 rounded-[10px] flex items-center justify-center backdrop-blur-[10px] border border-[#00BCD4]/30">
-                <User className="h-5 w-5" />
-              </div>
-              <span className="text-xs mt-1">Profile</span>
-            </Link>
-          </div>
-        </nav>
         {/* Camera Modal */}
-        <CameraModal isOpen={isCameraOpen} onClose={() => setIsCameraOpen(false)} onCapture={handleCameraCapture} />
+        <CameraModal
+          isOpen={isCameraOpen}
+          onClose={() => setIsCameraOpen(false)}
+          onCapture={handleCameraCapture}
+        />
       </div>
-    )
+    );
   }
 
   return (
@@ -442,47 +389,6 @@ export default function MessagesPage() {
         </div>
       </div>
 
-      {/* Header */}
-      <header className="relative z-50 bg-white/70 backdrop-blur-[10px] border-b border-[#00BCD4]/20 px-4 py-3 sticky top-0">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Link href="/menu">
-              <Menu className="h-6 w-6 text-[#006064] hover:text-[#00838F] transition-colors" />
-            </Link>
-            {/* 3D Jazaro Logo */}
-            <div className="flex items-center gap-2">
-              <div className="relative">
-                {/* 3D Cube Effect */}
-                <div className="w-8 h-8 relative transform-gpu perspective-1000">
-                  <div className="w-full h-full bg-gradient-to-br from-[#00BCD4] to-[#26C6DA] rounded-lg shadow-lg transform rotate-12 animate-pulse">
-                    <div className="absolute inset-0 bg-gradient-to-br from-[#26C6DA] to-[#4DD0E1] rounded-lg opacity-80 transform translate-x-1 translate-y-1"></div>
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <span className="text-white font-bold text-sm transform -rotate-12 drop-shadow-lg">J</span>
-                    </div>
-                  </div>
-                </div>
-                {/* Glowing Core */}
-                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-2 h-2 bg-gradient-to-r from-[#00BCD4] to-[#26C6DA] rounded-full shadow-[0_0_10px_rgba(0,188,212,0.8)] animate-pulse"></div>
-              </div>
-              <h1 className="text-xl font-bold text-[#006064] drop-shadow-lg">Jazaro</h1>
-            </div>
-          </div>
-          <div className="flex items-center gap-3">
-            <Link href="/notifications">
-              <Bell className="h-6 w-6 text-[#006064] hover:text-[#00838F] transition-colors" />
-            </Link>
-            <Link href="/profile">
-              <User className="h-6 w-6 text-[#006064] hover:text-[#00838F] transition-colors" />
-            </Link>
-          </div>
-        </div>
-      </header>
-
-      {/* Page Title */}
-      <div className="relative z-10 px-4 py-3 bg-white/50 backdrop-blur-[10px] border-b border-[#00BCD4]/20">
-        <h1 className="text-xl font-bold text-[#006064] drop-shadow-lg">Messages</h1>
-      </div>
-
       {/* Search */}
       <div className="relative z-10 px-4 py-3 bg-white/50 backdrop-blur-[10px] border-b border-[#00BCD4]/20">
         <div className="relative">
@@ -507,7 +413,9 @@ export default function MessagesPage() {
                 <div className="relative">
                   <div className="w-14 h-14 bg-white/80 backdrop-blur-[10px] rounded-[10px] shadow-[0_4px_10px_rgba(0,188,212,0.3)] border border-[#00BCD4]/30 flex items-center justify-center">
                     <Avatar className="h-12 w-12">
-                      <AvatarImage src={conversation.avatar || "/placeholder.svg"} />
+                      <AvatarImage
+                        src={conversation.avatar || "/placeholder.svg"}
+                      />
                       <AvatarFallback className="bg-gradient-to-br from-[#00BCD4] to-[#26C6DA] text-white font-bold">
                         {conversation.name.slice(0, 2)}
                       </AvatarFallback>
@@ -519,9 +427,13 @@ export default function MessagesPage() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between mb-1">
-                    <h3 className="font-semibold text-[#006064] truncate">{conversation.name}</h3>
+                    <h3 className="font-semibold text-[#006064] truncate">
+                      {conversation.name}
+                    </h3>
                     <div className="flex items-center gap-2">
-                      <span className="text-xs text-[#00838F]">{conversation.timestamp}</span>
+                      <span className="text-xs text-[#00838F]">
+                        {conversation.timestamp}
+                      </span>
                       {conversation.unread > 0 && (
                         <Badge className="bg-gradient-to-r from-[#00BCD4] to-[#26C6DA] text-white text-xs min-w-[20px] h-5 flex items-center justify-center rounded-full shadow-[0_0_10px_rgba(0,188,212,0.5)]">
                           {conversation.unread}
@@ -529,8 +441,12 @@ export default function MessagesPage() {
                       )}
                     </div>
                   </div>
-                  <p className="text-sm text-[#00838F] mb-1">{conversation.specialty}</p>
-                  <p className="text-sm text-[#006064] truncate">{conversation.lastMessage}</p>
+                  <p className="text-sm text-[#00838F] mb-1">
+                    {conversation.specialty}
+                  </p>
+                  <p className="text-sm text-[#006064] truncate">
+                    {conversation.lastMessage}
+                  </p>
                 </div>
               </div>
             </CardContent>
@@ -538,56 +454,12 @@ export default function MessagesPage() {
         ))}
       </div>
 
-      {/* 3D Bottom Navigation */}
-      <nav className="fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full max-w-md bg-white/80 backdrop-blur-[10px] border-t border-[#00BCD4]/20 px-4 py-2 shadow-[0_4px_10px_rgba(0,188,212,0.3)] z-40">
-        <div className="flex justify-around">
-          <Link
-            href="/"
-            className="flex flex-col items-center py-2 text-[#00838F] hover:text-[#006064] transform hover:scale-110 transition-all duration-300"
-          >
-            <div className="w-10 h-10 bg-white/40 rounded-[10px] flex items-center justify-center backdrop-blur-[10px] border border-[#00BCD4]/30">
-              <MapPin className="h-5 w-5" />
-            </div>
-            <span className="text-xs mt-1">Home</span>
-          </Link>
-          <Link
-            href="/messages"
-            className="flex flex-col items-center py-2 text-[#006064] transform hover:scale-110 transition-all duration-300"
-          >
-            <div className="w-10 h-10 bg-gradient-to-br from-[#00BCD4]/20 to-[#26C6DA]/20 rounded-[10px] flex items-center justify-center backdrop-blur-[10px] border border-[#00BCD4]/30 shadow-lg">
-              <MessageCircle className="h-5 w-5" />
-            </div>
-            <span className="text-xs mt-1">Messages</span>
-          </Link>
-          <Button
-            onClick={() => setIsCameraOpen(true)}
-            className="flex flex-col items-center py-2 bg-gradient-to-br from-[#00BCD4] to-[#26C6DA] hover:from-[#00ACC1] hover:to-[#00BCD4] rounded-[20px] w-14 h-14 -mt-2 shadow-[0_0_20px_rgba(0,188,212,0.5)] transform hover:scale-110 transition-all duration-300 border-2 border-white/30 active:scale-95"
-          >
-            <Camera className="h-6 w-6 text-white" />
-            <span className="text-xs text-white mt-1 font-bold">AI</span>
-          </Button>
-          <Link
-            href="/history"
-            className="flex flex-col items-center py-2 text-[#00838F] hover:text-[#006064] transform hover:scale-110 transition-all duration-300"
-          >
-            <div className="w-10 h-10 bg-white/40 rounded-[10px] flex items-center justify-center backdrop-blur-[10px] border border-[#00BCD4]/30">
-              <Search className="h-5 w-5" />
-            </div>
-            <span className="text-xs mt-1">History</span>
-          </Link>
-          <Link
-            href="/profile"
-            className="flex flex-col items-center py-2 text-[#00838F] hover:text-[#006064] transform hover:scale-110 transition-all duration-300"
-          >
-            <div className="w-10 h-10 bg-white/40 rounded-[10px] flex items-center justify-center backdrop-blur-[10px] border border-[#00BCD4]/30">
-              <User className="h-5 w-5" />
-            </div>
-            <span className="text-xs mt-1">Profile</span>
-          </Link>
-        </div>
-      </nav>
       {/* Camera Modal */}
-      <CameraModal isOpen={isCameraOpen} onClose={() => setIsCameraOpen(false)} onCapture={handleCameraCapture} />
+      <CameraModal
+        isOpen={isCameraOpen}
+        onClose={() => setIsCameraOpen(false)}
+        onCapture={handleCameraCapture}
+      />
     </div>
-  )
+  );
 }

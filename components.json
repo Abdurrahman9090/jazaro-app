@@ -11,11 +11,16 @@
     "prefix": ""
   },
   "aliases": {
-    "components": "@/components",
-    "utils": "@/lib/utils",
-    "ui": "@/components/ui",
     "lib": "@/lib",
-    "hooks": "@/hooks"
+    "hooks": "@/hooks",
+    "redux": "@/redux",
+    "types": "@/types",
+    "config": "@/config",
+    "utils": "@/utils",
+    "ui": "@/components/ui",
+    "shared": "@/shared",
+    "components": "@/components",
+    "reduxTypes": "@/types/reduxTypes"
   },
   "iconLibrary": "lucide"
 }

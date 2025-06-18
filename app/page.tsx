@@ -1,16 +1,25 @@
-"use client"
+"use client";
 
-import { useState, useEffect, useRef } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Camera, MapPin, MessageCircle, Bell, User, Menu, Search, Filter } from "lucide-react"
-import Link from "next/link"
-import CameraModal from "@/components/camera-modal"
+import { useState, useEffect, useRef } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Camera,
+  MapPin,
+  MessageCircle,
+  Bell,
+  User,
+  Menu,
+  Search,
+  Filter,
+} from "lucide-react";
+import Link from "next/link";
+import CameraModal from "@/components/camera-modal";
 
 export default function MainPage() {
-  const [isCameraOpen, setIsCameraOpen] = useState(false)
-  const mapRef = useRef<HTMLDivElement>(null)
-  const mapInstanceRef = useRef<any>(null)
+  const [isCameraOpen, setIsCameraOpen] = useState(false);
+  const mapRef = useRef<HTMLDivElement>(null);
+  const mapInstanceRef = useRef<any>(null);
 
   const fixers = [
     {
@@ -43,91 +52,111 @@ export default function MainPage() {
       available: false,
       position: { lat: 40.7505, lng: -73.9934 },
     },
-  ]
+  ];
 
   // Handle camera capture
   const handleCameraCapture = (imageData: string) => {
-    console.log("Image captured:", imageData)
+    console.log("Image captured:", imageData);
     // Here you would typically send the image to your backend for processing
     // or navigate to a repair request page with the captured image
-  }
+  };
 
   // Initialize Leaflet Map
   useEffect(() => {
-    if (typeof window !== "undefined" && mapRef.current && !mapInstanceRef.current) {
+    if (
+      typeof window !== "undefined" &&
+      mapRef.current &&
+      !mapInstanceRef.current
+    ) {
       // Dynamically import Leaflet
       import("leaflet").then((L) => {
         // Initialize map
-        const map = L.map(mapRef.current!).setView([40.7589, -73.9851], 13)
+        // Fix: Prevent "Map container is already initialized" error
+        if (mapRef.current && mapRef.current._leaflet_id) {
+          // @ts-ignore
+          mapRef.current._leaflet_id = null;
+        }
+        const map = L?.map(mapRef.current!).setView([40.7589, -73.9851], 13);
 
         // Add OpenStreetMap tiles
         L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-          attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-        }).addTo(map)
+          attribution:
+            '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        }).addTo(map);
 
         // Add fixer markers
         fixers.forEach((fixer) => {
-          const marker = L.marker([fixer.position.lat, fixer.position.lng]).addTo(map)
+          const marker = L.marker([
+            fixer.position.lat,
+            fixer.position.lng,
+          ]).addTo(map);
           marker.bindPopup(`
             <div class="p-2">
               <h3 class="font-bold text-sm">${fixer.name}</h3>
               <p class="text-xs text-gray-600">${fixer.specialty}</p>
               <p class="text-xs">⭐ ${fixer.rating} • ${fixer.distance}</p>
-              <p class="text-xs ${fixer.available ? "text-green-600" : "text-red-600"}">
+              <p class="text-xs ${
+                fixer.available ? "text-green-600" : "text-red-600"
+              }">
                 ${fixer.available ? "Available" : "Busy"}
               </p>
             </div>
-          `)
-        })
+          `);
+        });
 
         // Map click handler for geolocation zoom
         map.on("click", () => {
           if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
               (position) => {
-                const { latitude, longitude } = position.coords
-                map.flyTo([latitude, longitude], 16, { duration: 1 })
+                const { latitude, longitude } = position.coords;
+                map.flyTo([latitude, longitude], 16, { duration: 1 });
 
                 // Add user location marker
-                L.marker([latitude, longitude]).addTo(map).bindPopup("Your Location").openPopup()
+                L.marker([latitude, longitude])
+                  .addTo(map)
+                  .bindPopup("Your Location")
+                  .openPopup();
               },
               () => {
-                alert("Geolocation not available. Zooming to default location.")
-                map.flyTo([40.7589, -73.9851], 16, { duration: 1 })
-              },
-            )
+                alert(
+                  "Geolocation not available. Zooming to default location."
+                );
+                map.flyTo([40.7589, -73.9851], 16, { duration: 1 });
+              }
+            );
           } else {
-            alert("Geolocation not supported by your browser.")
-            map.flyTo([40.7589, -73.9851], 16, { duration: 1 })
+            alert("Geolocation not supported by your browser.");
+            map.flyTo([40.7589, -73.9851], 16, { duration: 1 });
           }
-        })
+        });
 
-        mapInstanceRef.current = map
-      })
+        mapInstanceRef.current = map;
+      });
     }
 
     // Cleanup
     return () => {
       if (mapInstanceRef.current) {
-        mapInstanceRef.current.remove()
-        mapInstanceRef.current = null
+        mapInstanceRef.current.remove();
+        mapInstanceRef.current = null;
       }
-    }
-  }, [fixers])
+    };
+  }, [fixers]);
 
   // Load Leaflet CSS
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const link = document.createElement("link")
-      link.rel = "stylesheet"
-      link.href = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-      document.head.appendChild(link)
+      const link = document.createElement("link");
+      link.rel = "stylesheet";
+      link.href = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";
+      document.head.appendChild(link);
 
       return () => {
-        document.head.removeChild(link)
-      }
+        document.head.removeChild(link);
+      };
     }
-  }, [])
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#E0F7FA] via-[#B2EBF2] to-[#80DEEA] max-w-md mx-auto relative overflow-hidden">
@@ -164,7 +193,7 @@ export default function MainPage() {
             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-gradient-to-r from-[#00BCD4]/60 to-[#26C6DA]/60 rounded-full shadow-[0_0_40px_rgba(0,188,212,0.4)] animate-pulse"></div>
 
             {/* Floating Particles */}
-            {[...Array(30)].map((_, i) => (
+            {[...Array(10)].map((_, i) => (
               <div
                 key={`particle-${i}`}
                 className="absolute w-1 h-1 bg-[#00BCD4]/40 rounded-full animate-pulse"
@@ -189,42 +218,6 @@ export default function MainPage() {
         </div>
       </div>
 
-      {/* Header */}
-      <header className="relative z-50 bg-white/70 backdrop-blur-[10px] border-b border-[#00BCD4]/20 px-4 py-3 sticky top-0">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Link href="/menu">
-              <Menu className="h-6 w-6 text-[#006064] hover:text-[#00838F] transition-colors" />
-            </Link>
-            {/* 3D Jazaro Logo */}
-            <div className="flex items-center gap-2">
-              <div className="relative">
-                {/* 3D Cube Effect */}
-                <div className="w-8 h-8 relative transform-gpu perspective-1000">
-                  <div className="w-full h-full bg-gradient-to-br from-[#00BCD4] to-[#26C6DA] rounded-lg shadow-lg transform rotate-12 animate-pulse">
-                    <div className="absolute inset-0 bg-gradient-to-br from-[#26C6DA] to-[#4DD0E1] rounded-lg opacity-80 transform translate-x-1 translate-y-1"></div>
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <span className="text-white font-bold text-sm transform -rotate-12 drop-shadow-lg">J</span>
-                    </div>
-                  </div>
-                </div>
-                {/* Glowing Core */}
-                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-2 h-2 bg-gradient-to-r from-[#00BCD4] to-[#26C6DA] rounded-full shadow-[0_0_10px_rgba(0,188,212,0.8)] animate-pulse"></div>
-              </div>
-              <h1 className="text-xl font-bold text-[#006064] drop-shadow-lg">Jazaro</h1>
-            </div>
-          </div>
-          <div className="flex items-center gap-3">
-            <Link href="/notifications">
-              <Bell className="h-6 w-6 text-[#006064] hover:text-[#00838F] transition-colors" />
-            </Link>
-            <Link href="/profile">
-              <User className="h-6 w-6 text-[#006064] hover:text-[#00838F] transition-colors" />
-            </Link>
-          </div>
-        </div>
-      </header>
-
       {/* Search Bar */}
       <div className="relative z-10 px-4 py-3 bg-white/50 backdrop-blur-[10px]">
         <div className="relative">
@@ -239,12 +232,20 @@ export default function MainPage() {
       {/* Interactive Leaflet Map */}
       <div className="relative z-10 flex-1 px-4 py-4 bg-white/30 backdrop-blur-[10px]">
         <div className="bg-white/60 backdrop-blur-[10px] rounded-[10px] h-96 relative overflow-hidden border border-[#00BCD4]/30 shadow-[0_4px_10px_rgba(0,188,212,0.3)]">
-          <div ref={mapRef} className="w-full h-full rounded-[10px]" style={{ minHeight: "384px" }} />
+          <div
+            ref={mapRef}
+            className="w-full h-full rounded-[10px]"
+            style={{ minHeight: "384px" }}
+          />
 
           {/* Map Instructions Overlay */}
           <div className="absolute top-4 left-4 right-4 z-[1000] bg-white/90 backdrop-blur-[10px] rounded-[10px] p-3 border border-[#00BCD4]/30 shadow-[0_4px_10px_rgba(0,188,212,0.3)]">
-            <p className="text-sm text-[#006064] font-medium">📍 Interactive Map</p>
-            <p className="text-xs text-[#00838F]">Click anywhere to zoom to your location</p>
+            <p className="text-sm text-[#006064] font-medium">
+              📍 Interactive Map
+            </p>
+            <p className="text-xs text-[#00838F]">
+              Click anywhere to zoom to your location
+            </p>
           </div>
         </div>
       </div>
@@ -252,64 +253,21 @@ export default function MainPage() {
       {/* Stats Section */}
       <div className="relative z-10 px-4 py-4 bg-white/60 backdrop-blur-[10px] border-t border-[#00BCD4]/20">
         <div className="text-center">
-          <span className="text-xs text-[#00838F]">{fixers.length} fixers available in your area</span>
+          <span className="text-xs text-[#00838F]">
+            {fixers.length} fixers available in your area
+          </span>
         </div>
       </div>
 
-      {/* 3D Bottom Navigation */}
-      <nav className="fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full max-w-md bg-white/80 backdrop-blur-[10px] border-t border-[#00BCD4]/20 px-4 py-2 shadow-[0_4px_10px_rgba(0,188,212,0.3)] z-40">
-        <div className="flex justify-around">
-          <Link
-            href="/"
-            className="flex flex-col items-center py-2 text-[#006064] transform hover:scale-110 transition-all duration-300"
-          >
-            <div className="w-10 h-10 bg-gradient-to-br from-[#00BCD4]/20 to-[#26C6DA]/20 rounded-[10px] flex items-center justify-center backdrop-blur-[10px] border border-[#00BCD4]/30 shadow-lg">
-              <MapPin className="h-5 w-5" />
-            </div>
-            <span className="text-xs mt-1">Home</span>
-          </Link>
-          <Link
-            href="/messages"
-            className="flex flex-col items-center py-2 text-[#00838F] hover:text-[#006064] transform hover:scale-110 transition-all duration-300"
-          >
-            <div className="w-10 h-10 bg-white/40 rounded-[10px] flex items-center justify-center backdrop-blur-[10px] border border-[#00BCD4]/30">
-              <MessageCircle className="h-5 w-5" />
-            </div>
-            <span className="text-xs mt-1">Messages</span>
-          </Link>
-          <Button
-            onClick={() => setIsCameraOpen(true)}
-            className="flex flex-col items-center py-2 bg-gradient-to-br from-[#00BCD4] to-[#26C6DA] hover:from-[#00ACC1] hover:to-[#00BCD4] rounded-[20px] w-14 h-14 -mt-2 shadow-[0_0_20px_rgba(0,188,212,0.5)] transform hover:scale-110 transition-all duration-300 border-2 border-white/30 active:scale-95"
-          >
-            <Camera className="h-6 w-6 text-white" />
-            <span className="text-xs text-white mt-1 font-bold">AI</span>
-          </Button>
-          <Link
-            href="/history"
-            className="flex flex-col items-center py-2 text-[#00838F] hover:text-[#006064] transform hover:scale-110 transition-all duration-300"
-          >
-            <div className="w-10 h-10 bg-white/40 rounded-[10px] flex items-center justify-center backdrop-blur-[10px] border border-[#00BCD4]/30">
-              <Search className="h-5 w-5" />
-            </div>
-            <span className="text-xs mt-1">History</span>
-          </Link>
-          <Link
-            href="/profile"
-            className="flex flex-col items-center py-2 text-[#00838F] hover:text-[#006064] transform hover:scale-110 transition-all duration-300"
-          >
-            <div className="w-10 h-10 bg-white/40 rounded-[10px] flex items-center justify-center backdrop-blur-[10px] border border-[#00BCD4]/30">
-              <User className="h-5 w-5" />
-            </div>
-            <span className="text-xs mt-1">Profile</span>
-          </Link>
-        </div>
-      </nav>
-
       {/* Camera Modal */}
-      <CameraModal isOpen={isCameraOpen} onClose={() => setIsCameraOpen(false)} onCapture={handleCameraCapture} />
+      <CameraModal
+        isOpen={isCameraOpen}
+        onClose={() => setIsCameraOpen(false)}
+        onCapture={handleCameraCapture}
+      />
 
       {/* Spacing for bottom nav */}
       <div className="h-16"></div>
     </div>
-  )
+  );
 }
