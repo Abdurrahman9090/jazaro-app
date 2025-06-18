@@ -8,7 +8,6 @@ import Link from "next/link"
 import CameraModal from "@/components/camera-modal"
 
 export default function MainPage() {
-  const [selectedCategory, setSelectedCategory] = useState("all")
   const [isCameraOpen, setIsCameraOpen] = useState(false)
   const mapRef = useRef<HTMLDivElement>(null)
   const mapInstanceRef = useRef<any>(null)
@@ -22,7 +21,6 @@ export default function MainPage() {
       distance: "0.5 mi",
       avatar: "/placeholder.svg?height=40&width=40",
       available: true,
-      categories: ["electronics"],
       position: { lat: 40.7589, lng: -73.9851 },
     },
     {
@@ -33,7 +31,6 @@ export default function MainPage() {
       distance: "0.8 mi",
       avatar: "/placeholder.svg?height=40&width=40",
       available: true,
-      categories: ["appliances"],
       position: { lat: 40.7614, lng: -73.9776 },
     },
     {
@@ -44,112 +41,9 @@ export default function MainPage() {
       distance: "1.2 mi",
       avatar: "/placeholder.svg?height=40&width=40",
       available: false,
-      categories: ["plumbing"],
       position: { lat: 40.7505, lng: -73.9934 },
     },
   ]
-
-  const categories = [
-    { 
-      id: "all", 
-      name: "All", 
-      icon: "🔧",
-      subcategories: []
-    },
-    { 
-      id: "electronics", 
-      name: "Electronics", 
-      icon: "📱",
-      subcategories: [
-        {
-          name: "Consumer Electronics",
-          items: ["Screen Repairs", "Battery Replacement", "Connectivity Issues", "Software Problems"]
-        },
-        {
-          name: "Office Electronics",
-          items: ["Printers & Scanners", "Projectors", "Network Equipment"]
-        }
-      ]
-    },
-    { 
-      id: "appliances", 
-      name: "Appliances", 
-      icon: "🏠",
-      subcategories: [
-        {
-          name: "Kitchen Appliances",
-          items: ["Refrigerators", "Dishwashers", "Microwaves", "Small Appliances"]
-        },
-        {
-          name: "Laundry & Climate",
-          items: ["Washers & Dryers", "Air Conditioners", "Heaters"]
-        }
-      ]
-    },
-    { 
-      id: "plumbing", 
-      name: "Plumbing", 
-      icon: "🚿",
-      subcategories: [
-        {
-          name: "Fixtures",
-          items: ["Faucets & Sinks", "Toilets", "Showers & Tubs"]
-        },
-        {
-          name: "Pipes & Water Systems",
-          items: ["Pipe Repairs", "Water Heaters", "Water Purifiers"]
-        }
-      ]
-    },
-    { 
-      id: "electrical", 
-      name: "Electrical", 
-      icon: "⚡",
-      subcategories: [
-        {
-          name: "Lighting & Wiring",
-          items: ["Light Fixtures", "Electrical Outlets", "Circuit Breakers"]
-        },
-        {
-          name: "Vehicle Electrical",
-          items: ["Car Batteries", "Vehicle Lighting", "Infotainment Systems"]
-        }
-      ]
-    },
-    { 
-      id: "carpentry", 
-      name: "Carpentry", 
-      icon: "🪚",
-      subcategories: [
-        {
-          name: "Furniture",
-          items: ["Tables & Chairs", "Cabinets & Shelves", "Upholstery"]
-        },
-        {
-          name: "Structural & Decorative",
-          items: ["Doors & Windows", "Staircases", "Wooden Decor"]
-        }
-      ]
-    },
-    { 
-      id: "vehicle", 
-      name: "Vehicle Components", 
-      icon: "🚗",
-      subcategories: [
-        {
-          name: "Mechanical",
-          items: ["Engine Repairs", "Brake Systems", "Suspension"]
-        },
-        {
-          name: "Body & Interior",
-          items: ["Body Repairs", "Glass Repairs", "Interior Trim"]
-        }
-      ]
-    }
-  ]
-
-  const filteredFixers =
-    selectedCategory === "all" ? fixers : fixers.filter((fixer) => fixer.categories.includes(selectedCategory))
 
   // Handle camera capture
   const handleCameraCapture = (imageData: string) => {
@@ -172,7 +66,7 @@ export default function MainPage() {
         }).addTo(map)
 
         // Add fixer markers
-        filteredFixers.forEach((fixer) => {
+        fixers.forEach((fixer) => {
           const marker = L.marker([fixer.position.lat, fixer.position.lng]).addTo(map)
           marker.bindPopup(`
             <div class="p-2">
@@ -219,7 +113,7 @@ export default function MainPage() {
         mapInstanceRef.current = null
       }
     }
-  }, [filteredFixers])
+  }, [fixers])
 
   // Load Leaflet CSS
   useEffect(() => {
@@ -342,52 +236,6 @@ export default function MainPage() {
         </div>
       </div>
 
-      {/* Categories Section */}
-      <div className="relative z-10 px-4 py-3">
-        <div className="flex items-center gap-2 mb-3">
-          <Filter className="h-5 w-5 text-[#00838F]" />
-          <h2 className="text-lg font-semibold text-[#006064]">Categories</h2>
-        </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-          {categories.map((category) => (
-            <div
-              key={category.id}
-              className={`relative group cursor-pointer ${
-                selectedCategory === category.id ? "ring-2 ring-[#00BCD4]" : ""
-              }`}
-              onClick={() => setSelectedCategory(category.id)}
-            >
-              <div className="bg-white/80 backdrop-blur-[10px] rounded-lg p-3 border border-[#00BCD4]/30 hover:border-[#00BCD4] transition-colors">
-                <div className="flex items-center gap-2">
-                  <span className="text-2xl">{category.icon}</span>
-                  <span className="font-medium text-[#006064]">{category.name}</span>
-                </div>
-                
-                {/* Subcategories Dropdown */}
-                {category.subcategories.length > 0 && (
-                  <div className="absolute left-0 right-0 mt-2 bg-white rounded-lg shadow-lg border border-[#00BCD4]/30 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-                    <div className="p-3">
-                      {category.subcategories.map((subcat, idx) => (
-                        <div key={idx} className="mb-3 last:mb-0">
-                          <h3 className="font-medium text-[#006064] mb-1">{subcat.name}</h3>
-                          <ul className="text-sm text-[#00838F] space-y-1">
-                            {subcat.items.map((item, itemIdx) => (
-                              <li key={itemIdx} className="hover:text-[#00BCD4] transition-colors">
-                                • {item}
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
       {/* Interactive Leaflet Map */}
       <div className="relative z-10 flex-1 px-4 py-4 bg-white/30 backdrop-blur-[10px]">
         <div className="bg-white/60 backdrop-blur-[10px] rounded-[10px] h-96 relative overflow-hidden border border-[#00BCD4]/30 shadow-[0_4px_10px_rgba(0,188,212,0.3)]">
@@ -404,7 +252,7 @@ export default function MainPage() {
       {/* Stats Section */}
       <div className="relative z-10 px-4 py-4 bg-white/60 backdrop-blur-[10px] border-t border-[#00BCD4]/20">
         <div className="text-center">
-          <span className="text-xs text-[#00838F]">{filteredFixers.length} fixers available in your area</span>
+          <span className="text-xs text-[#00838F]">{fixers.length} fixers available in your area</span>
         </div>
       </div>
 

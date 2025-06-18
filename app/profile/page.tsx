@@ -86,8 +86,8 @@ export default function ProfilePage() {
     <div className="min-h-screen bg-gradient-to-br from-[#E0F7FA] via-[#B2EBF2] to-[#80DEEA] max-w-md mx-auto relative overflow-hidden">
       {/* Decorative Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-r from-[#00BCD4] to-[#26C6DA] rounded-full opacity-30 blur-xl animate-pulse"></div>
-        <div className="absolute bottom-40 right-10 w-24 h-24 bg-gradient-to-r from-[#4DD0E1] to-[#00BCD4] rounded-full opacity-30 blur-xl animate-pulse delay-1000"></div>
+        <div className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-r from-[#00BCD4] to-[#26C6DA] rounded-full opacity-30 blur-xl"></div>
+        <div className="absolute bottom-40 right-10 w-24 h-24 bg-gradient-to-r from-[#4DD0E1] to-[#00BCD4] rounded-full opacity-30 blur-xl"></div>
       </div>
 
       {/* Header */}
@@ -167,6 +167,18 @@ export default function ProfilePage() {
             <Edit className="h-4 w-4 mr-1" />
             Edit
           </Button>
+        </div>
+
+        {/* Become a Fixer Button */}
+        <div className="flex justify-center mt-6">
+          <Link href="/profile/fixer-register" className="w-full max-w-xs">
+            <Button
+              className="w-full py-5 text-lg font-bold bg-gradient-to-r from-[#00BCD4] to-[#00838F] text-white shadow-lg rounded-[16px] hover:from-[#00838F] hover:to-[#00BCD4] transition-all duration-200 border-2 border-[#00BCD4]/40"
+              size="lg"
+            >
+              Become a Fixer
+            </Button>
+          </Link>
         </div>
 
         {/* Stats */}
