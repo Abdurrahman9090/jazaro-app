@@ -1,12 +1,12 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Switch } from "@/components/ui/switch"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Switch } from "@/components/ui/switch";
 import {
   Edit,
   Star,
@@ -24,14 +24,14 @@ import {
   Bell,
   Camera,
   Menu,
-} from "lucide-react"
-import Link from "next/link"
-import CameraModal from "@/components/camera-modal"
+} from "lucide-react";
+import Link from "next/link";
+import CameraModal from "@/components/camera-modal";
 
 export default function ProfilePage() {
-  const [userRole] = useState<"customer" | "fixer">("customer")
-  const [insuranceLinked, setInsuranceLinked] = useState(false)
-  const [isCameraOpen, setIsCameraOpen] = useState(false)
+  const [userRole] = useState<"customer" | "fixer">("customer");
+  const [insuranceLinked, setInsuranceLinked] = useState(false);
+  const [isCameraOpen, setIsCameraOpen] = useState(false);
 
   const customerProfile = {
     name: "John Smith",
@@ -43,7 +43,7 @@ export default function ProfilePage() {
     totalRequests: 12,
     completedRepairs: 10,
     avgRating: 4.8,
-  }
+  };
 
   const repairHistory = [
     {
@@ -73,62 +73,21 @@ export default function ProfilePage() {
       rating: 5,
       status: "completed",
     },
-  ]
+  ];
 
   // Handle camera capture
   const handleCameraCapture = (imageData: string) => {
-    console.log("Image captured:", imageData)
+    console.log("Image captured:", imageData);
     // Here you would typically send the image to your backend for processing
     // or use it to update profile picture
-  }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#E0F7FA] via-[#B2EBF2] to-[#80DEEA] max-w-md mx-auto relative overflow-hidden">
       {/* Decorative Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-r from-[#00BCD4] to-[#26C6DA] rounded-full opacity-30 blur-xl animate-pulse"></div>
-        <div className="absolute bottom-40 right-10 w-24 h-24 bg-gradient-to-r from-[#4DD0E1] to-[#00BCD4] rounded-full opacity-30 blur-xl animate-pulse delay-1000"></div>
-      </div>
-
-      {/* Header */}
-      <header className="relative z-50 bg-white/70 backdrop-blur-[10px] border-b border-[#00BCD4]/20 px-4 py-3 sticky top-0">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Link href="/menu">
-              <Menu className="h-6 w-6 text-[#006064] hover:text-[#00838F] transition-colors" />
-            </Link>
-            {/* 3D Jazaro Logo */}
-            <div className="flex items-center gap-2">
-              <div className="relative">
-                {/* 3D Cube Effect */}
-                <div className="w-8 h-8 relative transform-gpu perspective-1000">
-                  <div className="w-full h-full bg-gradient-to-br from-[#00BCD4] to-[#26C6DA] rounded-lg shadow-lg transform rotate-12 animate-pulse">
-                    <div className="absolute inset-0 bg-gradient-to-br from-[#26C6DA] to-[#4DD0E1] rounded-lg opacity-80 transform translate-x-1 translate-y-1"></div>
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <span className="text-white font-bold text-sm transform -rotate-12 drop-shadow-lg">J</span>
-                    </div>
-                  </div>
-                </div>
-                {/* Glowing Core */}
-                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-2 h-2 bg-gradient-to-r from-[#00BCD4] to-[#26C6DA] rounded-full shadow-[0_0_10px_rgba(0,188,212,0.8)] animate-pulse"></div>
-              </div>
-              <h1 className="text-xl font-bold text-[#006064] drop-shadow-lg">Jazaro</h1>
-            </div>
-          </div>
-          <div className="flex items-center gap-3">
-            <Link href="/notifications">
-              <Bell className="h-6 w-6 text-[#006064] hover:text-[#00838F] transition-colors" />
-            </Link>
-            <Link href="/settings">
-              <Settings className="h-6 w-6 text-[#006064] hover:text-[#00838F] transition-colors" />
-            </Link>
-          </div>
-        </div>
-      </header>
-
-      {/* Page Title */}
-      <div className="relative z-10 px-4 py-3 bg-white/50 backdrop-blur-[10px] border-b border-[#00BCD4]/20">
-        <h1 className="text-xl font-bold text-[#006064] drop-shadow-lg">Profile</h1>
+        <div className="absolute top-10 left-10 w-32 h-32 bg-gradient-to-r from-[#00BCD4] to-[#26C6DA] rounded-full opacity-30 blur-xl"></div>
+        <div className="absolute bottom-40 right-10 w-24 h-24 bg-gradient-to-r from-[#4DD0E1] to-[#00BCD4] rounded-full opacity-30 blur-xl"></div>
       </div>
 
       {/* Profile Header */}
@@ -136,7 +95,7 @@ export default function ProfilePage() {
         <div className="flex items-center gap-4 mb-4">
           <div className="w-20 h-20 bg-white/80 backdrop-blur-[10px] rounded-[20px] shadow-[0_4px_10px_rgba(0,188,212,0.3)] border border-[#00BCD4]/30 flex items-center justify-center">
             <Avatar className="h-18 w-18">
-              <AvatarImage src={customerProfile.avatar || "/placeholder.svg"} />
+              {/* <AvatarImage src={customerProfile.avatar || "/placeholder.svg"} /> */}
               <AvatarFallback className="text-lg bg-gradient-to-br from-[#00BCD4] to-[#26C6DA] text-white font-bold">
                 {customerProfile.name.slice(0, 2)}
               </AvatarFallback>
@@ -144,7 +103,9 @@ export default function ProfilePage() {
           </div>
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-1">
-              <h2 className="text-xl font-bold text-[#006064]">{customerProfile.name}</h2>
+              <h2 className="text-xl font-bold text-[#006064]">
+                {customerProfile.name}
+              </h2>
               <CheckCircle className="h-5 w-5 text-[#4CAF50]" />
             </div>
             <p className="text-[#00838F] text-sm mb-2">Customer</p>
@@ -169,19 +130,37 @@ export default function ProfilePage() {
           </Button>
         </div>
 
+        {/* Become a Fixer Button */}
+        <div className="flex justify-center mt-6 mb-3">
+          <Link href="/profile/fixer-register" className="w-full">
+            <Button
+              className="w-full py-5 text-lg font-bold bg-gradient-to-r from-[#00BCD4] to-[#00838F] text-white shadow-lg rounded-[16px] hover:from-[#00838F] hover:to-[#00BCD4] transition-all duration-200 border-2 border-[#00BCD4]/40"
+              size="lg"
+            >
+              Become a Fixer
+            </Button>
+          </Link>
+        </div>
+
         {/* Stats */}
         <div className="grid grid-cols-3 gap-4 text-center">
           <div className="bg-white/80 backdrop-blur-[10px] rounded-[10px] p-3 border border-[#00BCD4]/30 shadow-[0_4px_10px_rgba(0,188,212,0.3)]">
-            <div className="text-2xl font-bold text-[#006064]">{customerProfile.totalRequests}</div>
+            <div className="text-2xl font-bold text-[#006064]">
+              {customerProfile.totalRequests}
+            </div>
             <div className="text-xs text-[#00838F]">Requests</div>
           </div>
           <div className="bg-white/80 backdrop-blur-[10px] rounded-[10px] p-3 border border-[#00BCD4]/30 shadow-[0_4px_10px_rgba(0,188,212,0.3)]">
-            <div className="text-2xl font-bold text-[#4CAF50]">{customerProfile.completedRepairs}</div>
+            <div className="text-2xl font-bold text-[#4CAF50]">
+              {customerProfile.completedRepairs}
+            </div>
             <div className="text-xs text-[#00838F]">Completed</div>
           </div>
           <div className="bg-white/80 backdrop-blur-[10px] rounded-[10px] p-3 border border-[#00BCD4]/30 shadow-[0_4px_10px_rgba(0,188,212,0.3)]">
             <div className="flex items-center justify-center gap-1">
-              <span className="text-2xl font-bold text-[#006064]">{customerProfile.avgRating}</span>
+              <span className="text-2xl font-bold text-[#006064]">
+                {customerProfile.avgRating}
+              </span>
               <Star className="h-5 w-5 fill-[#FF9800] text-[#FF9800]" />
             </div>
             <div className="text-xs text-[#00838F]">Rating</div>
@@ -217,20 +196,28 @@ export default function ProfilePage() {
             {/* Contact Information */}
             <Card className="border-0 bg-white/80 backdrop-blur-[10px] border border-[#00BCD4]/30 shadow-[0_4px_10px_rgba(0,188,212,0.3)] rounded-[10px]">
               <CardHeader className="pb-3">
-                <CardTitle className="text-lg text-[#006064]">Contact Information</CardTitle>
+                <CardTitle className="text-lg text-[#006064]">
+                  Contact Information
+                </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
                 <div className="flex items-center gap-3">
                   <Mail className="h-5 w-5 text-[#00838F]" />
-                  <span className="text-[#006064]">{customerProfile.email}</span>
+                  <span className="text-[#006064]">
+                    {customerProfile.email}
+                  </span>
                 </div>
                 <div className="flex items-center gap-3">
                   <Phone className="h-5 w-5 text-[#00838F]" />
-                  <span className="text-[#006064]">{customerProfile.phone}</span>
+                  <span className="text-[#006064]">
+                    {customerProfile.phone}
+                  </span>
                 </div>
                 <div className="flex items-center gap-3">
                   <MapPin className="h-5 w-5 text-[#00838F]" />
-                  <span className="text-[#006064]">{customerProfile.location}</span>
+                  <span className="text-[#006064]">
+                    {customerProfile.location}
+                  </span>
                 </div>
               </CardContent>
             </Card>
@@ -247,17 +234,26 @@ export default function ProfilePage() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="font-medium text-[#006064]">Link Insurance</p>
-                    <p className="text-sm text-[#00838F]">Connect your insurance for covered repairs</p>
+                    <p className="text-sm text-[#00838F]">
+                      Connect your insurance for covered repairs
+                    </p>
                   </div>
-                  <Switch checked={insuranceLinked} onCheckedChange={setInsuranceLinked} />
+                  <Switch
+                    checked={insuranceLinked}
+                    onCheckedChange={setInsuranceLinked}
+                  />
                 </div>
                 {insuranceLinked && (
                   <div className="mt-3 p-3 bg-[#4CAF50]/20 backdrop-blur-[10px] rounded-[10px] border border-[#4CAF50]/30">
                     <div className="flex items-center gap-2">
                       <CheckCircle className="h-4 w-4 text-[#4CAF50]" />
-                      <span className="text-sm font-medium text-[#006064]">Insurance Linked</span>
+                      <span className="text-sm font-medium text-[#006064]">
+                        Insurance Linked
+                      </span>
                     </div>
-                    <p className="text-xs text-[#00838F] mt-1">State Farm Insurance - Policy #SF123456</p>
+                    <p className="text-xs text-[#00838F] mt-1">
+                      State Farm Insurance - Policy #SF123456
+                    </p>
                   </div>
                 )}
               </CardContent>
@@ -266,7 +262,9 @@ export default function ProfilePage() {
             {/* Verification Status */}
             <Card className="border-0 bg-white/80 backdrop-blur-[10px] border border-[#00BCD4]/30 shadow-[0_4px_10px_rgba(0,188,212,0.3)] rounded-[10px]">
               <CardHeader className="pb-3">
-                <CardTitle className="text-lg text-[#006064]">Verification</CardTitle>
+                <CardTitle className="text-lg text-[#006064]">
+                  Verification
+                </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
                 <div className="flex items-center justify-between">
@@ -274,14 +272,18 @@ export default function ProfilePage() {
                     <CheckCircle className="h-5 w-5 text-[#4CAF50]" />
                     <span className="text-[#006064]">Email Verified</span>
                   </div>
-                  <Badge className="bg-[#4CAF50]/20 text-[#4CAF50] border border-[#4CAF50]/30">Verified</Badge>
+                  <Badge className="bg-[#4CAF50]/20 text-[#4CAF50] border border-[#4CAF50]/30">
+                    Verified
+                  </Badge>
                 </div>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <CheckCircle className="h-5 w-5 text-[#4CAF50]" />
                     <span className="text-[#006064]">Phone Verified</span>
                   </div>
-                  <Badge className="bg-[#4CAF50]/20 text-[#4CAF50] border border-[#4CAF50]/30">Verified</Badge>
+                  <Badge className="bg-[#4CAF50]/20 text-[#4CAF50] border border-[#4CAF50]/30">
+                    Verified
+                  </Badge>
                 </div>
               </CardContent>
             </Card>
@@ -296,8 +298,12 @@ export default function ProfilePage() {
                 <CardContent className="p-4">
                   <div className="flex items-start justify-between mb-2">
                     <div>
-                      <h3 className="font-semibold text-[#006064]">{repair.item}</h3>
-                      <p className="text-sm text-[#00838F]">Fixed by {repair.fixer}</p>
+                      <h3 className="font-semibold text-[#006064]">
+                        {repair.item}
+                      </h3>
+                      <p className="text-sm text-[#00838F]">
+                        Fixed by {repair.fixer}
+                      </p>
                     </div>
                     <Badge className="bg-[#4CAF50]/20 text-[#4CAF50] border border-[#4CAF50]/30">
                       <CheckCircle className="h-3 w-3 mr-1" />
@@ -328,7 +334,9 @@ export default function ProfilePage() {
           <TabsContent value="settings" className="space-y-4">
             <Card className="border-0 bg-white/80 backdrop-blur-[10px] border border-[#00BCD4]/30 shadow-[0_4px_10px_rgba(0,188,212,0.3)] rounded-[10px]">
               <CardHeader className="pb-3">
-                <CardTitle className="text-lg text-[#006064]">Account Settings</CardTitle>
+                <CardTitle className="text-lg text-[#006064]">
+                  Account Settings
+                </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <Button
@@ -358,57 +366,12 @@ export default function ProfilePage() {
         </Tabs>
       </div>
 
-      {/* 3D Bottom Navigation */}
-      <nav className="fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full max-w-md bg-white/80 backdrop-blur-[10px] border-t border-[#00BCD4]/20 px-4 py-2 shadow-[0_4px_10px_rgba(0,188,212,0.3)] z-40">
-        <div className="flex justify-around">
-          <Link
-            href="/"
-            className="flex flex-col items-center py-2 text-[#00838F] hover:text-[#006064] transform hover:scale-110 transition-all duration-300"
-          >
-            <div className="w-10 h-10 bg-white/40 rounded-[10px] flex items-center justify-center backdrop-blur-[10px] border border-[#00BCD4]/30">
-              <MapPin className="h-5 w-5" />
-            </div>
-            <span className="text-xs mt-1">Home</span>
-          </Link>
-          <Link
-            href="/messages"
-            className="flex flex-col items-center py-2 text-[#00838F] hover:text-[#006064] transform hover:scale-110 transition-all duration-300"
-          >
-            <div className="w-10 h-10 bg-white/40 rounded-[10px] flex items-center justify-center backdrop-blur-[10px] border border-[#00BCD4]/30">
-              <MessageCircle className="h-5 w-5" />
-            </div>
-            <span className="text-xs mt-1">Messages</span>
-          </Link>
-          <Button
-            onClick={() => setIsCameraOpen(true)}
-            className="flex flex-col items-center py-2 bg-gradient-to-br from-[#00BCD4] to-[#26C6DA] hover:from-[#00ACC1] hover:to-[#00BCD4] rounded-[20px] w-14 h-14 -mt-2 shadow-[0_0_20px_rgba(0,188,212,0.5)] transform hover:scale-110 transition-all duration-300 border-2 border-white/30 active:scale-95"
-          >
-            <Camera className="h-6 w-6 text-white" />
-            <span className="text-xs text-white mt-1 font-bold">AI</span>
-          </Button>
-          <Link
-            href="/history"
-            className="flex flex-col items-center py-2 text-[#00838F] hover:text-[#006064] transform hover:scale-110 transition-all duration-300"
-          >
-            <div className="w-10 h-10 bg-white/40 rounded-[10px] flex items-center justify-center backdrop-blur-[10px] border border-[#00BCD4]/30">
-              <Search className="h-5 w-5" />
-            </div>
-            <span className="text-xs mt-1">History</span>
-          </Link>
-          <Link
-            href="/profile"
-            className="flex flex-col items-center py-2 text-[#006064] transform hover:scale-110 transition-all duration-300"
-          >
-            <div className="w-10 h-10 bg-gradient-to-br from-[#00BCD4]/20 to-[#26C6DA]/20 rounded-[10px] flex items-center justify-center backdrop-blur-[10px] border border-[#00BCD4]/30 shadow-lg">
-              <User className="h-5 w-5" />
-            </div>
-            <span className="text-xs mt-1">Profile</span>
-          </Link>
-        </div>
-      </nav>
-
       {/* Camera Modal */}
-      <CameraModal isOpen={isCameraOpen} onClose={() => setIsCameraOpen(false)} onCapture={handleCameraCapture} />
+      <CameraModal
+        isOpen={isCameraOpen}
+        onClose={() => setIsCameraOpen(false)}
+        onCapture={handleCameraCapture}
+      />
     </div>
-  )
+  );
 }

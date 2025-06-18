@@ -6,9 +6,47 @@ import { useState, useRef, useCallback, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { Checkbox } from "@/components/ui/checkbox"
 import { X, Camera, RotateCcw, Zap, Upload, CheckCircle, AlertCircle } from "lucide-react"
 import * as tf from "@tensorflow/tfjs"
 import * as cocoSsd from "@tensorflow-models/coco-ssd"
+
+// Object categories and their checklists
+const objectChecklists: { [key: string]: string[] } = {
+  car: ["Electronics", "Tires", "Hardware", "Body"],
+  chair: ["Frame/Structure", "Upholstery", "Cushions", "Wheels"],
+  sofa: ["Frame/Structure", "Upholstery", "Cushions"],
+  table: ["Frame/Structure", "Surface/Finish"],
+  bed: ["Frame/Structure", "Mattress"],
+  refrigerator: ["Electronics", "Mechanical", "Exterior"],
+  microwave: ["Electronics", "Mechanical", "Exterior"],
+  vase: ["Surface", "Material"],
+  tv: ["Screen", "Connectivity", "Software"],
+  laptop: ["Screen", "Battery", "Software"],
+  knife: ["Surface", "Functionality"],
+  bicycle: ["Frame", "Tires/Wheels", "Mechanical"],
+  handbag: ["Material", "Functionality"],
+  bench: ["Frame/Structure", "Upholstery", "Surface/Finish"],
+  "dining table": ["Frame/Structure", "Surface/Finish"],
+  couch: ["Frame/Structure", "Upholstery", "Cushions"],
+  oven: ["Electronics", "Mechanical", "Exterior"],
+  toaster: ["Electronics", "Mechanical", "Exterior"],
+  sink: ["Surface", "Functionality", "Plumbing"],
+  spoon: ["Surface", "Functionality"],
+  fork: ["Surface", "Functionality"],
+  bowl: ["Surface", "Material"],
+  cup: ["Surface", "Material"],
+  "potted plant": ["Plant Health", "Pot Condition"],
+  mirror: ["Surface", "Frame"],
+  clock: ["Mechanism", "Surface", "Frame"],
+  book: ["Cover", "Pages", "Binding"],
+  scissors: ["Blades", "Handles", "Functionality"],
+  mouse: ["Connectivity", "Buttons", "Sensor"],
+  keyboard: ["Keys", "Connectivity", "Surface"],
+  remote: ["Buttons", "Connectivity", "Battery"],
+  "cell phone": ["Screen", "Battery", "Software"],
+  umbrella: ["Fabric", "Frame", "Mechanism"]
+}
 
 interface CameraModalProps {
   isOpen: boolean
@@ -21,6 +59,7 @@ export default function CameraModal({ isOpen, onClose, onCapture }: CameraModalP
   const [capturedImage, setCapturedImage] = useState<string | null>(null)
   const [isAnalyzing, setIsAnalyzing] = useState(false)
   const [analysisResult, setAnalysisResult] = useState<any>(null)
+  const [selectedIssues, setSelectedIssues] = useState<{ [key: string]: boolean }>({})
   const [facingMode, setFacingMode] = useState<"user" | "environment">("environment")
   const [error, setError] = useState<string | null>(null)
   const [isVideoReady, setIsVideoReady] = useState(false)
@@ -60,7 +99,7 @@ export default function CameraModal({ isOpen, onClose, onCapture }: CameraModalP
     if (!context) return
 
     const detectFrame = async () => {
-      if (!videoRef.current || !model) return
+      if (!videoRef.current || !model || !canvasRef.current) return
 
       try {
         // Detect objects in the current video frame
@@ -224,8 +263,8 @@ export default function CameraModal({ isOpen, onClose, onCapture }: CameraModalP
       // Create a temporary image element
       const img = new Image()
       img.src = capturedImage
-      await new Promise((resolve) => {
-        img.onload = resolve
+      await new Promise<void>((resolve) => {
+        img.onload = () => resolve()
       })
 
       // Detect objects in the image
@@ -244,273 +283,22 @@ export default function CameraModal({ isOpen, onClose, onCapture }: CameraModalP
           }
         }
 
-        // Mock data for home accessories
-        const mockData = {
-          'chair': { issue: 'Broken leg', severity: 'Medium', cost: '$50-100' },
-          'couch': { issue: 'Torn fabric', severity: 'Medium', cost: '$150-300' },
-          'table': { issue: 'Scratched surface', severity: 'Low', cost: '$30-80' },
-          'lamp': { issue: 'Flickering light', severity: 'Low', cost: '$20-50' },
-          'tv': { issue: 'Cracked screen', severity: 'High', cost: '$200-500' },
-          'refrigerator': { issue: 'Not cooling', severity: 'High', cost: '$300-600' },
-          'microwave': { issue: 'Not heating', severity: 'Medium', cost: '$80-150' },
-          'clock': { issue: 'Not working', severity: 'Low', cost: '$15-40' },
-          'vase': { issue: 'Cracked', severity: 'Low', cost: '$25-60' },
-          'painting': { issue: 'Damaged frame', severity: 'Low', cost: '$40-100' },
-          'mirror': { issue: 'Cracked glass', severity: 'Medium', cost: '$60-120' },
-          'curtain': { issue: 'Torn fabric', severity: 'Low', cost: '$30-80' },
-          'carpet': { issue: 'Stained', severity: 'Medium', cost: '$100-250' },
-          'bed': { issue: 'Broken frame', severity: 'High', cost: '$200-400' },
-          'desk': { issue: 'Wobbly legs', severity: 'Low', cost: '$40-90' },
-          'bookshelf': { issue: 'Broken shelf', severity: 'Medium', cost: '$50-120' },
-          'window': { issue: 'Cracked glass', severity: 'High', cost: '$150-300' },
-          'door': { issue: 'Hinges loose', severity: 'Medium', cost: '$70-150' },
-          'cabinet': { issue: 'Broken handle', severity: 'Low', cost: '$20-50' },
-          'sink': { issue: 'Leaking', severity: 'High', cost: '$100-250' },
-          'toilet': { issue: 'Running water', severity: 'High', cost: '$120-300' },
-          'shower': { issue: 'Clogged drain', severity: 'Medium', cost: '$80-200' },
-          'bathtub': { issue: 'Cracked', severity: 'High', cost: '$300-600' },
-          'faucet': { issue: 'Leaking', severity: 'Medium', cost: '$40-100' },
-          'light': { issue: 'Flickering', severity: 'Low', cost: '$15-40' },
-          'fan': { issue: 'Not spinning', severity: 'Medium', cost: '$30-80' },
-          'heater': { issue: 'Not heating', severity: 'High', cost: '$150-300' },
-          'air conditioner': { issue: 'Not cooling', severity: 'High', cost: '$200-500' },
-          'oven': { issue: 'Not heating', severity: 'High', cost: '$150-400' },
-          'stove': { issue: 'Broken burner', severity: 'Medium', cost: '$80-200' },
-          'dishwasher': { issue: 'Not cleaning', severity: 'High', cost: '$200-400' },
-          'washing machine': { issue: 'Not spinning', severity: 'High', cost: '$250-500' },
-          'dryer': { issue: 'Not drying', severity: 'High', cost: '$200-450' },
-          'vacuum': { issue: 'Not sucking', severity: 'Medium', cost: '$50-150' },
-          'blender': { issue: 'Not blending', severity: 'Low', cost: '$30-80' },
-          'toaster': { issue: 'Not toasting', severity: 'Low', cost: '$20-50' },
-          'coffee maker': { issue: 'Not brewing', severity: 'Low', cost: '$40-100' },
-          'kettle': { issue: 'Not heating', severity: 'Low', cost: '$25-60' },
-          'iron': { issue: 'Not heating', severity: 'Low', cost: '$20-50' },
-          'hair dryer': { issue: 'Not blowing', severity: 'Low', cost: '$25-70' },
-          'toothbrush': { issue: 'Not charging', severity: 'Low', cost: '$15-40' },
-          'scale': { issue: 'Not accurate', severity: 'Low', cost: '$20-50' },
-          'thermostat': { issue: 'Not regulating', severity: 'High', cost: '$100-250' },
-          'smoke detector': { issue: 'Not working', severity: 'High', cost: '$30-80' },
-          'carbon monoxide detector': { issue: 'Not working', severity: 'High', cost: '$40-100' },
-          'fire extinguisher': { issue: 'Expired', severity: 'High', cost: '$30-80' },
-          'first aid kit': { issue: 'Missing items', severity: 'Medium', cost: '$20-50' },
-          'toolbox': { issue: 'Missing tools', severity: 'Low', cost: '$30-80' },
-          'ladder': { issue: 'Broken rung', severity: 'High', cost: '$50-150' },
-          'bicycle': { issue: 'Flat tire', severity: 'Low', cost: '$20-50' },
-          'car': { issue: 'Scratched paint', severity: 'Medium', cost: '$200-500' },
-          'motorcycle': { issue: 'Broken mirror', severity: 'Low', cost: '$30-80' },
-          'scooter': { issue: 'Flat tire', severity: 'Low', cost: '$15-40' },
-          'skateboard': { issue: 'Broken wheel', severity: 'Low', cost: '$10-30' },
-          'surfboard': { issue: 'Cracked', severity: 'Medium', cost: '$100-300' },
-          'tennis racket': { issue: 'Broken string', severity: 'Low', cost: '$20-50' },
-          'golf club': { issue: 'Broken shaft', severity: 'Low', cost: '$50-150' },
-          'basketball': { issue: 'Flat', severity: 'Low', cost: '$15-40' },
-          'football': { issue: 'Flat', severity: 'Low', cost: '$15-40' },
-          'baseball': { issue: 'Cracked', severity: 'Low', cost: '$5-15' },
-          'soccer ball': { issue: 'Flat', severity: 'Low', cost: '$15-40' },
-          'volleyball': { issue: 'Flat', severity: 'Low', cost: '$15-40' },
-          'hockey stick': { issue: 'Broken', severity: 'Low', cost: '$30-80' },
-          'pool cue': { issue: 'Broken tip', severity: 'Low', cost: '$20-50' },
-          'dart board': { issue: 'Damaged', severity: 'Low', cost: '$20-50' },
-          'chess board': { issue: 'Missing pieces', severity: 'Low', cost: '$15-40' },
-          'puzzle': { issue: 'Missing pieces', severity: 'Low', cost: '$10-30' },
-          'book': { issue: 'Torn pages', severity: 'Low', cost: '$5-20' },
-          'magazine': { issue: 'Torn cover', severity: 'Low', cost: '$3-10' },
-          'newspaper': { issue: 'Torn', severity: 'Low', cost: '$1-5' },
-          'map': { issue: 'Torn', severity: 'Low', cost: '$5-15' },
-          'globe': { issue: 'Broken stand', severity: 'Low', cost: '$20-50' },
-          'telescope': { issue: 'Broken lens', severity: 'Medium', cost: '$50-150' },
-          'microscope': { issue: 'Broken lens', severity: 'Medium', cost: '$100-300' },
-          'binoculars': { issue: 'Broken lens', severity: 'Medium', cost: '$50-150' },
-          'camera': { issue: 'Broken lens', severity: 'High', cost: '$100-300' },
-          'phone': { issue: 'Cracked screen', severity: 'High', cost: '$100-300' },
-          'laptop': { issue: 'Broken screen', severity: 'High', cost: '$200-500' },
-          'keyboard': { issue: 'Sticky keys', severity: 'Low', cost: '$20-50' },
-          'mouse': { issue: 'Not clicking', severity: 'Low', cost: '$15-40' },
-          'monitor': { issue: 'Dead pixels', severity: 'Medium', cost: '$100-300' },
-          'printer': { issue: 'Paper jam', severity: 'Low', cost: '$30-80' },
-          'scanner': { issue: 'Not scanning', severity: 'Low', cost: '$40-100' },
-          'speaker': { issue: 'No sound', severity: 'Low', cost: '$30-80' },
-          'headphones': { issue: 'No sound', severity: 'Low', cost: '$20-50' },
-          'microphone': { issue: 'Not working', severity: 'Low', cost: '$20-50' },
-          'guitar': { issue: 'Broken string', severity: 'Low', cost: '$10-30' },
-          'piano': { issue: 'Out of tune', severity: 'Medium', cost: '$100-300' },
-          'drum': { issue: 'Broken skin', severity: 'Low', cost: '$30-80' },
-          'violin': { issue: 'Broken string', severity: 'Low', cost: '$20-50' },
-          'trumpet': { issue: 'Stuck valve', severity: 'Low', cost: '$30-80' },
-          'saxophone': { issue: 'Stuck key', severity: 'Low', cost: '$40-100' },
-          'flute': { issue: 'Stuck key', severity: 'Low', cost: '$30-80' },
-          'clarinet': { issue: 'Stuck key', severity: 'Low', cost: '$30-80' },
-          'trombone': { issue: 'Stuck slide', severity: 'Low', cost: '$40-100' },
-          'accordion': { issue: 'Stuck key', severity: 'Low', cost: '$50-150' },
-          'harmonica': { issue: 'Stuck reed', severity: 'Low', cost: '$10-30' },
-          'tambourine': { issue: 'Broken jingle', severity: 'Low', cost: '$10-30' },
-          'maracas': { issue: 'Broken handle', severity: 'Low', cost: '$10-30' },
-          'castanets': { issue: 'Broken string', severity: 'Low', cost: '$5-15' },
-          'triangle': { issue: 'Broken', severity: 'Low', cost: '$5-15' },
-          'cymbals': { issue: 'Cracked', severity: 'Low', cost: '$20-50' },
-          'gong': { issue: 'Cracked', severity: 'Low', cost: '$50-150' },
-          'xylophone': { issue: 'Broken key', severity: 'Low', cost: '$30-80' },
-          'marimba': { issue: 'Broken key', severity: 'Low', cost: '$50-150' },
-          'vibraphone': { issue: 'Broken key', severity: 'Low', cost: '$50-150' },
-          'glockenspiel': { issue: 'Broken key', severity: 'Low', cost: '$30-80' },
-          'chimes': { issue: 'Broken tube', severity: 'Low', cost: '$20-50' },
-          'bells': { issue: 'Broken clapper', severity: 'Low', cost: '$15-40' },
-          'whistle': { issue: 'Not working', severity: 'Low', cost: '$5-15' },
-          'kazoo': { issue: 'Not working', severity: 'Low', cost: '$5-15' },
-          'recorder': { issue: 'Stuck key', severity: 'Low', cost: '$10-30' },
-          'ocarina': { issue: 'Cracked', severity: 'Low', cost: '$10-30' },
-          'pan flute': { issue: 'Broken tube', severity: 'Low', cost: '$20-50' },
-          'didgeridoo': { issue: 'Cracked', severity: 'Low', cost: '$50-150' },
-          'bagpipes': { issue: 'Leaking air', severity: 'Low', cost: '$100-300' },
-          'mandolin': { issue: 'Broken string', severity: 'Low', cost: '$20-50' },
-          'banjo': { issue: 'Broken string', severity: 'Low', cost: '$30-80' },
-          'ukulele': { issue: 'Broken string', severity: 'Low', cost: '$15-40' },
-          'sitar': { issue: 'Broken string', severity: 'Low', cost: '$50-150' },
-          'harp': { issue: 'Broken string', severity: 'Low', cost: '$100-300' },
-          'cello': { issue: 'Broken string', severity: 'Low', cost: '$50-150' },
-          'double bass': { issue: 'Broken string', severity: 'Low', cost: '$100-300' },
-          'viola': { issue: 'Broken string', severity: 'Low', cost: '$40-100' },
-          'bassoon': { issue: 'Stuck key', severity: 'Low', cost: '$50-150' },
-          'oboe': { issue: 'Stuck key', severity: 'Low', cost: '$50-150' },
-          'english horn': { issue: 'Stuck key', severity: 'Low', cost: '$50-150' },
-          'french horn': { issue: 'Stuck valve', severity: 'Low', cost: '$50-150' },
-          'tuba': { issue: 'Stuck valve', severity: 'Low', cost: '$100-300' },
-          'euphonium': { issue: 'Stuck valve', severity: 'Low', cost: '$50-150' },
-          'baritone': { issue: 'Stuck valve', severity: 'Low', cost: '$50-150' },
-          'trombone': { issue: 'Stuck slide', severity: 'Low', cost: '$40-100' },
-          'cornet': { issue: 'Stuck valve', severity: 'Low', cost: '$30-80' },
-          'flugelhorn': { issue: 'Stuck valve', severity: 'Low', cost: '$40-100' },
-          'piccolo': { issue: 'Stuck key', severity: 'Low', cost: '$20-50' },
-          'fife': { issue: 'Stuck key', severity: 'Low', cost: '$15-40' },
-          'panpipe': { issue: 'Broken tube', severity: 'Low', cost: '$20-50' },
-          'ocarina': { issue: 'Cracked', severity: 'Low', cost: '$10-30' },
-          'recorder': { issue: 'Stuck key', severity: 'Low', cost: '$10-30' },
-          'whistle': { issue: 'Not working', severity: 'Low', cost: '$5-15' },
-          'kazoo': { issue: 'Not working', severity: 'Low', cost: '$5-15' },
-          'harmonica': { issue: 'Stuck reed', severity: 'Low', cost: '$10-30' },
-          'accordion': { issue: 'Stuck key', severity: 'Low', cost: '$50-150' },
-          'concertina': { issue: 'Stuck key', severity: 'Low', cost: '$40-100' },
-          'bandoneon': { issue: 'Stuck key', severity: 'Low', cost: '$50-150' },
-          'melodica': { issue: 'Stuck key', severity: 'Low', cost: '$20-50' },
-          'harmonium': { issue: 'Stuck key', severity: 'Low', cost: '$50-150' },
-          'organ': { issue: 'Stuck key', severity: 'High', cost: '$200-500' },
-          'synthesizer': { issue: 'Not working', severity: 'High', cost: '$100-300' },
-          'keyboard': { issue: 'Sticky keys', severity: 'Low', cost: '$20-50' },
-          'piano': { issue: 'Out of tune', severity: 'Medium', cost: '$100-300' },
-          'grand piano': { issue: 'Out of tune', severity: 'High', cost: '$300-800' },
-          'upright piano': { issue: 'Out of tune', severity: 'Medium', cost: '$200-500' },
-          'electric piano': { issue: 'Not working', severity: 'High', cost: '$100-300' },
-          'digital piano': { issue: 'Not working', severity: 'High', cost: '$100-300' },
-          'harpsichord': { issue: 'Out of tune', severity: 'High', cost: '$200-500' },
-          'clavichord': { issue: 'Out of tune', severity: 'High', cost: '$200-500' },
-          'virginal': { issue: 'Out of tune', severity: 'High', cost: '$200-500' },
-          'spinet': { issue: 'Out of tune', severity: 'High', cost: '$200-500' },
-          'fortepiano': { issue: 'Out of tune', severity: 'High', cost: '$200-500' },
-          'pianola': { issue: 'Not working', severity: 'High', cost: '$200-500' },
-          'player piano': { issue: 'Not working', severity: 'High', cost: '$200-500' },
-          'celesta': { issue: 'Out of tune', severity: 'High', cost: '$200-500' },
-          'glockenspiel': { issue: 'Broken key', severity: 'Low', cost: '$30-80' },
-          'xylophone': { issue: 'Broken key', severity: 'Low', cost: '$30-80' },
-          'marimba': { issue: 'Broken key', severity: 'Low', cost: '$50-150' },
-          'vibraphone': { issue: 'Broken key', severity: 'Low', cost: '$50-150' },
-          'tubular bells': { issue: 'Broken tube', severity: 'Low', cost: '$50-150' },
-          'chimes': { issue: 'Broken tube', severity: 'Low', cost: '$20-50' },
-          'bells': { issue: 'Broken clapper', severity: 'Low', cost: '$15-40' },
-          'gong': { issue: 'Cracked', severity: 'Low', cost: '$50-150' },
-          'tam-tam': { issue: 'Cracked', severity: 'Low', cost: '$50-150' },
-          'cymbals': { issue: 'Cracked', severity: 'Low', cost: '$20-50' },
-          'hi-hat': { issue: 'Not closing', severity: 'Low', cost: '$30-80' },
-          'ride cymbal': { issue: 'Cracked', severity: 'Low', cost: '$30-80' },
-          'crash cymbal': { issue: 'Cracked', severity: 'Low', cost: '$30-80' },
-          'splash cymbal': { issue: 'Cracked', severity: 'Low', cost: '$20-50' },
-          'china cymbal': { issue: 'Cracked', severity: 'Low', cost: '$30-80' },
-          'sizzle cymbal': { issue: 'Cracked', severity: 'Low', cost: '$30-80' },
-          'ride bell': { issue: 'Cracked', severity: 'Low', cost: '$20-50' },
-          'cowbell': { issue: 'Cracked', severity: 'Low', cost: '$15-40' },
-          'agogo': { issue: 'Cracked', severity: 'Low', cost: '$15-40' },
-          'tambourine': { issue: 'Broken jingle', severity: 'Low', cost: '$10-30' },
-          'maracas': { issue: 'Broken handle', severity: 'Low', cost: '$10-30' },
-          'castanets': { issue: 'Broken string', severity: 'Low', cost: '$5-15' },
-          'claves': { issue: 'Broken', severity: 'Low', cost: '$5-15' },
-          'guiro': { issue: 'Broken scraper', severity: 'Low', cost: '$10-30' },
-          'vibraslap': { issue: 'Broken', severity: 'Low', cost: '$15-40' },
-          'cabasa': { issue: 'Broken beads', severity: 'Low', cost: '$15-40' },
-          'shaker': { issue: 'Broken', severity: 'Low', cost: '$10-30' },
-          'rain stick': { issue: 'Broken', severity: 'Low', cost: '$15-40' },
-          'wind chimes': { issue: 'Broken tube', severity: 'Low', cost: '$20-50' },
-          'triangle': { issue: 'Broken', severity: 'Low', cost: '$5-15' },
-          'wood block': { issue: 'Cracked', severity: 'Low', cost: '$10-30' },
-          'temple block': { issue: 'Cracked', severity: 'Low', cost: '$15-40' },
-          'log drum': { issue: 'Cracked', severity: 'Low', cost: '$30-80' },
-          'steel drum': { issue: 'Cracked', severity: 'Low', cost: '$50-150' },
-          'timpani': { issue: 'Broken head', severity: 'Low', cost: '$100-300' },
-          'bass drum': { issue: 'Broken head', severity: 'Low', cost: '$50-150' },
-          'snare drum': { issue: 'Broken head', severity: 'Low', cost: '$30-80' },
-          'tom-tom': { issue: 'Broken head', severity: 'Low', cost: '$30-80' },
-          'floor tom': { issue: 'Broken head', severity: 'Low', cost: '$40-100' },
-          'bongo': { issue: 'Broken head', severity: 'Low', cost: '$20-50' },
-          'congas': { issue: 'Broken head', severity: 'Low', cost: '$30-80' },
-          'timbales': { issue: 'Broken head', severity: 'Low', cost: '$30-80' },
-          'djembe': { issue: 'Broken head', severity: 'Low', cost: '$30-80' },
-          'cajon': { issue: 'Cracked', severity: 'Low', cost: '$30-80' },
-          'darbuka': { issue: 'Broken head', severity: 'Low', cost: '$20-50' },
-          'tabla': { issue: 'Broken head', severity: 'Low', cost: '$30-80' },
-          'bodhran': { issue: 'Broken head', severity: 'Low', cost: '$30-80' },
-          'frame drum': { issue: 'Broken head', severity: 'Low', cost: '$20-50' },
-          'tambourine': { issue: 'Broken jingle', severity: 'Low', cost: '$10-30' },
-          'riq': { issue: 'Broken jingle', severity: 'Low', cost: '$20-50' },
-          'tar': { issue: 'Broken head', severity: 'Low', cost: '$20-50' },
-          'bendir': { issue: 'Broken head', severity: 'Low', cost: '$20-50' },
-          'daf': { issue: 'Broken head', severity: 'Low', cost: '$20-50' },
-          'doholla': { issue: 'Broken head', severity: 'Low', cost: '$30-80' },
-          'davul': { issue: 'Broken head', severity: 'Low', cost: '$30-80' },
-          'tapan': { issue: 'Broken head', severity: 'Low', cost: '$30-80' },
-          'dhol': { issue: 'Broken head', severity: 'Low', cost: '$30-80' },
-          'dholak': { issue: 'Broken head', severity: 'Low', cost: '$20-50' },
-          'mridangam': { issue: 'Broken head', severity: 'Low', cost: '$30-80' },
-          'kanjira': { issue: 'Broken head', severity: 'Low', cost: '$20-50' },
-          'ghatam': { issue: 'Cracked', severity: 'Low', cost: '$20-50' },
-          'morsing': { issue: 'Broken', severity: 'Low', cost: '$10-30' },
-          'ghungroo': { issue: 'Broken bell', severity: 'Low', cost: '$15-40' },
-          'manjira': { issue: 'Broken', severity: 'Low', cost: '$10-30' },
-          'kartal': { issue: 'Broken', severity: 'Low', cost: '$10-30' },
-          'chimta': { issue: 'Broken', severity: 'Low', cost: '$10-30' },
-          'khartal': { issue: 'Broken', severity: 'Low', cost: '$10-30' },
-          'damru': { issue: 'Broken head', severity: 'Low', cost: '$10-30' },
-          'duff': { issue: 'Broken head', severity: 'Low', cost: '$10-30' },
-          'daf': { issue: 'Broken head', severity: 'Low', cost: '$20-50' },
-          'darbuka': { issue: 'Broken head', severity: 'Low', cost: '$20-50' },
-          'doholla': { issue: 'Broken head', severity: 'Low', cost: '$30-80' },
-          'davul': { issue: 'Broken head', severity: 'Low', cost: '$30-80' },
-          'tapan': { issue: 'Broken head', severity: 'Low', cost: '$30-80' },
-          'dhol': { issue: 'Broken head', severity: 'Low', cost: '$30-80' },
-          'dholak': { issue: 'Broken head', severity: 'Low', cost: '$20-50' },
-          'mridangam': { issue: 'Broken head', severity: 'Low', cost: '$30-80' },
-          'kanjira': { issue: 'Broken head', severity: 'Low', cost: '$20-50' },
-          'ghatam': { issue: 'Cracked', severity: 'Low', cost: '$20-50' },
-          'morsing': { issue: 'Broken', severity: 'Low', cost: '$10-30' },
-          'ghungroo': { issue: 'Broken bell', severity: 'Low', cost: '$15-40' },
-          'manjira': { issue: 'Broken', severity: 'Low', cost: '$10-30' },
-          'kartal': { issue: 'Broken', severity: 'Low', cost: '$10-30' },
-          'chimta': { issue: 'Broken', severity: 'Low', cost: '$10-30' },
-          'khartal': { issue: 'Broken', severity: 'Low', cost: '$10-30' },
-          'damru': { issue: 'Broken head', severity: 'Low', cost: '$10-30' },
-          'duff': { issue: 'Broken head', severity: 'Low', cost: '$10-30' }
-        }
-
         const objectName = pred.class.toLowerCase()
-        const mockInfo = mockData[objectName as keyof typeof mockData] || {
-          issue: 'Unknown issue',
-          severity: 'Low',
-          cost: '$20-50'
-        }
+        const checklist = objectChecklists[objectName] || []
+        
+        // Initialize selected issues for this object
+        const initialSelectedIssues: { [key: string]: boolean } = {}
+        checklist.forEach(issue => {
+          initialSelectedIssues[issue] = false
+        })
+        setSelectedIssues(initialSelectedIssues)
 
         return {
           object: pred.class,
           confidence: pred.score,
           bbox: pred.bbox,
           type: 'home_accessory',
-          ...mockInfo
+          checklist: checklist
         }
       })
 
@@ -695,38 +483,39 @@ export default function CameraModal({ isOpen, onClose, onCapture }: CameraModalP
                     <CheckCircle className="h-5 w-5 text-[#4CAF50]" />
                     <span className="font-semibold text-[#006064]">AI Detection Complete</span>
                   </div>
-                  <div className="space-y-2">
+                  <div className="space-y-4">
                     {analysisResult.map((result: any, index: number) => (
-                      <div key={index} className="space-y-2">
+                      <div key={index} className="space-y-3">
                         <div className="flex items-center justify-between">
                           <span className="text-sm text-[#00838F]">Object:</span>
                           <span className="font-medium text-[#006064]">{result.object}</span>
                         </div>
-                        {result.type === 'home_accessory' && (
-                          <>
-                            <div className="flex items-center justify-between">
-                              <span className="text-sm text-[#00838F]">Issue:</span>
-                              <span className="font-medium text-[#006064]">{result.issue}</span>
+                        {result.type === 'home_accessory' && result.checklist && (
+                          <div className="space-y-2">
+                            <span className="text-sm text-[#00838F]">Issue Checklist:</span>
+                            <div className="space-y-2">
+                              {result.checklist.map((issue: string) => (
+                                <div key={issue} className="flex items-center space-x-2">
+                                  <Checkbox
+                                    id={`issue-${issue}`}
+                                    checked={selectedIssues[issue] || false}
+                                    onCheckedChange={(checked) => {
+                                      setSelectedIssues(prev => ({
+                                        ...prev,
+                                        [issue]: checked as boolean
+                                      }))
+                                    }}
+                                  />
+                                  <label
+                                    htmlFor={`issue-${issue}`}
+                                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                                  >
+                                    {issue}
+                                  </label>
+                                </div>
+                              ))}
                             </div>
-                            <div className="flex items-center justify-between">
-                              <span className="text-sm text-[#00838F]">Severity:</span>
-                              <Badge
-                                className={`${
-                                  result.severity === "High"
-                                    ? "bg-red-100 text-red-800"
-                                    : result.severity === "Medium"
-                                      ? "bg-yellow-100 text-yellow-800"
-                                      : "bg-green-100 text-green-800"
-                                }`}
-                              >
-                                {result.severity}
-                              </Badge>
-                            </div>
-                            <div className="flex items-center justify-between">
-                              <span className="text-sm text-[#00838F]">Est. Cost:</span>
-                              <span className="font-medium text-[#4CAF50]">{result.cost}</span>
-                            </div>
-                          </>
+                          </div>
                         )}
                         <div className="flex items-center justify-between">
                           <span className="text-sm text-[#00838F]">Confidence:</span>
