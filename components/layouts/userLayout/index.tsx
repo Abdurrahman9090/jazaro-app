@@ -1,14 +1,17 @@
+import MobileDrawer from "@/shared/drawer";
 import Header from "@/shared/header";
 import TabMenu from "@/shared/tabs";
-import React from "react";
+import React, { useState } from "react";
 
 const ClientLayout = ({ children }: any) => {
+  const [isDrawerOpen, setDrawerOpen] = useState(false);
   return (
-    <>
-      <Header />
+    <div className="min-h-screen w-full max-w-md mx-auto bg-gradient-to-br from-[#E0F7FA] via-[#B2EBF2] to-[#80DEEA]">
+      <Header onMenuClick={() => setDrawerOpen(true)} />
       {children}
+      <MobileDrawer open={isDrawerOpen} setOpen={() => setDrawerOpen(false)} />
       <TabMenu />
-    </>
+    </div>
   );
 };
 

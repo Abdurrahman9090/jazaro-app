@@ -5,8 +5,7 @@ export interface IUser {
   email: string;
   role: UserRoles;
   avatar?: string;
-  first_name: string;
-  last_name?: string;
+  username: string;
   verified?: boolean;
   createdBy?: string;
   organization?: string;
