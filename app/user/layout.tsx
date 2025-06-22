@@ -1,12 +1,12 @@
 "use client";
 
-import ClientLayout from "@/components/layouts/userLayout";
-import { loadUser } from "@/redux/actions/authActions";
-import { AuthSelector } from "@/redux/reducers";
-import { useAppDispatch } from "@/redux/store";
 import { useRouter } from "next/navigation";
-import React, { ReactElement, useEffect } from "react";
+import { useAppDispatch } from "@/redux/store";
+import { AuthSelector } from "@/redux/reducers";
 import { useSelector } from "react-redux";
+import { loadUser } from "@/redux/actions/authActions";
+import React, { ReactElement, useEffect } from "react";
+import ClientLayout from "@/components/layouts/userLayout";
 
 const UserClientLayout = ({ children }: { children: ReactElement }) => {
   const AuthState = useSelector(AuthSelector);

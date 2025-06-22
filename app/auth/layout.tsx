@@ -19,10 +19,10 @@ const AuthLayout = ({ children }: { children: ReactElement }) => {
   }, []);
 
   useEffect(() => {
-    console.log("signin");
     if (user && isAuthenticated) {
-      console.log("signin", user, isAuthenticated);
-      router.push(user.role === UserRoles.Client ? "/" : "/auth/signin");
+      router.push(
+        user.role === UserRoles.Client ? "/user/dashboard" : "/fixer/"
+      );
     }
   }, [user, isAuthenticated, router]);
 

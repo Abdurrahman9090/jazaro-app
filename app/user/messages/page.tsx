@@ -104,66 +104,6 @@ export default function MessagesPage() {
 
     return (
       <div className="min-h-screen bg-gradient-to-br from-[#E0F7FA] via-[#B2EBF2] to-[#80DEEA] max-w-md mx-auto flex flex-col relative overflow-hidden">
-        {/* 3D Globe Dynamic Wallpaper */}
-        <div className="fixed inset-0 z-0">
-          {/* 3D Globe Background */}
-          <div className="absolute inset-0">
-            {/* Main Globe Sphere */}
-            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[120vw] h-[120vw] max-w-[600px] max-h-[600px] rounded-full bg-gradient-to-br from-[#E0F7FA]/40 to-[#B2EBF2]/40 backdrop-blur-sm border border-[#00BCD4]/10 shadow-inner animate-spin-slow">
-              {/* Globe Grid Lines */}
-              <div className="absolute inset-0 rounded-full overflow-hidden">
-                {/* Latitude lines */}
-                {[...Array(12)].map((_, i) => (
-                  <div
-                    key={`lat-${i}`}
-                    className="absolute left-0 right-0 border-t border-[#00BCD4]/15"
-                    style={{ top: `${(i + 1) * 8.33}%` }}
-                  />
-                ))}
-                {/* Longitude lines */}
-                {Array(10)
-                  .fill(0)
-                  .map((_, i) => (
-                    <div
-                      key={`lng-${i}`}
-                      className="absolute top-0 bottom-0 w-px bg-[#00BCD4]/15 transform origin-center"
-                      style={{
-                        left: "50%",
-                        transform: `translateX(-50%) rotateZ(${i * 11.25}deg)`,
-                      }}
-                    />
-                  ))}
-              </div>
-
-              {/* Glowing Core */}
-              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-gradient-to-r from-[#00BCD4]/60 to-[#26C6DA]/60 rounded-full shadow-[0_0_40px_rgba(0,188,212,0.4)] animate-pulse"></div>
-
-              {/* Floating Particles */}
-              {[...Array(30)].map((_, i) => (
-                <div
-                  key={`particle-${i}`}
-                  className="absolute w-1 h-1 bg-[#00BCD4]/40 rounded-full animate-pulse"
-                  style={{
-                    top: `${Math.random() * 100}%`,
-                    left: `${Math.random() * 100}%`,
-                    animationDelay: `${Math.random() * 3}s`,
-                    animationDuration: `${2 + Math.random() * 2}s`,
-                  }}
-                />
-              ))}
-            </div>
-
-            {/* Orbital Rings */}
-            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[130vw] h-[130vw] max-w-[700px] max-h-[700px] border border-[#00BCD4]/8 rounded-full animate-spin-reverse"></div>
-            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[140vw] h-[140vw] max-w-[800px] max-h-[800px] border border-[#26C6DA]/6 rounded-full animate-spin-slow"></div>
-
-            {/* Additional Decorative Elements */}
-            <div className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-r from-[#00BCD4] to-[#26C6DA] rounded-full opacity-20 blur-xl animate-pulse"></div>
-            <div className="absolute bottom-40 right-10 w-24 h-24 bg-gradient-to-r from-[#4DD0E1] to-[#00BCD4] rounded-full opacity-20 blur-xl animate-pulse delay-1000"></div>
-            <div className="absolute top-60 right-5 w-20 h-20 bg-gradient-to-r from-[#26C6DA] to-[#4DD0E1] rounded-full opacity-15 blur-xl animate-pulse delay-2000"></div>
-          </div>
-        </div>
-
         {/* Chat Header */}
         <div className="relative z-10 bg-white/50 backdrop-blur-[10px] border-b border-[#00BCD4]/20 px-4 py-3">
           <div className="flex items-center gap-3">
@@ -331,64 +271,6 @@ export default function MessagesPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#E0F7FA] via-[#B2EBF2] to-[#80DEEA] max-w-md mx-auto relative overflow-hidden">
-      {/* 3D Globe Dynamic Wallpaper */}
-      <div className="fixed inset-0 z-0">
-        {/* 3D Globe Background */}
-        <div className="absolute inset-0">
-          {/* Main Globe Sphere */}
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[120vw] h-[120vw] max-w-[600px] max-h-[600px] rounded-full bg-gradient-to-br from-[#E0F7FA]/40 to-[#B2EBF2]/40 backdrop-blur-sm border border-[#00BCD4]/10 shadow-inner animate-spin-slow">
-            {/* Globe Grid Lines */}
-            <div className="absolute inset-0 rounded-full overflow-hidden">
-              {/* Latitude lines */}
-              {[...Array(12)].map((_, i) => (
-                <div
-                  key={`lat-${i}`}
-                  className="absolute left-0 right-0 border-t border-[#00BCD4]/15"
-                  style={{ top: `${(i + 1) * 8.33}%` }}
-                />
-              ))}
-              {/* Longitude lines */}
-              {[...Array(16)].map((_, i) => (
-                <div
-                  key={`lng-${i}`}
-                  className="absolute top-0 bottom-0 w-px bg-[#00BCD4]/15 transform origin-center"
-                  style={{
-                    left: "50%",
-                    transform: `translateX(-50%) rotateZ(${i * 11.25}deg)`,
-                  }}
-                />
-              ))}
-            </div>
-
-            {/* Glowing Core */}
-            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-gradient-to-r from-[#00BCD4]/60 to-[#26C6DA]/60 rounded-full shadow-[0_0_40px_rgba(0,188,212,0.4)] animate-pulse"></div>
-
-            {/* Floating Particles */}
-            {[...Array(30)].map((_, i) => (
-              <div
-                key={`particle-${i}`}
-                className="absolute w-1 h-1 bg-[#00BCD4]/40 rounded-full animate-pulse"
-                style={{
-                  top: `${Math.random() * 100}%`,
-                  left: `${Math.random() * 100}%`,
-                  animationDelay: `${Math.random() * 3}s`,
-                  animationDuration: `${2 + Math.random() * 2}s`,
-                }}
-              />
-            ))}
-          </div>
-
-          {/* Orbital Rings */}
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[130vw] h-[130vw] max-w-[700px] max-h-[700px] border border-[#00BCD4]/8 rounded-full animate-spin-reverse"></div>
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[140vw] h-[140vw] max-w-[800px] max-h-[800px] border border-[#26C6DA]/6 rounded-full animate-spin-slow"></div>
-
-          {/* Additional Decorative Elements */}
-          <div className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-r from-[#00BCD4] to-[#26C6DA] rounded-full opacity-20 blur-xl animate-pulse"></div>
-          <div className="absolute bottom-40 right-10 w-24 h-24 bg-gradient-to-r from-[#4DD0E1] to-[#00BCD4] rounded-full opacity-20 blur-xl animate-pulse delay-1000"></div>
-          <div className="absolute top-60 right-5 w-20 h-20 bg-gradient-to-r from-[#26C6DA] to-[#4DD0E1] rounded-full opacity-15 blur-xl animate-pulse delay-2000"></div>
-        </div>
-      </div>
-
       {/* Search */}
       <div className="relative z-10 px-4 py-3 bg-white/50 backdrop-blur-[10px] border-b border-[#00BCD4]/20">
         <div className="relative">
