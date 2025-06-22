@@ -43,5 +43,5 @@ export default AlertSlice.reducer;
  * @returns {IAlert} returns alert state object
  */
 export const AlertSelector = (state: { alert: Array<IAlert> }) => {
-  return state.alert;
+  return state?.alert;
 };
