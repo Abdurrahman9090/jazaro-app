@@ -15,12 +15,13 @@
     "hooks": "@/hooks",
     "redux": "@/redux",
     "types": "@/types",
-    "config": "@/config",
     "utils": "@/utils",
-    "ui": "@/components/ui",
+    "config": "@/config",
     "shared": "@/shared",
+    "ui": "@/components/ui",
     "components": "@/components",
-    "reduxTypes": "@/types/reduxTypes"
+    "reduxTypes": "@/types/reduxTypes",
+    "@layouts": "@/components/layouts"
   },
   "iconLibrary": "lucide"
 }
