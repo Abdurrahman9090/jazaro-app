@@ -3,7 +3,7 @@ import axios from "axios";
 export const backendUrl = process.env.NEXT_PUBLIC_BACKEND_API_URL as string;
 
 export const BackendInstance = axios.create({
-  baseURL: `${backendUrl}/`,
+  baseURL: `${backendUrl}/api/`,
   withCredentials: true,
 });
 

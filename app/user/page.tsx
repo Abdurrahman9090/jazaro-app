@@ -1,14 +1,14 @@
 "use client";
 
+import ClientLayout from "@/components/layouts/userLayout";
 import { loadUser } from "@/redux/actions/authActions";
 import { AuthSelector } from "@/redux/reducers";
 import { useAppDispatch } from "@/redux/store";
-import { UserRoles } from "@/types";
 import { useRouter } from "next/navigation";
 import React, { ReactElement, useEffect } from "react";
 import { useSelector } from "react-redux";
 
-const AuthLayout = ({ children }: { children: ReactElement }) => {
+const UserClientLayout = ({ children }: { children: ReactElement }) => {
   const AuthState = useSelector(AuthSelector);
   const router = useRouter();
   const { user, isAuthenticated } = AuthState;
@@ -19,14 +19,12 @@ const AuthLayout = ({ children }: { children: ReactElement }) => {
   }, []);
 
   useEffect(() => {
-    console.log("signin");
-    if (user && isAuthenticated) {
-      console.log("signin", user, isAuthenticated);
-      router.push(user.role === UserRoles.Client ? "/" : "/auth/signin");
+    if (!user && !isAuthenticated) {
+      router.push("/auth/signin");
     }
   }, [user, isAuthenticated, router]);
 
-  return <>{children}</>;
+  return <ClientLayout>{children}</ClientLayout>;
 };
 
-export default AuthLayout;
+export default UserClientLayout;

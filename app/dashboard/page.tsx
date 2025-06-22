@@ -1,328 +1,262 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import {
-  Camera,
-  Clock,
-  DollarSign,
-  MapPin,
-  Star,
-  MessageCircle,
-  Phone,
-  CheckCircle,
-  AlertCircle,
-  Plus,
-} from "lucide-react"
-import Link from "next/link"
-import Image from "next/image"
+import { useState, useEffect, useRef } from "react";
+import { Input } from "@/components/ui/input";
+import { Search } from "lucide-react";
+import CameraModal from "@/components/camera-modal";
 
-export default function DashboardPage() {
-  const [activeTab, setActiveTab] = useState("active")
+export default function MainPage() {
+  const [isCameraOpen, setIsCameraOpen] = useState(false);
+  const mapRef = useRef<HTMLDivElement>(null);
+  const mapInstanceRef = useRef<any>(null);
 
-  const requests = [
+  const fixers = [
     {
       id: 1,
-      title: "Samsung TV Screen Repair",
-      category: "Electronics",
-      status: "quotes_received",
-      urgency: "normal",
-      budget: "$100-250",
-      location: "New York, NY",
-      createdAt: "2 hours ago",
-      quotesCount: 3,
-      image: "/placeholder.svg?height=100&width=100",
+      name: "Mike Rodriguez",
+      specialty: "Electronics Repair",
+      rating: 4.9,
+      distance: "0.5 mi",
+      avatar: "/placeholder.svg?height=40&width=40",
+      available: true,
+      position: { lat: 40.7589, lng: -73.9851 },
     },
     {
       id: 2,
-      title: "Kitchen Faucet Leak",
-      category: "Plumbing",
-      status: "in_progress",
-      urgency: "urgent",
-      budget: "$50-100",
-      location: "New York, NY",
-      createdAt: "1 day ago",
-      quotesCount: 5,
-      image: "/placeholder.svg?height=100&width=100",
+      name: "Sarah Johnson",
+      specialty: "Appliance Repair",
+      rating: 4.8,
+      distance: "0.8 mi",
+      avatar: "/placeholder.svg?height=40&width=40",
+      available: true,
+      position: { lat: 40.7614, lng: -73.9776 },
     },
     {
       id: 3,
-      title: "Office Chair Wheel Replacement",
-      category: "Furniture",
-      status: "completed",
-      urgency: "flexible",
-      budget: "Under $50",
-      location: "New York, NY",
-      createdAt: "3 days ago",
-      quotesCount: 2,
-      image: "/placeholder.svg?height=100&width=100",
+      name: "David Chen",
+      specialty: "Plumbing Expert",
+      rating: 4.7,
+      distance: "1.2 mi",
+      avatar: "/placeholder.svg?height=40&width=40",
+      available: false,
+      position: { lat: 40.7505, lng: -73.9934 },
     },
-  ]
+  ];
 
-  const quotes = [
-    {
-      id: 1,
-      requestId: 1,
-      provider: {
-        name: "TechFix Pro",
-        rating: 4.9,
-        reviews: 127,
-        avatar: "/placeholder.svg?height=40&width=40",
-      },
-      price: 180,
-      timeline: "2-3 days",
-      description: "I can replace the LCD panel and fix the screen issue. Includes 6-month warranty.",
-      responseTime: "30 minutes ago",
-    },
-    {
-      id: 2,
-      requestId: 1,
-      provider: {
-        name: "ElectroRepair NYC",
-        rating: 4.7,
-        reviews: 89,
-        avatar: "/placeholder.svg?height=40&width=40",
-      },
-      price: 220,
-      timeline: "Same day",
-      description: "Professional TV repair with premium parts. 1-year warranty included.",
-      responseTime: "1 hour ago",
-    },
-  ]
+  // Handle camera capture
+  const handleCameraCapture = (imageData: string) => {
+    console.log("Image captured:", imageData);
+    // Here you would typically send the image to your backend for processing
+    // or navigate to a repair request page with the captured image
+  };
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "quotes_received":
-        return "bg-blue-100 text-blue-800"
-      case "in_progress":
-        return "bg-orange-100 text-orange-800"
-      case "completed":
-        return "bg-green-100 text-green-800"
-      default:
-        return "bg-gray-100 text-gray-800"
+  // Initialize Leaflet Map
+  useEffect(() => {
+    if (
+      typeof window !== "undefined" &&
+      mapRef.current &&
+      !mapInstanceRef.current
+    ) {
+      // Dynamically import Leaflet
+      import("leaflet").then((L) => {
+        // Initialize map
+        // Fix: Prevent "Map container is already initialized" error
+        if (mapRef.current && mapRef.current._leaflet_id) {
+          // @ts-ignore
+          mapRef.current._leaflet_id = null;
+        }
+        const map = L?.map(mapRef.current!).setView([40.7589, -73.9851], 13);
+
+        // Add OpenStreetMap tiles
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+          attribution:
+            '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        }).addTo(map);
+
+        // Add fixer markers
+        fixers.forEach((fixer) => {
+          const marker = L.marker([
+            fixer.position.lat,
+            fixer.position.lng,
+          ]).addTo(map);
+          marker.bindPopup(`
+            <div class="p-2">
+              <h3 class="font-bold text-sm">${fixer.name}</h3>
+              <p class="text-xs text-gray-600">${fixer.specialty}</p>
+              <p class="text-xs">⭐ ${fixer.rating} • ${fixer.distance}</p>
+              <p class="text-xs ${
+                fixer.available ? "text-green-600" : "text-red-600"
+              }">
+                ${fixer.available ? "Available" : "Busy"}
+              </p>
+            </div>
+          `);
+        });
+
+        // Map click handler for geolocation zoom
+        map.on("click", () => {
+          if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+              (position) => {
+                const { latitude, longitude } = position.coords;
+                map.flyTo([latitude, longitude], 16, { duration: 1 });
+
+                // Add user location marker
+                L.marker([latitude, longitude])
+                  .addTo(map)
+                  .bindPopup("Your Location")
+                  .openPopup();
+              },
+              () => {
+                alert(
+                  "Geolocation not available. Zooming to default location."
+                );
+                map.flyTo([40.7589, -73.9851], 16, { duration: 1 });
+              }
+            );
+          } else {
+            alert("Geolocation not supported by your browser.");
+            map.flyTo([40.7589, -73.9851], 16, { duration: 1 });
+          }
+        });
+
+        mapInstanceRef.current = map;
+      });
     }
-  }
 
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case "quotes_received":
-        return <AlertCircle className="w-4 h-4" />
-      case "in_progress":
-        return <Clock className="w-4 h-4" />
-      case "completed":
-        return <CheckCircle className="w-4 h-4" />
-      default:
-        return <Clock className="w-4 h-4" />
+    // Cleanup
+    return () => {
+      if (mapInstanceRef.current) {
+        mapInstanceRef.current.remove();
+        mapInstanceRef.current = null;
+      }
+    };
+  }, [fixers]);
+
+  // Load Leaflet CSS
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const link = document.createElement("link");
+      link.rel = "stylesheet";
+      link.href = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";
+      document.head.appendChild(link);
+
+      return () => {
+        document.head.removeChild(link);
+      };
     }
-  }
+  }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="border-b bg-white">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-orange-600 rounded-full flex items-center justify-center">
-              <Camera className="w-4 h-4 text-white" />
+    <div className="min-h-screen bg-gradient-to-br from-[#E0F7FA] via-[#B2EBF2] to-[#80DEEA] max-w-md mx-auto relative overflow-hidden">
+      {/* 3D Globe Dynamic Wallpaper */}
+      <div className="fixed inset-0 z-0">
+        {/* 3D Globe Background */}
+        <div className="absolute inset-0">
+          {/* Main Globe Sphere */}
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[120vw] h-[120vw] max-w-[600px] max-h-[600px] rounded-full bg-gradient-to-br from-[#E0F7FA]/40 to-[#B2EBF2]/40 backdrop-blur-sm border border-[#00BCD4]/10 shadow-inner animate-spin-slow">
+            {/* Globe Grid Lines */}
+            <div className="absolute inset-0 rounded-full overflow-hidden">
+              {/* Latitude lines */}
+              {[...Array(12)].map((_, i) => (
+                <div
+                  key={`lat-${i}`}
+                  className="absolute left-0 right-0 border-t border-[#00BCD4]/15"
+                  style={{ top: `${(i + 1) * 8.33}%` }}
+                />
+              ))}
+              {/* Longitude lines */}
+              {[...Array(16)].map((_, i) => (
+                <div
+                  key={`lng-${i}`}
+                  className="absolute top-0 bottom-0 w-px bg-[#00BCD4]/15 transform origin-center"
+                  style={{
+                    left: "50%",
+                    transform: `translateX(-50%) rotateZ(${i * 11.25}deg)`,
+                  }}
+                />
+              ))}
             </div>
-            <span className="text-xl font-bold">FixerApp</span>
-          </Link>
-          <div className="flex items-center gap-4">
-            <Button asChild>
-              <Link href="/request">
-                <Plus className="w-4 h-4 mr-2" />
-                New Request
-              </Link>
-            </Button>
-            <Avatar>
-              <AvatarImage src="/placeholder.svg?height=32&width=32" />
-              <AvatarFallback>JD</AvatarFallback>
-            </Avatar>
+
+            {/* Glowing Core */}
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-gradient-to-r from-[#00BCD4]/60 to-[#26C6DA]/60 rounded-full shadow-[0_0_40px_rgba(0,188,212,0.4)] animate-pulse"></div>
+
+            {/* Floating Particles */}
+            {[...Array(10)].map((_, i) => (
+              <div
+                key={`particle-${i}`}
+                className="absolute w-1 h-1 bg-[#00BCD4]/40 rounded-full animate-pulse"
+                style={{
+                  top: `${Math.random() * 100}%`,
+                  left: `${Math.random() * 100}%`,
+                  animationDelay: `${Math.random() * 3}s`,
+                  animationDuration: `${2 + Math.random() * 2}s`,
+                }}
+              />
+            ))}
+          </div>
+
+          {/* Orbital Rings */}
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[130vw] h-[130vw] max-w-[700px] max-h-[700px] border border-[#00BCD4]/8 rounded-full animate-spin-reverse"></div>
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[140vw] h-[140vw] max-w-[800px] max-h-[800px] border border-[#26C6DA]/6 rounded-full animate-spin-slow"></div>
+
+          {/* Additional Decorative Elements */}
+          <div className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-r from-[#00BCD4] to-[#26C6DA] rounded-full opacity-20 blur-xl animate-pulse"></div>
+          <div className="absolute bottom-40 right-10 w-24 h-24 bg-gradient-to-r from-[#4DD0E1] to-[#00BCD4] rounded-full opacity-20 blur-xl animate-pulse delay-1000"></div>
+          <div className="absolute top-60 right-5 w-20 h-20 bg-gradient-to-r from-[#26C6DA] to-[#4DD0E1] rounded-full opacity-15 blur-xl animate-pulse delay-2000"></div>
+        </div>
+      </div>
+
+      {/* Search Bar */}
+      <div className="relative z-10 px-4 py-3 bg-white/50 backdrop-blur-[10px]">
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-[#00838F]" />
+          <Input
+            placeholder="Search for fixers or services..."
+            className="pl-10 bg-white/80 backdrop-blur-[10px] border border-[#00BCD4]/30 text-[#006064] placeholder:text-[#00838F] focus:border-[#00BCD4] focus:ring-[#00BCD4]/20 rounded-[10px]"
+          />
+        </div>
+      </div>
+
+      {/* Interactive Leaflet Map */}
+      <div className="relative z-10 flex-1 px-4 py-4 bg-white/30 backdrop-blur-[10px]">
+        <div className="bg-white/60 backdrop-blur-[10px] rounded-[10px] h-96 relative overflow-hidden border border-[#00BCD4]/30 shadow-[0_4px_10px_rgba(0,188,212,0.3)]">
+          <div
+            ref={mapRef}
+            className="w-full h-full rounded-[10px]"
+            style={{ minHeight: "384px" }}
+          />
+
+          {/* Map Instructions Overlay */}
+          <div className="absolute top-4 left-4 right-4 z-[1000] bg-white/90 backdrop-blur-[10px] rounded-[10px] p-3 border border-[#00BCD4]/30 shadow-[0_4px_10px_rgba(0,188,212,0.3)]">
+            <p className="text-sm text-[#006064] font-medium">
+              📍 Interactive Map
+            </p>
+            <p className="text-xs text-[#00838F]">
+              Click anywhere to zoom to your location
+            </p>
           </div>
         </div>
-      </header>
-
-      <div className="container mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">My Repair Requests</h1>
-          <p className="text-gray-600">Track your repair requests and manage quotes from experts</p>
-        </div>
-
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="active">Active Requests</TabsTrigger>
-            <TabsTrigger value="quotes">Quotes Received</TabsTrigger>
-            <TabsTrigger value="history">History</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="active" className="space-y-4">
-            {requests
-              .filter((r) => r.status !== "completed")
-              .map((request) => (
-                <Card key={request.id} className="hover:shadow-md transition-shadow">
-                  <CardContent className="p-6">
-                    <div className="flex gap-4">
-                      <Image
-                        src={request.image || "/placeholder.svg"}
-                        alt={request.title}
-                        width={100}
-                        height={100}
-                        className="w-20 h-20 object-cover rounded-lg border"
-                      />
-                      <div className="flex-1">
-                        <div className="flex items-start justify-between mb-2">
-                          <div>
-                            <h3 className="text-lg font-semibold">{request.title}</h3>
-                            <p className="text-gray-600 text-sm">{request.createdAt}</p>
-                          </div>
-                          <Badge className={getStatusColor(request.status)}>
-                            {getStatusIcon(request.status)}
-                            <span className="ml-1 capitalize">{request.status.replace("_", " ")}</span>
-                          </Badge>
-                        </div>
-
-                        <div className="flex flex-wrap gap-4 text-sm text-gray-600 mb-3">
-                          <div className="flex items-center gap-1">
-                            <span className="font-medium">Category:</span>
-                            <Badge variant="outline">{request.category}</Badge>
-                          </div>
-                          <div className="flex items-center gap-1">
-                            <DollarSign className="w-4 h-4" />
-                            <span>{request.budget}</span>
-                          </div>
-                          <div className="flex items-center gap-1">
-                            <MapPin className="w-4 h-4" />
-                            <span>{request.location}</span>
-                          </div>
-                        </div>
-
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-4">
-                            {request.quotesCount > 0 && (
-                              <Badge variant="secondary" className="bg-green-100 text-green-800">
-                                {request.quotesCount} quotes received
-                              </Badge>
-                            )}
-                          </div>
-                          <div className="flex gap-2">
-                            <Button variant="outline" size="sm">
-                              <MessageCircle className="w-4 h-4 mr-1" />
-                              Messages
-                            </Button>
-                            <Button size="sm" className="bg-orange-600 hover:bg-orange-700">
-                              View Details
-                            </Button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-          </TabsContent>
-
-          <TabsContent value="quotes" className="space-y-4">
-            {quotes.map((quote) => (
-              <Card key={quote.id} className="hover:shadow-md transition-shadow">
-                <CardContent className="p-6">
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="flex items-center gap-3">
-                      <Avatar>
-                        <AvatarImage src={quote.provider.avatar || "/placeholder.svg"} />
-                        <AvatarFallback>{quote.provider.name.slice(0, 2)}</AvatarFallback>
-                      </Avatar>
-                      <div>
-                        <h3 className="font-semibold">{quote.provider.name}</h3>
-                        <div className="flex items-center gap-2 text-sm text-gray-600">
-                          <div className="flex items-center gap-1">
-                            <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                            <span>{quote.provider.rating}</span>
-                          </div>
-                          <span>•</span>
-                          <span>{quote.provider.reviews} reviews</span>
-                          <span>•</span>
-                          <span>{quote.responseTime}</span>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-2xl font-bold text-green-600">${quote.price}</div>
-                      <div className="text-sm text-gray-600">{quote.timeline}</div>
-                    </div>
-                  </div>
-
-                  <p className="text-gray-700 mb-4">{quote.description}</p>
-
-                  <div className="flex gap-2">
-                    <Button variant="outline" size="sm">
-                      <Phone className="w-4 h-4 mr-1" />
-                      Call
-                    </Button>
-                    <Button variant="outline" size="sm">
-                      <MessageCircle className="w-4 h-4 mr-1" />
-                      Message
-                    </Button>
-                    <Button size="sm" className="bg-orange-600 hover:bg-orange-700 ml-auto">
-                      Accept Quote
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </TabsContent>
-
-          <TabsContent value="history" className="space-y-4">
-            {requests
-              .filter((r) => r.status === "completed")
-              .map((request) => (
-                <Card key={request.id} className="hover:shadow-md transition-shadow">
-                  <CardContent className="p-6">
-                    <div className="flex gap-4">
-                      <Image
-                        src={request.image || "/placeholder.svg"}
-                        alt={request.title}
-                        width={100}
-                        height={100}
-                        className="w-20 h-20 object-cover rounded-lg border"
-                      />
-                      <div className="flex-1">
-                        <div className="flex items-start justify-between mb-2">
-                          <div>
-                            <h3 className="text-lg font-semibold">{request.title}</h3>
-                            <p className="text-gray-600 text-sm">Completed {request.createdAt}</p>
-                          </div>
-                          <Badge className={getStatusColor(request.status)}>
-                            {getStatusIcon(request.status)}
-                            <span className="ml-1">Completed</span>
-                          </Badge>
-                        </div>
-
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-4 text-sm text-gray-600">
-                            <Badge variant="outline">{request.category}</Badge>
-                            <span>{request.budget}</span>
-                          </div>
-                          <div className="flex gap-2">
-                            <Button variant="outline" size="sm">
-                              Rate Service
-                            </Button>
-                            <Button variant="outline" size="sm">
-                              Reorder
-                            </Button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-          </TabsContent>
-        </Tabs>
       </div>
+
+      {/* Stats Section */}
+      <div className="relative z-10 px-4 py-4 bg-white/60 backdrop-blur-[10px] border-t border-[#00BCD4]/20">
+        <div className="text-center">
+          <span className="text-xs text-[#00838F]">
+            {fixers.length} fixers available in your area
+          </span>
+        </div>
+      </div>
+
+      {/* Camera Modal */}
+      <CameraModal
+        isOpen={isCameraOpen}
+        onClose={() => setIsCameraOpen(false)}
+        onCapture={handleCameraCapture}
+      />
+
+      {/* Spacing for bottom nav */}
+      <div className="h-16"></div>
     </div>
-  )
+  );
 }
