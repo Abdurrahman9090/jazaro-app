@@ -62,21 +62,32 @@ export default function Signup() {
             <div className="w-5" /> {/* Spacer for alignment */}
           </div>
           <CardDescription className="text-[#00838F]/80">
-            Join Jazaro and start fixing
+          <div className="flex flex-col items-center justify-center mt-14 mb-8">
+          <div className="flex items-center gap-2">
+            <div className="relative">
+              {/* 3D Cube Effect - Increased size */}
+              <div className="w-16 h-16 relative transform-gpu perspective-1000">
+                <div className="w-full h-full bg-gradient-to-br from-[#00BCD4] to-[#26C6DA] rounded-lg shadow-lg transform rotate-12 animate-pulse">
+                  <div className="absolute inset-0 bg-gradient-to-br from-[#26C6DA] to-[#4DD0E1] rounded-lg opacity-80 transform translate-x-2 translate-y-2"></div>
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <span className="text-white font-bold text-3xl transform -rotate-12 drop-shadow-lg">
+                      J
+                    </span>
+                  </div>
+                </div>
+              </div>
+              {/* Glowing Core - Increased size and centered */}
+              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-4 h-4 bg-gradient-to-r from-[#00BCD4] to-[#26C6DA] rounded-full shadow-[0_0_20px_rgba(0,188,212,0.8)] animate-pulse"></div>
+            </div>
+          </div>
+          <h1 className="text-2xl font-bold text-[#006064] drop-shadow-lg mt-3">
+            Jazaro
+          </h1>
+        </div>
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="flex justify-center mb-6">
-            <div className="relative w-32 h-32">
-              <Image
-                src="/jazaro-logo.png"
-                alt="Jazaro Logo"
-                fill
-                className="object-contain"
-                priority
-              />
-            </div>
-          </div>
+          
           <form onSubmit={handleRegister} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="fullName" className="text-[#006064]">
