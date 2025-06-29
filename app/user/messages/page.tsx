@@ -1,27 +1,24 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
+import { Button, Card, Avatar, Badge, Input } from "antd";
 import {
-  ArrowLeft,
-  Video,
-  Phone,
-  MoreVertical,
-  Send,
-  Camera,
-  Mic,
-  Bot,
-  MessageCircle,
-  MapPin,
-  Search,
-  User,
-  Menu,
-  Bell,
-} from "lucide-react";
+  ArrowLeftOutlined,
+  VideoCameraOutlined,
+  PhoneOutlined,
+  MoreOutlined,
+  SendOutlined,
+  CameraOutlined,
+  AudioOutlined,
+  RobotOutlined,
+  MessageOutlined,
+  EnvironmentOutlined,
+  SearchOutlined,
+  UserOutlined,
+  MenuOutlined,
+  BellOutlined,
+  AudioFilled,
+} from "@ant-design/icons";
 import Link from "next/link";
 import CameraModal from "@/components/camera-modal";
 
@@ -108,19 +105,19 @@ export default function MessagesPage() {
         <div className="relative z-10 bg-white/50 backdrop-blur-[10px] border-b border-[#00BCD4]/20 px-4 py-3">
           <div className="flex items-center gap-3">
             <Button
-              variant="ghost"
-              size="sm"
+              type="text"
+              size="small"
               onClick={() => setSelectedChat(null)}
               className="p-0 text-[#006064] hover:text-[#00838F]"
-            >
-              <ArrowLeft className="h-6 w-6" />
-            </Button>
+              icon={<ArrowLeftOutlined className="h-6 w-6" />}
+            />
             <div className="w-12 h-12 bg-white/80 backdrop-blur-[10px] rounded-[10px] shadow-[0_4px_10px_rgba(0,188,212,0.3)] border border-[#00BCD4]/30 flex items-center justify-center">
-              <Avatar className="h-10 w-10">
-                <AvatarImage src={currentChat?.avatar || "/placeholder.svg"} />
-                <AvatarFallback className="bg-gradient-to-br from-[#00BCD4] to-[#26C6DA] text-white font-bold">
-                  {currentChat?.name.slice(0, 2)}
-                </AvatarFallback>
+              <Avatar 
+                size={40}
+                src={currentChat?.avatar || "/placeholder.svg"}
+                className="bg-gradient-to-br from-[#00BCD4] to-[#26C6DA] text-white font-bold"
+              >
+                {currentChat?.name.slice(0, 2)}
               </Avatar>
             </div>
             <div className="flex-1 min-w-0">
@@ -133,26 +130,23 @@ export default function MessagesPage() {
             </div>
             <div className="flex items-center gap-2">
               <Button
-                size="sm"
-                variant="ghost"
+                size="small"
+                type="text"
                 className="p-2 bg-[#4DD0E1]/20 backdrop-blur-[10px] border border-[#00BCD4]/30 text-[#006064] hover:bg-[#4DD0E1]/30 rounded-[10px]"
-              >
-                <Video className="h-5 w-5" />
-              </Button>
+                icon={<VideoCameraOutlined className="h-5 w-5" />}
+              />
               <Button
-                size="sm"
-                variant="ghost"
+                size="small"
+                type="text"
                 className="p-2 bg-[#26C6DA]/20 backdrop-blur-[10px] border border-[#00BCD4]/30 text-[#006064] hover:bg-[#26C6DA]/30 rounded-[10px]"
-              >
-                <Phone className="h-5 w-5" />
-              </Button>
+                icon={<PhoneOutlined className="h-5 w-5" />}
+              />
               <Button
-                size="sm"
-                variant="ghost"
+                size="small"
+                type="text"
                 className="p-2 text-[#006064] hover:text-[#00838F]"
-              >
-                <MoreVertical className="h-5 w-5" />
-              </Button>
+                icon={<MoreOutlined className="h-5 w-5" />}
+              />
             </div>
           </div>
         </div>
@@ -161,7 +155,7 @@ export default function MessagesPage() {
         <div className="relative z-10 bg-gradient-to-r from-[#4DD0E1]/20 to-[#00BCD4]/20 backdrop-blur-[10px] border-b border-[#00BCD4]/20 px-4 py-3">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-gradient-to-br from-[#4DD0E1] to-[#00BCD4] rounded-[10px] shadow-[0_0_20px_rgba(77,208,225,0.5)] flex items-center justify-center">
-              <Video className="h-5 w-5 text-white" />
+              <VideoCameraOutlined className="h-5 w-5 text-white" />
             </div>
             <div className="flex-1">
               <p className="text-sm font-medium text-[#006064]">
@@ -172,7 +166,8 @@ export default function MessagesPage() {
               </p>
             </div>
             <Button
-              size="sm"
+              size="small"
+              type="primary"
               className="bg-gradient-to-r from-[#4DD0E1] to-[#00BCD4] text-white hover:from-[#26C6DA] hover:to-[#00ACC1] shadow-[0_0_20px_rgba(77,208,225,0.5)] rounded-[20px]"
             >
               Start Call
@@ -214,11 +209,11 @@ export default function MessagesPage() {
         {/* Need Help Button */}
         <div className="relative z-10 px-4 py-2">
           <Button
-            variant="outline"
-            size="sm"
+            type="default"
+            size="small"
             className="w-full bg-white/60 backdrop-blur-[10px] border border-[#00BCD4]/30 text-[#006064] hover:bg-white/80 rounded-[20px]"
+            icon={<RobotOutlined className="h-4 w-4 mr-2" />}
           >
-            <Bot className="h-4 w-4 mr-2" />
             Need Help? Chat with Bot
           </Button>
         </div>
@@ -227,12 +222,12 @@ export default function MessagesPage() {
         <div className="relative z-10 bg-white/60 backdrop-blur-[10px] border-t border-[#00BCD4]/20 px-4 py-3">
           <div className="flex items-center gap-2">
             <Button
-              size="sm"
-              variant="ghost"
+              size="small"
+              type="text"
               className="p-2 bg-[#26C6DA]/20 backdrop-blur-[10px] border border-[#00BCD4]/30 text-[#006064] hover:bg-[#26C6DA]/30 rounded-[10px]"
-            >
-              <Camera className="h-5 w-5" />
-            </Button>
+              icon={<CameraOutlined className="h-5 w-5" />}
+              onClick={() => setIsCameraOpen(true)}
+            />
             <div className="flex-1 relative">
               <Input
                 value={newMessage}
@@ -242,20 +237,18 @@ export default function MessagesPage() {
                 onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
               />
               <Button
-                size="sm"
-                variant="ghost"
+                size="small"
+                type="text"
                 className="absolute right-1 top-1/2 transform -translate-y-1/2 p-1 text-[#006064] hover:text-[#00838F]"
-              >
-                <Mic className="h-4 w-4" />
-              </Button>
+                icon={<AudioOutlined className="h-4 w-4" />}
+              />
             </div>
             <Button
-              size="sm"
+              size="small"
               onClick={handleSendMessage}
               className="bg-gradient-to-r from-[#00BCD4] to-[#26C6DA] text-white hover:from-[#00ACC1] hover:to-[#00BCD4] p-2 rounded-[10px] shadow-[0_0_20px_rgba(0,188,212,0.5)]"
-            >
-              <Send className="h-4 w-4" />
-            </Button>
+              icon={<SendOutlined className="h-4 w-4" />}
+            />
           </div>
         </div>
 
@@ -274,7 +267,9 @@ export default function MessagesPage() {
       {/* Search */}
       <div className="relative z-10 px-4 py-3 bg-white/50 backdrop-blur-[10px] border-b border-[#00BCD4]/20">
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-[#00838F]" />
+          <span className="absolute left-3 top-1/2 transform -translate-y-1/2">
+            <SearchOutlined className="h-4 w-4 text-[#00838F]" />
+          </span>
           <Input
             placeholder="Search conversations..."
             className="pl-10 bg-white/80 backdrop-blur-[10px] border border-[#00BCD4]/30 text-[#006064] placeholder:text-[#00838F] focus:border-[#00BCD4] focus:ring-[#00BCD4]/20 rounded-[10px]"
@@ -290,17 +285,12 @@ export default function MessagesPage() {
             className="border-0 bg-white/80 backdrop-blur-[10px] border border-[#00BCD4]/30 cursor-pointer hover:bg-white/90 transition-all duration-300 hover:border-[#00BCD4]/50 shadow-[0_4px_10px_rgba(0,188,212,0.3)] hover:shadow-[0_8px_20px_rgba(0,188,212,0.2)] transform hover:scale-105 rounded-[10px]"
             onClick={() => setSelectedChat(conversation.id)}
           >
-            <CardContent className="p-4">
+            <div className="p-4">
               <div className="flex items-start gap-3">
                 <div className="relative">
                   <div className="w-14 h-14 bg-white/80 backdrop-blur-[10px] rounded-[10px] shadow-[0_4px_10px_rgba(0,188,212,0.3)] border border-[#00BCD4]/30 flex items-center justify-center">
-                    <Avatar className="h-12 w-12">
-                      <AvatarImage
-                        src={conversation.avatar || "/placeholder.svg"}
-                      />
-                      <AvatarFallback className="bg-gradient-to-br from-[#00BCD4] to-[#26C6DA] text-white font-bold">
-                        {conversation.name.slice(0, 2)}
-                      </AvatarFallback>
+                    <Avatar className="h-12 w-12" src={conversation.avatar || "/placeholder.svg"}>
+                      {conversation.name.slice(0, 2)}
                     </Avatar>
                   </div>
                   {conversation.online && (
@@ -331,7 +321,7 @@ export default function MessagesPage() {
                   </p>
                 </div>
               </div>
-            </CardContent>
+            </div>
           </Card>
         ))}
       </div>

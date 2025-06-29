@@ -1,30 +1,24 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Switch } from "@/components/ui/switch";
+import { Button, Card, Badge, Avatar, Tabs, Switch, Input } from "antd";
 import {
-  Edit,
-  Star,
-  MapPin,
-  Phone,
-  Mail,
-  Calendar,
-  Shield,
-  DollarSign,
-  MessageCircle,
-  Search,
-  User,
-  Settings,
-  CheckCircle,
-  Bell,
-  Camera,
-  Menu,
-} from "lucide-react";
+  EditOutlined,
+  StarFilled,
+  EnvironmentOutlined,
+  PhoneOutlined,
+  MailOutlined,
+  CalendarOutlined,
+  SafetyCertificateOutlined,
+  DollarCircleOutlined,
+  MessageOutlined,
+  UserOutlined,
+  SettingOutlined,
+  CheckCircleOutlined,
+  BellOutlined,
+  CameraOutlined,
+  MenuOutlined,
+} from "@ant-design/icons";
 import Link from "next/link";
 import CameraModal from "@/components/camera-modal";
 
@@ -94,11 +88,8 @@ export default function ProfilePage() {
       <div className="relative z-10 bg-white/50 backdrop-blur-[10px] px-4 py-6 border-b border-[#00BCD4]/20">
         <div className="flex items-center gap-4 mb-4">
           <div className="w-20 h-20 bg-white/80 backdrop-blur-[10px] rounded-[20px] shadow-[0_4px_10px_rgba(0,188,212,0.3)] border border-[#00BCD4]/30 flex items-center justify-center">
-            <Avatar className="h-18 w-18">
-              {/* <AvatarImage src={customerProfile.avatar || "/placeholder.svg"} /> */}
-              <AvatarFallback className="text-lg bg-gradient-to-br from-[#00BCD4] to-[#26C6DA] text-white font-bold">
-                {customerProfile.name.slice(0, 2)}
-              </AvatarFallback>
+            <Avatar size={80} src={customerProfile.avatar} className="h-18 w-18 bg-gradient-to-br from-[#00BCD4] to-[#26C6DA] text-white font-bold text-lg flex items-center justify-center">
+              {customerProfile.name.slice(0, 2)}
             </Avatar>
           </div>
           <div className="flex-1">
@@ -106,26 +97,26 @@ export default function ProfilePage() {
               <h2 className="text-xl font-bold text-[#006064]">
                 {customerProfile.name}
               </h2>
-              <CheckCircle className="h-5 w-5 text-[#4CAF50]" />
+              <CheckCircleOutlined className="h-5 w-5 text-[#4CAF50]" />
             </div>
             <p className="text-[#00838F] text-sm mb-2">Customer</p>
             <div className="flex items-center gap-4 text-sm text-[#00838F]">
               <div className="flex items-center gap-1">
-                <MapPin className="h-4 w-4" />
+                <EnvironmentOutlined className="h-4 w-4" />
                 <span>{customerProfile.location}</span>
               </div>
               <div className="flex items-center gap-1">
-                <Calendar className="h-4 w-4" />
+                <CalendarOutlined className="h-4 w-4" />
                 <span>Since {customerProfile.memberSince}</span>
               </div>
             </div>
           </div>
           <Button
-            size="sm"
-            variant="outline"
-            className="bg-white/60 border border-[#00BCD4]/30 text-[#006064] hover:bg-white/80 rounded-[10px]"
+            size="small"
+            type="default"
+            className="bg-white/60 border border-[#00BCD4]/30 text-[#006064] hover:bg-white/80 rounded-[10px] flex items-center"
           >
-            <Edit className="h-4 w-4 mr-1" />
+            <EditOutlined className="h-4 w-4 mr-1" />
             Edit
           </Button>
         </div>
@@ -135,7 +126,7 @@ export default function ProfilePage() {
           <Link href="/user/fixer-register" className="w-full">
             <Button
               className="w-full py-5 text-lg font-bold bg-gradient-to-r from-[#00BCD4] to-[#00838F] text-white shadow-lg rounded-[16px] hover:from-[#00838F] hover:to-[#00BCD4] transition-all duration-200 border-2 border-[#00BCD4]/40"
-              size="lg"
+              size="large"
             >
               Become a Fixer
             </Button>
@@ -161,7 +152,7 @@ export default function ProfilePage() {
               <span className="text-2xl font-bold text-[#006064]">
                 {customerProfile.avgRating}
               </span>
-              <Star className="h-5 w-5 fill-[#FF9800] text-[#FF9800]" />
+              <StarFilled className="h-5 w-5 text-[#FF9800]" />
             </div>
             <div className="text-xs text-[#00838F]">Rating</div>
           </div>
@@ -170,200 +161,187 @@ export default function ProfilePage() {
 
       {/* Tabs */}
       <div className="relative z-10 px-4 py-4 pb-20">
-        <Tabs defaultValue="details" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3 mb-6 bg-white/80 backdrop-blur-[10px] border border-[#00BCD4]/30 rounded-[10px]">
-            <TabsTrigger
-              value="details"
-              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#00BCD4] data-[state=active]:to-[#26C6DA] data-[state=active]:text-white text-[#00838F] rounded-[10px]"
-            >
-              Details
-            </TabsTrigger>
-            <TabsTrigger
-              value="history"
-              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#00BCD4] data-[state=active]:to-[#26C6DA] data-[state=active]:text-white text-[#00838F] rounded-[10px]"
-            >
-              History
-            </TabsTrigger>
-            <TabsTrigger
-              value="settings"
-              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#00BCD4] data-[state=active]:to-[#26C6DA] data-[state=active]:text-white text-[#00838F] rounded-[10px]"
-            >
-              Settings
-            </TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="details" className="space-y-4">
-            {/* Contact Information */}
-            <Card className="border-0 bg-white/80 backdrop-blur-[10px] border border-[#00BCD4]/30 shadow-[0_4px_10px_rgba(0,188,212,0.3)] rounded-[10px]">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-lg text-[#006064]">
-                  Contact Information
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <div className="flex items-center gap-3">
-                  <Mail className="h-5 w-5 text-[#00838F]" />
-                  <span className="text-[#006064]">
-                    {customerProfile.email}
-                  </span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <Phone className="h-5 w-5 text-[#00838F]" />
-                  <span className="text-[#006064]">
-                    {customerProfile.phone}
-                  </span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <MapPin className="h-5 w-5 text-[#00838F]" />
-                  <span className="text-[#006064]">
-                    {customerProfile.location}
-                  </span>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Insurance Integration */}
-            <Card className="border-0 bg-white/80 backdrop-blur-[10px] border border-[#00BCD4]/30 shadow-[0_4px_10px_rgba(0,188,212,0.3)] rounded-[10px]">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-lg flex items-center gap-2 text-[#006064]">
-                  <Shield className="h-5 w-5 text-[#26C6DA]" />
-                  Insurance
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="font-medium text-[#006064]">Link Insurance</p>
-                    <p className="text-sm text-[#00838F]">
-                      Connect your insurance for covered repairs
-                    </p>
-                  </div>
-                  <Switch
-                    checked={insuranceLinked}
-                    onCheckedChange={setInsuranceLinked}
-                  />
-                </div>
-                {insuranceLinked && (
-                  <div className="mt-3 p-3 bg-[#4CAF50]/20 backdrop-blur-[10px] rounded-[10px] border border-[#4CAF50]/30">
-                    <div className="flex items-center gap-2">
-                      <CheckCircle className="h-4 w-4 text-[#4CAF50]" />
-                      <span className="text-sm font-medium text-[#006064]">
-                        Insurance Linked
-                      </span>
+        <Tabs
+          defaultActiveKey="details"
+          className="space-y-6"
+          items={[
+            {
+              key: "details",
+              label: "Details",
+              children: (
+                <div className="space-y-4">
+                  {/* Contact Information */}
+                  <Card className="border-0 bg-white/80 backdrop-blur-[10px] border border-[#00BCD4]/30 shadow-[0_4px_10px_rgba(0,188,212,0.3)] rounded-[10px]">
+                    <div className="pb-3 border-b border-[#00BCD4]/20">
+                      <div className="text-lg text-[#006064] font-semibold">Contact Information</div>
                     </div>
-                    <p className="text-xs text-[#00838F] mt-1">
-                      State Farm Insurance - Policy #SF123456
-                    </p>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-
-            {/* Verification Status */}
-            <Card className="border-0 bg-white/80 backdrop-blur-[10px] border border-[#00BCD4]/30 shadow-[0_4px_10px_rgba(0,188,212,0.3)] rounded-[10px]">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-lg text-[#006064]">
-                  Verification
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <CheckCircle className="h-5 w-5 text-[#4CAF50]" />
-                    <span className="text-[#006064]">Email Verified</span>
-                  </div>
-                  <Badge className="bg-[#4CAF50]/20 text-[#4CAF50] border border-[#4CAF50]/30">
-                    Verified
-                  </Badge>
-                </div>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <CheckCircle className="h-5 w-5 text-[#4CAF50]" />
-                    <span className="text-[#006064]">Phone Verified</span>
-                  </div>
-                  <Badge className="bg-[#4CAF50]/20 text-[#4CAF50] border border-[#4CAF50]/30">
-                    Verified
-                  </Badge>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="history" className="space-y-4">
-            {repairHistory.map((repair) => (
-              <Card
-                key={repair.id}
-                className="border-0 bg-white/80 backdrop-blur-[10px] border border-[#00BCD4]/30 shadow-[0_4px_10px_rgba(0,188,212,0.3)] rounded-[10px]"
-              >
-                <CardContent className="p-4">
-                  <div className="flex items-start justify-between mb-2">
-                    <div>
-                      <h3 className="font-semibold text-[#006064]">
-                        {repair.item}
-                      </h3>
-                      <p className="text-sm text-[#00838F]">
-                        Fixed by {repair.fixer}
-                      </p>
-                    </div>
-                    <Badge className="bg-[#4CAF50]/20 text-[#4CAF50] border border-[#4CAF50]/30">
-                      <CheckCircle className="h-3 w-3 mr-1" />
-                      Completed
-                    </Badge>
-                  </div>
-                  <div className="flex items-center justify-between text-sm text-[#00838F]">
-                    <div className="flex items-center gap-4">
-                      <div className="flex items-center gap-1">
-                        <Calendar className="h-4 w-4" />
-                        <span>{repair.date}</span>
+                    <div className="space-y-3 p-4">
+                      <div className="flex items-center gap-3">
+                        <MailOutlined className="h-5 w-5 text-[#00838F]" />
+                        <span className="text-[#006064]">
+                          {customerProfile.email}
+                        </span>
                       </div>
-                      <div className="flex items-center gap-1">
-                        <DollarSign className="h-4 w-4" />
-                        <span>${repair.cost}</span>
+                      <div className="flex items-center gap-3">
+                        <PhoneOutlined className="h-5 w-5 text-[#00838F]" />
+                        <span className="text-[#006064]">
+                          {customerProfile.phone}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <EnvironmentOutlined className="h-5 w-5 text-[#00838F]" />
+                        <span className="text-[#006064]">
+                          {customerProfile.location}
+                        </span>
                       </div>
                     </div>
-                    <div className="flex items-center gap-1">
-                      <Star className="h-4 w-4 fill-[#FF9800] text-[#FF9800]" />
-                      <span className="text-[#006064]">{repair.rating}</span>
+                  </Card>
+                  {/* Insurance Integration */}
+                  <Card className="border-0 bg-white/80 backdrop-blur-[10px] border border-[#00BCD4]/30 shadow-[0_4px_10px_rgba(0,188,212,0.3)] rounded-[10px]">
+                    <div className="pb-3 border-b border-[#00BCD4]/20">
+                      <div className="text-lg flex items-center gap-2 text-[#006064] font-semibold">
+                        <SafetyCertificateOutlined className="h-5 w-5 text-[#26C6DA]" />
+                        Insurance
+                      </div>
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </TabsContent>
-
-          <TabsContent value="settings" className="space-y-4">
-            <Card className="border-0 bg-white/80 backdrop-blur-[10px] border border-[#00BCD4]/30 shadow-[0_4px_10px_rgba(0,188,212,0.3)] rounded-[10px]">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-lg text-[#006064]">
-                  Account Settings
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <Button
-                  variant="outline"
-                  className="w-full justify-start bg-white/60 border border-[#00BCD4]/30 text-[#006064] hover:bg-white/80 rounded-[10px]"
-                >
-                  <Edit className="h-4 w-4 mr-2" />
-                  Edit Profile
-                </Button>
-                <Button
-                  variant="outline"
-                  className="w-full justify-start bg-white/60 border border-[#00BCD4]/30 text-[#006064] hover:bg-white/80 rounded-[10px]"
-                >
-                  <Shield className="h-4 w-4 mr-2" />
-                  Privacy Settings
-                </Button>
-                <Button
-                  variant="outline"
-                  className="w-full justify-start bg-white/60 border border-[#00BCD4]/30 text-[#006064] hover:bg-white/80 rounded-[10px]"
-                >
-                  <Bell className="h-4 w-4 mr-2" />
-                  Notification Preferences
-                </Button>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
+                    <div className="p-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="font-medium text-[#006064]">Link Insurance</p>
+                          <p className="text-sm text-[#00838F]">
+                            Connect your insurance for covered repairs
+                          </p>
+                        </div>
+                        <Switch
+                          checked={insuranceLinked}
+                          onChange={setInsuranceLinked}
+                        />
+                      </div>
+                      {insuranceLinked && (
+                        <div className="mt-3 p-3 bg-[#4CAF50]/20 backdrop-blur-[10px] rounded-[10px] border border-[#4CAF50]/30">
+                          <div className="flex items-center gap-2">
+                            <CheckCircleOutlined className="h-4 w-4 text-[#4CAF50]" />
+                            <span className="text-sm font-medium text-[#006064]">
+                              Insurance Linked
+                            </span>
+                          </div>
+                          <p className="text-xs text-[#00838F] mt-1">
+                            State Farm Insurance - Policy #SF123456
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  </Card>
+                  {/* Verification Status */}
+                  <Card className="border-0 bg-white/80 backdrop-blur-[10px] border border-[#00BCD4]/30 shadow-[0_4px_10px_rgba(0,188,212,0.3)] rounded-[10px]">
+                    <div className="pb-3 border-b border-[#00BCD4]/20">
+                      <div className="text-lg text-[#006064] font-semibold">Verification</div>
+                    </div>
+                    <div className="space-y-3 p-4">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <CheckCircleOutlined className="h-5 w-5 text-[#4CAF50]" />
+                          <span className="text-[#006064]">Email Verified</span>
+                        </div>
+                        <Badge className="bg-[#4CAF50]/20 text-[#4CAF50] border border-[#4CAF50]/30">Verified</Badge>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <CheckCircleOutlined className="h-5 w-5 text-[#4CAF50]" />
+                          <span className="text-[#006064]">Phone Verified</span>
+                        </div>
+                        <Badge className="bg-[#4CAF50]/20 text-[#4CAF50] border border-[#4CAF50]/30">Verified</Badge>
+                      </div>
+                    </div>
+                  </Card>
+                </div>
+              ),
+            },
+            {
+              key: "history",
+              label: "History",
+              children: (
+                <div className="space-y-4">
+                  {repairHistory.map((repair) => (
+                    <Card
+                      key={repair.id}
+                      className="border-0 bg-white/80 backdrop-blur-[10px] border border-[#00BCD4]/30 shadow-[0_4px_10px_rgba(0,188,212,0.3)] rounded-[10px]"
+                    >
+                      <div className="p-4">
+                        <div className="flex items-start justify-between mb-2">
+                          <div>
+                            <h3 className="font-semibold text-[#006064]">
+                              {repair.item}
+                            </h3>
+                            <p className="text-sm text-[#00838F]">
+                              Fixed by {repair.fixer}
+                            </p>
+                          </div>
+                          <Badge className="bg-[#4CAF50]/20 text-[#4CAF50] border border-[#4CAF50]/30">
+                            <CheckCircleOutlined className="h-3 w-3 mr-1" />
+                            Completed
+                          </Badge>
+                        </div>
+                        <div className="flex items-center justify-between text-sm text-[#00838F]">
+                          <div className="flex items-center gap-4">
+                            <div className="flex items-center gap-1">
+                              <CalendarOutlined className="h-4 w-4" />
+                              <span>{repair.date}</span>
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <DollarCircleOutlined className="h-4 w-4" />
+                              <span>${repair.cost}</span>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <StarFilled className="h-4 w-4 text-[#FF9800]" />
+                            <span className="text-[#006064]">{repair.rating}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </Card>
+                  ))}
+                </div>
+              ),
+            },
+            {
+              key: "settings",
+              label: "Settings",
+              children: (
+                <div className="space-y-4">
+                  <Card className="border-0 bg-white/80 backdrop-blur-[10px] border border-[#00BCD4]/30 shadow-[0_4px_10px_rgba(0,188,212,0.3)] rounded-[10px]">
+                    <div className="pb-3 border-b border-[#00BCD4]/20">
+                      <div className="text-lg text-[#006064] font-semibold">Account Settings</div>
+                    </div>
+                    <div className="space-y-4 p-4">
+                      <Button
+                        type="default"
+                        className="w-full justify-start bg-white/60 border border-[#00BCD4]/30 text-[#006064] hover:bg-white/80 rounded-[10px] flex items-center"
+                      >
+                        <EditOutlined className="h-4 w-4 mr-2" />
+                        Edit Profile
+                      </Button>
+                      <Button
+                        type="default"
+                        className="w-full justify-start bg-white/60 border border-[#00BCD4]/30 text-[#006064] hover:bg-white/80 rounded-[10px] flex items-center"
+                      >
+                        <SafetyCertificateOutlined className="h-4 w-4 mr-2" />
+                        Privacy Settings
+                      </Button>
+                      <Button
+                        type="default"
+                        className="w-full justify-start bg-white/60 border border-[#00BCD4]/30 text-[#006064] hover:bg-white/80 rounded-[10px] flex items-center"
+                      >
+                        <BellOutlined className="h-4 w-4 mr-2" />
+                        Notification Preferences
+                      </Button>
+                    </div>
+                  </Card>
+                </div>
+              ),
+            },
+          ]}
+        />
       </div>
 
       {/* Camera Modal */}
