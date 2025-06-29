@@ -1,18 +1,16 @@
-import { configureStore } from "@reduxjs/toolkit";
+import { configureStore, Reducer } from "@reduxjs/toolkit";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 
 // import root reducer
 import rootReducer from "../reducers";
+import { Environment } from "@/types";
 
 export const store = configureStore({
-  reducer: rootReducer,
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({
-      serializableCheck: {
-        // Ignore these action types
-        ignoredActions: ["persist/PERSIST"],
-      },
-    }),
+  reducer: rootReducer as Reducer,
+  middleware: (getDefaultMiddleware) => {
+    return getDefaultMiddleware({ serializableCheck: false });
+  },
+  devTools: process.env.NEXT_PUBLIC_APP_MODE === Environment.Development,
 });
 
 // Infer the `RootState` and `AppDispatch` types from the store itself

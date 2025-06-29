@@ -6,9 +6,9 @@ export interface ILoginFormData {
 }
 
 export interface IRegisterFormData {
-  firstName: string;
-  lastName: string;
+  username: string;
   email: string;
+  phoneNo: number;
   password: string;
   confirmPassword: string;
   token?: string;

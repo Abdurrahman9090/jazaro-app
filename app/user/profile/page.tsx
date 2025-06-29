@@ -132,7 +132,7 @@ export default function ProfilePage() {
 
         {/* Become a Fixer Button */}
         <div className="flex justify-center mt-6 mb-3">
-          <Link href="/profile/fixer-register" className="w-full">
+          <Link href="/user/fixer-register" className="w-full">
             <Button
               className="w-full py-5 text-lg font-bold bg-gradient-to-r from-[#00BCD4] to-[#00838F] text-white shadow-lg rounded-[16px] hover:from-[#00838F] hover:to-[#00BCD4] transition-all duration-200 border-2 border-[#00BCD4]/40"
               size="lg"

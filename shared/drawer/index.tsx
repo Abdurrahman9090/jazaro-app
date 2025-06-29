@@ -1,166 +1,178 @@
 "use client";
 
-import type React from "react";
-import Link from "next/link";
-
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import * as React from "react";
+import { Button } from "@/components/ui/button";
 import {
-  Home,
-  Search,
-  Calendar,
-  CheckSquare,
-  UserPlus,
-  Settings,
-  Info,
-  LogOut,
-  User,
-} from "lucide-react";
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
+  SheetFooter,
+  SheetClose,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 
-interface NavigationItem {
-  icon: React.ReactNode;
-  label: string;
-  href: string;
-  badge?: string;
-}
-
-const navigationItems: NavigationItem[] = [
-  { icon: <Home className="w-5 h-5" />, label: "Home", href: "/" },
-  { icon: <Search className="w-5 h-5" />, label: "Explore", href: "/explore" },
-  {
-    icon: <Calendar className="w-5 h-5" />,
-    label: "My Events",
-    href: "/events",
-  },
-  { icon: <CheckSquare className="w-5 h-5" />, label: "Tasks", href: "/tasks" },
-  {
-    icon: <UserPlus className="w-5 h-5" />,
-    label: "Invite Friends",
-    href: "/invite",
-  },
-  {
-    icon: <Settings className="w-5 h-5" />,
-    label: "Settings",
-    href: "/settings",
-  },
-  { icon: <Info className="w-5 h-5" />, label: "About", href: "/about" },
-];
-
-interface MobileDrawerProps {
+interface IDrawerProps {
   open: boolean;
-  setOpen: (open: boolean) => void;
-  user?: {
-    name: string;
-    avatar?: string;
-    eventCount?: number;
-  };
+  setOpen: (value: boolean) => void;
 }
 
-const MobileDrawer = (props: MobileDrawerProps) => {
-  const { user, open, setOpen } = props;
+const SheetDrawer = (props: IDrawerProps) => {
+  const { open, setOpen } = props;
 
-  const handleSignOut = () => {
-    // Handle sign out logic here
-    console.log("Signing out...");
-    setOpen(false);
-  };
-
-  // Custom left-to-right animated drawer using a fixed div and transition
   return (
-    <>
-      {/* Overlay */}
-      <div
-        className={`fixed inset-0 z-40 bg-black/30 transition-opacity duration-300 ${
-          open
-            ? "opacity-100 pointer-events-auto"
-            : "opacity-0 pointer-events-none"
-        }`}
-        onClick={() => setOpen(false)}
-        aria-hidden="true"
-      />
-      {/* Drawer Panel */}
-      <aside
-        className={`fixed top-0 left-0 z-50 h-full w-[120px] max-w-full bg-white dark:bg-gray-900 shadow-xl transform transition-transform duration-300 ${
-          open ? "translate-x-0" : "-translate-x-full"
-        }`}
-        style={{ willChange: "transform" }}
-        tabIndex={-1}
-        aria-modal="true"
-        role="dialog"
-      >
-        <div className="flex flex-col h-full">
-          {/* User Profile Section */}
-          <div className="p-6 bg-gradient-to-r from-emerald-100 to-teal-100 dark:from-emerald-900/20 dark:to-teal-900/20">
-            <div className="flex items-center space-x-3">
-              <Avatar className="w-12 h-12 border-2 border-white/20">
-                <AvatarImage
-                  src={user?.avatar || "/placeholder.svg"}
-                  alt={user?.name}
-                />
-                <AvatarFallback className="bg-emerald-500 text-white">
-                  {user?.name ? (
-                    user.name
-                      .split(" ")
-                      .map((n) => n[0])
-                      .join("")
-                      .toUpperCase()
-                  ) : (
-                    <User className="w-6 h-6" />
-                  )}
-                </AvatarFallback>
-              </Avatar>
-              <div>
-                <h3 className="font-semibold text-lg text-gray-900 dark:text-gray-100">
-                  {user?.name || "Guest User"}
-                </h3>
-                <p className="text-sm text-gray-600 dark:text-gray-300">
-                  {user?.eventCount || 0} Events
-                </p>
+    <div className="max-w-md mx-auto">
+      <Sheet open={open} onOpenChange={setOpen}>
+        <SheetContent side={"left"}>
+          {/* Drawer Header with Cover and Profile */}
+          <div className="relative flex flex-col items-center justify-center bg-gradient-to-br from-cyan-500 to-blue-600 p-6 rounded-b-2xl shadow-md">
+            {/* Cover Image */}
+            <div className="w-full h-24 bg-gradient-to-r from-blue-400 to-cyan-400 rounded-xl mb-8 relative" />
+            {/* Profile Avatar */}
+            <div className="absolute top-16 left-1/2 -translate-x-1/2">
+              <div className="w-20 h-20 rounded-full border-4 border-white shadow-lg bg-gray-200 flex items-center justify-center overflow-hidden">
+                {/* Replace with user profile image if available */}
+                <span className="text-3xl font-bold text-blue-600">U</span>
               </div>
+            </div>
+            {/* User Info */}
+            <div className="mt-14 text-center">
+              <h2 className="text-lg font-semibold text-white">Username</h2>
+              <p className="text-sm text-blue-100">user@email.com</p>
             </div>
           </div>
 
-          {/* Navigation Items */}
-          <div className="flex-1 py-4 overflow-y-auto">
-            <nav className="space-y-1 px-4">
-              {navigationItems.map((item, index) => (
-                <Link
-                  key={index}
-                  href={item.href}
-                  onClick={() => setOpen(false)}
-                  className="w-full flex items-center space-x-3 px-3 py-3 text-left rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200 group"
+          {/* Drawer Items */}
+          <div className="mt-8 flex flex-col gap-1">
+            <Button
+              variant="ghost"
+              className="justify-start w-full text-left text-blue-700 hover:bg-blue-50 flex items-center gap-3 py-4"
+            >
+              <span className="inline-flex items-center justify-center">
+                <svg
+                  width="22"
+                  height="22"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  className="text-blue-500"
                 >
-                  <span className="text-gray-500 dark:text-gray-400 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
-                    {item.icon}
-                  </span>
-                  <span className="font-medium text-gray-700 dark:text-gray-200 group-hover:text-gray-900 dark:group-hover:text-gray-100">
-                    {item.label}
-                  </span>
-                  {item.badge && (
-                    <span className="ml-auto bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300 text-xs px-2 py-1 rounded-full">
-                      {item.badge}
-                    </span>
-                  )}
-                </Link>
-              ))}
-            </nav>
+                  <path d="M3 12l9-9 9 9" />
+                  <path d="M9 21V9h6v12" />
+                </svg>
+              </span>
+              Home
+            </Button>
+            <Button
+              variant="ghost"
+              className="justify-start w-full text-left text-blue-700 hover:bg-blue-50 flex items-center gap-3 py-4"
+            >
+              <span className="inline-flex items-center justify-center">
+                <svg
+                  width="22"
+                  height="22"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  className="text-blue-500"
+                >
+                  <circle cx="11" cy="7" r="4" />
+                  <path d="M3 21v-2a4 4 0 014-4h6a4 4 0 014 4v2" />
+                </svg>
+              </span>
+              Profile
+            </Button>
+            <Button
+              variant="ghost"
+              className="justify-start w-full text-left text-blue-700 hover:bg-blue-50 flex items-center gap-3 py-4"
+            >
+              <span className="inline-flex items-center justify-center">
+                <svg
+                  width="22"
+                  height="22"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  className="text-blue-500"
+                >
+                  <circle cx="12" cy="12" r="3" />
+                  <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09a1.65 1.65 0 00-1-1.51 1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09a1.65 1.65 0 001.51-1 1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06a1.65 1.65 0 001.82.33h.09a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51h.09a1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82v.09a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z" />
+                </svg>
+              </span>
+              Settings
+            </Button>
+            <Button
+              variant="ghost"
+              className="justify-start w-full text-left text-blue-700 hover:bg-blue-50 flex items-center gap-3 py-4"
+            >
+              <span className="inline-flex items-center justify-center">
+                <svg
+                  width="22"
+                  height="22"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  className="text-blue-500"
+                >
+                  <path d="M3 7h18M3 12h18M3 17h18" />
+                </svg>
+              </span>
+              Bookings
+            </Button>
+            <Button
+              variant="ghost"
+              className="justify-start w-full text-left text-blue-700 hover:bg-blue-50 flex items-center gap-3 py-4"
+            >
+              <span className="inline-flex items-center justify-center">
+                <svg
+                  width="22"
+                  height="22"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  className="text-blue-500"
+                >
+                  <path d="M8 17l4 4 4-4M12 12v9" />
+                  <rect x="3" y="3" width="18" height="4" rx="2" />
+                </svg>
+              </span>
+              History
+            </Button>
           </div>
 
-          {/* Sign Out Section */}
-          <div className="p-4 border-t border-gray-200 dark:border-gray-700">
-            <button
-              onClick={handleSignOut}
-              className="w-full flex items-center space-x-3 px-3 py-3 text-left rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors duration-200 group"
-            >
-              <LogOut className="w-5 h-5 text-gray-500 dark:text-gray-400 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors" />
-              <span className="font-medium text-gray-700 dark:text-gray-200 group-hover:text-red-600 dark:group-hover:text-red-400">
-                Sign Out
-              </span>
-            </button>
+          {/* Drawer Footer */}
+          <div className="mt-8 mb-2">
+            <SheetFooter>
+              <SheetClose asChild>
+                <Button
+                  variant="destructive"
+                  className="w-full flex items-center justify-center gap-2 py-4"
+                  onClick={() => {
+                    // TODO: Add logout logic here
+                    setOpen(false);
+                  }}
+                >
+                  <svg
+                    width="20"
+                    height="20"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    className="text-white"
+                  >
+                    <path d="M17 16l4-4m0 0l-4-4m4 4H7" />
+                    <path d="M3 21V3a2 2 0 012-2h6" />
+                  </svg>
+                  Logout
+                </Button>
+              </SheetClose>
+            </SheetFooter>
           </div>
-        </div>
-      </aside>
-    </>
+        </SheetContent>
+      </Sheet>
+    </div>
   );
 };
 
-export default MobileDrawer;
+export default SheetDrawer;
