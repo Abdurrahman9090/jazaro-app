@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { config, BackendInstance } from "@/config";
-import { ILoginFormData } from "@/types/reduxTypes/auth";
+import { ILoginFormData, IRegisterFormData } from "@/types/reduxTypes/auth";
 import { handlerError } from "@/utils/ErrorHandler";
 import { updateAlert } from "./alertActions";
 import {
@@ -47,10 +47,11 @@ export const signin = createAsyncThunk(
  */
 export const signup = createAsyncThunk(
   "registerSlice/signup",
-  async (formData: any, { dispatch }) => {
+  async (formData: IRegisterFormData, { dispatch }) => {
     const body = JSON.stringify(formData);
+    console.log(formData);
     try {
-      const res = await BackendInstance.post("auth/register", body, config);
+      const res = await BackendInstance.post("user/register", body, config);
       dispatch(signupSuccess());
       dispatch(
         updateAlert({ place: "tc", message: res.data.msg, type: "success" })
