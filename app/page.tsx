@@ -3,25 +3,13 @@
 import type React from "react";
 
 import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Button,Input } from "antd";
 import {
   ChevronRight,
   Smartphone,
   Users,
   Calendar,
   Zap,
-  Mail,
-  Lock,
-  Eye,
-  EyeOff,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
@@ -105,7 +93,6 @@ export default function OnboardingScreen() {
         {/* Skip Button */}
         <div className="flex justify-end p-6">
           <Button
-            variant="ghost"
             onClick={handleSkip}
             className="text-white/80 hover:text-white hover:bg-white/10"
           >

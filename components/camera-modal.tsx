@@ -3,11 +3,15 @@
 import type React from "react"
 
 import { useState, useRef, useCallback, useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Checkbox } from "@/components/ui/checkbox"
-import { X, Camera, RotateCcw, Zap, Upload, CheckCircle, AlertCircle } from "lucide-react"
+import { Button, Card, Checkbox, Modal, Spin, Alert } from "antd"
+import { 
+  CloseOutlined, 
+  CameraOutlined, 
+  RotateLeftOutlined, 
+  UploadOutlined, 
+  CheckCircleOutlined, 
+  ThunderboltOutlined 
+} from "@ant-design/icons"
 import * as tf from "@tensorflow/tfjs"
 import * as cocoSsd from "@tensorflow-models/coco-ssd"
 
@@ -70,7 +74,7 @@ export default function CameraModal({ isOpen, onClose, onCapture }: CameraModalP
   const videoRef = useRef<HTMLVideoElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
-  const detectionIntervalRef = useRef<NodeJS.Timeout>()
+  const detectionIntervalRef = useRef<NodeJS.Timeout | null>(null)
 
   // Load COCO-SSD model
   useEffect(() => {
@@ -109,8 +113,7 @@ export default function CameraModal({ isOpen, onClose, onCapture }: CameraModalP
         context.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height)
         context.drawImage(
           videoRef.current,
-          0,
-          0,
+          0, 0,
           canvasRef.current.width,
           canvasRef.current.height
         )
@@ -333,34 +336,51 @@ export default function CameraModal({ isOpen, onClose, onCapture }: CameraModalP
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-      <Card className="w-full max-w-md bg-white/95 backdrop-blur-[10px] border border-[#00BCD4]/30 shadow-[0_8px_32px_rgba(0,188,212,0.3)] rounded-[20px]">
-        <CardHeader className="space-y-1">
-          <div className="flex items-center justify-between">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={onClose}
-              className="p-2 text-[#006064] hover:text-[#00838F] hover:bg-[#00BCD4]/10 rounded-[10px]"
-            >
-              <X className="h-5 w-5" />
-            </Button>
-            <CardTitle className="text-2xl font-bold text-[#00838F]">Camera</CardTitle>
-            <div className="w-10" /> {/* Spacer for alignment */}
-          </div>
-          <CardDescription className="text-[#00838F]/80">
-            Take a photo or upload an image
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {error && (
-            <div className="bg-red-50 border border-red-200 rounded-[10px] p-3 flex items-center gap-2">
-              <AlertCircle className="h-4 w-4 text-red-600" />
-              <span className="text-sm text-red-700">{error}</span>
+    <Modal
+      open={isOpen}
+      onCancel={onClose}
+      footer={null}
+      width={400}
+      centered
+      className="camera-modal"
+      styles={{
+        mask: {
+          backgroundColor: 'rgba(0, 0, 0, 0.8)',
+          backdropFilter: 'blur(4px)'
+        },
+        content: {
+          backgroundColor: 'rgba(255, 255, 255, 0.95)',
+          backdropFilter: 'blur(10px)',
+          border: '1px solid rgba(0, 188, 212, 0.3)',
+          borderRadius: '20px',
+          boxShadow: '0 8px 32px rgba(0, 188, 212, 0.3)'
+        }
+      }}
+    >
+      <div className="space-y-4">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <Button
+            type="text"
+            size="small"
+            onClick={onClose}
+            icon={<CloseOutlined />}
+            className="text-[#006064] hover:text-[#00838F] hover:bg-[#00BCD4]/10 rounded-[10px]"
+          />
+          <h2 className="text-2xl font-bold text-[#00838F]">Camera</h2>
+          <div className="w-10" />
+        </div>
+        <p className="text-[#00838F]/80 text-center">Take a photo or upload an image</p>
+
+        {/* Error Message */}
+        {error && (
+          <Alert
+            message={error}
+            type="error"
+            showIcon
+            action={
               <Button
-                variant="outline"
-                size="sm"
-                className="ml-auto"
+                size="small"
                 onClick={() => {
                   setError(null)
                   startCamera()
@@ -368,222 +388,209 @@ export default function CameraModal({ isOpen, onClose, onCapture }: CameraModalP
               >
                 Retry
               </Button>
-            </div>
-          )}
+            }
+          />
+        )}
 
-          {/* Camera View */}
-          {!capturedImage && !error && (
-            <div className="relative">
-              <div className="relative w-full h-64 bg-gray-100 rounded-[10px] overflow-hidden">
-                <video
-                  ref={videoRef}
-                  autoPlay
-                  playsInline
-                  muted
-                  className={`w-full h-full object-cover ${!isVideoReady ? 'opacity-0' : 'opacity-100'} transition-opacity duration-300`}
-                />
-                <canvas
-                  ref={canvasRef}
-                  className="absolute top-0 left-0 w-full h-full"
-                  width={640}
-                  height={480}
-                />
-                {!isVideoReady && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
-                    <div className="text-center">
-                      <div className="w-8 h-8 border-2 border-[#00BCD4] border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
-                      <p className="text-sm text-[#00838F]">
-                        {isModelLoading ? "Loading AI model..." : "Initializing camera..."}
-                      </p>
-                    </div>
-                  </div>
-                )}
-              </div>
-              <div className="flex justify-center gap-2 mt-4">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => {
-                    setFacingMode(prev => prev === "user" ? "environment" : "user")
-                    stopCamera()
-                    startCamera()
-                  }}
-                  className="text-[#00838F] hover:text-[#00BCD4]"
-                >
-                  <RotateCcw className="h-4 w-4 mr-2" />
-                  Switch Camera
-                </Button>
-                <Button
-                  variant="default"
-                  size="sm"
-                  onClick={capturePhoto}
-                  className="bg-[#00BCD4] text-white hover:bg-[#00838F]"
-                  disabled={!isVideoReady}
-                >
-                  <Camera className="h-4 w-4 mr-2" />
-                  Capture
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => {
-                    if (fileInputRef.current) {
-                      fileInputRef.current.click()
-                    }
-                  }}
-                  className="text-[#00838F] hover:text-[#00BCD4]"
-                >
-                  <Upload className="h-4 w-4 mr-2" />
-                  Upload
-                </Button>
-              </div>
-              <input
-                type="file"
-                ref={fileInputRef}
-                accept="image/*"
-                className="hidden"
-                onChange={(e) => {
-                  const file = e.target.files?.[0]
-                  if (file) {
-                    const reader = new FileReader()
-                    reader.onload = (e) => {
-                      const result = e.target?.result as string
-                      setCapturedImage(result)
-                    }
-                    reader.readAsDataURL(file)
-                  }
-                }}
+        {/* Camera View */}
+        {!capturedImage && !error && (
+          <div className="relative">
+            <div className="relative w-full h-64 bg-gray-100 rounded-[10px] overflow-hidden">
+              <video
+                ref={videoRef}
+                autoPlay
+                playsInline
+                muted
+                className={`w-full h-full object-cover ${!isVideoReady ? 'opacity-0' : 'opacity-100'} transition-opacity duration-300`}
               />
-            </div>
-          )}
-
-          {/* Captured Image */}
-          {capturedImage && (
-            <div className="space-y-4">
-              <div className="relative w-full h-64 bg-gray-100 rounded-[10px] overflow-hidden">
-                <img
-                  src={capturedImage}
-                  alt="Captured"
-                  className="w-full h-full object-cover"
-                />
-                {isAnalyzing && (
-                  <div className="absolute inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center">
-                    <div className="text-center text-white">
-                      <div className="w-8 h-8 border-2 border-white border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
-                      <p className="text-sm">AI Analyzing...</p>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* Analysis Results */}
-              {analysisResult && (
-                <div className="bg-gradient-to-r from-[#00BCD4]/10 to-[#26C6DA]/10 backdrop-blur-[10px] rounded-[10px] p-4 border border-[#00BCD4]/30">
-                  <div className="flex items-center gap-2 mb-3">
-                    <CheckCircle className="h-5 w-5 text-[#4CAF50]" />
-                    <span className="font-semibold text-[#006064]">AI Detection Complete</span>
-                  </div>
-                  <div className="space-y-4">
-                    {analysisResult.map((result: any, index: number) => (
-                      <div key={index} className="space-y-3">
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm text-[#00838F]">Object:</span>
-                          <span className="font-medium text-[#006064]">{result.object}</span>
-                        </div>
-                        {result.type === 'home_accessory' && result.checklist && (
-                          <div className="space-y-2">
-                            <span className="text-sm text-[#00838F]">Issue Checklist:</span>
-                            <div className="space-y-2">
-                              {result.checklist.map((issue: string) => (
-                                <div key={issue} className="flex items-center space-x-2">
-                                  <Checkbox
-                                    id={`issue-${issue}`}
-                                    checked={selectedIssues[issue] || false}
-                                    onCheckedChange={(checked) => {
-                                      setSelectedIssues(prev => ({
-                                        ...prev,
-                                        [issue]: checked as boolean
-                                      }))
-                                    }}
-                                  />
-                                  <label
-                                    htmlFor={`issue-${issue}`}
-                                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                                  >
-                                    {issue}
-                                  </label>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm text-[#00838F]">Confidence:</span>
-                          <span className="font-medium text-[#006064]">
-                            {Math.round(result.confidence * 100)}%
-                          </span>
-                        </div>
-                        {index < analysisResult.length - 1 && (
-                          <div className="border-b border-[#00BCD4]/20 my-2" />
-                        )}
-                      </div>
-                    ))}
+              <canvas
+                ref={canvasRef}
+                className="absolute top-0 left-0 w-full h-full"
+                width={640}
+                height={480}
+              />
+              {!isVideoReady && (
+                <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
+                  <div className="text-center">
+                    <Spin size="large" />
+                    <p className="text-sm text-[#00838F] mt-2">
+                      {isModelLoading ? "Loading AI model..." : "Initializing camera..."}
+                    </p>
                   </div>
                 </div>
               )}
-
-              <div className="flex justify-center gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => {
-                    setCapturedImage(null)
-                    setAnalysisResult(null)
-                    startCamera()
-                  }}
-                  className="text-[#00838F] hover:text-[#00BCD4]"
-                >
-                  <RotateCcw className="h-4 w-4 mr-2" />
-                  Retake
-                </Button>
-                {!analysisResult && !isAnalyzing && (
-                  <Button
-                    variant="default"
-                    size="sm"
-                    onClick={analyzeImage}
-                    className="bg-[#00BCD4] text-white hover:bg-[#00838F]"
-                  >
-                    <Zap className="h-4 w-4 mr-2" />
-                    Analyze
-                  </Button>
-                )}
-                {analysisResult && (
-                  <Button
-                    variant="default"
-                    size="sm"
-                    onClick={() => onCapture(capturedImage)}
-                    className="bg-[#00BCD4] text-white hover:bg-[#00838F]"
-                  >
-                    <CheckCircle className="h-4 w-4 mr-2" />
-                    Use Photo
-                  </Button>
-                )}
-              </div>
             </div>
-          )}
-
-          {/* Instructions */}
-          <div className="bg-[#00BCD4]/10 backdrop-blur-[10px] rounded-[10px] p-3 border border-[#00BCD4]/30">
-            <h4 className="font-medium text-[#006064] mb-2">📸 How it works:</h4>
-            <ul className="text-sm text-[#00838F] space-y-1">
-              <li>• Point camera at broken item</li>
-              <li>• Tap capture button or upload photo</li>
-              <li>• AI analyzes and identifies issues</li>
-              <li>• Get instant repair estimates</li>
-            </ul>
+            <div className="flex justify-center gap-2 mt-4">
+              <Button
+                icon={<RotateLeftOutlined />}
+                onClick={() => {
+                  setFacingMode(prev => prev === "user" ? "environment" : "user")
+                  stopCamera()
+                  startCamera()
+                }}
+                className="text-[#00838F] hover:text-[#00BCD4]"
+              >
+                Switch Camera
+              </Button>
+              <Button
+                type="primary"
+                icon={<CameraOutlined />}
+                onClick={capturePhoto}
+                disabled={!isVideoReady}
+                className="bg-[#00BCD4] border-[#00BCD4] hover:bg-[#00838F] hover:border-[#00838F]"
+              >
+                Capture
+              </Button>
+              <Button
+                icon={<UploadOutlined />}
+                onClick={() => {
+                  if (fileInputRef.current) {
+                    fileInputRef.current.click()
+                  }
+                }}
+                className="text-[#00838F] hover:text-[#00BCD4]"
+              >
+                Upload
+              </Button>
+            </div>
+            <input
+              type="file"
+              ref={fileInputRef}
+              accept="image/*"
+              className="hidden"
+              onChange={(e) => {
+                const file = e.target.files?.[0]
+                if (file) {
+                  const reader = new FileReader()
+                  reader.onload = (e) => {
+                    const result = e.target?.result as string
+                    setCapturedImage(result)
+                  }
+                  reader.readAsDataURL(file)
+                }
+              }}
+            />
           </div>
-        </CardContent>
-      </Card>
-    </div>
+        )}
+
+        {/* Captured Image */}
+        {capturedImage && (
+          <div className="space-y-4">
+            <div className="relative w-full h-64 bg-gray-100 rounded-[10px] overflow-hidden">
+              <img
+                src={capturedImage}
+                alt="Captured"
+                className="w-full h-full object-cover"
+              />
+              {isAnalyzing && (
+                <div className="absolute inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center">
+                  <div className="text-center text-white">
+                    <Spin size="large" />
+                    <p className="text-sm mt-2">AI Analyzing...</p>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Analysis Results */}
+            {analysisResult && (
+              <div className="bg-gradient-to-r from-[#00BCD4]/10 to-[#26C6DA]/10 backdrop-blur-[10px] rounded-[10px] p-4 border border-[#00BCD4]/30">
+                <div className="flex items-center gap-2 mb-3">
+                  <CheckCircleOutlined className="text-[#4CAF50]" />
+                  <span className="font-semibold text-[#006064]">AI Detection Complete</span>
+                </div>
+                <div className="space-y-4">
+                  {analysisResult.map((result: any, index: number) => (
+                    <div key={index} className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-[#00838F]">Object:</span>
+                        <span className="font-medium text-[#006064]">{result.object}</span>
+                      </div>
+                      {result.type === 'home_accessory' && result.checklist && (
+                        <div className="space-y-2">
+                          <span className="text-sm text-[#00838F]">Issue Checklist:</span>
+                          <div className="space-y-2">
+                            {result.checklist.map((issue: string) => (
+                              <div key={issue} className="flex items-center space-x-2">
+                                <Checkbox
+                                  checked={selectedIssues[issue] || false}
+                                  onChange={(e) => {
+                                    setSelectedIssues(prev => ({
+                                      ...prev,
+                                      [issue]: e.target.checked
+                                    }))
+                                  }}
+                                >
+                                  {issue}
+                                </Checkbox>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-[#00838F]">Confidence:</span>
+                        <span className="font-medium text-[#006064]">
+                          {Math.round(result.confidence * 100)}%
+                        </span>
+                      </div>
+                      {index < analysisResult.length - 1 && (
+                        <div className="border-b border-[#00BCD4]/20 my-2" />
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <div className="flex justify-center gap-2">
+              <Button
+                icon={<RotateLeftOutlined />}
+                onClick={() => {
+                  setCapturedImage(null)
+                  setAnalysisResult(null)
+                  setSelectedIssues({})
+                  startCamera()
+                }}
+                className="text-[#00838F] hover:text-[#00BCD4]"
+              >
+                Retake
+              </Button>
+              {!analysisResult && !isAnalyzing && (
+                <Button
+                  type="primary"
+                  icon={<ThunderboltOutlined />}
+                  onClick={analyzeImage}
+                  className="bg-[#00BCD4] border-[#00BCD4] hover:bg-[#00838F] hover:border-[#00838F]"
+                >
+                  Analyze
+                </Button>
+              )}
+              {analysisResult && (
+                <Button
+                  type="primary"
+                  icon={<CheckCircleOutlined />}
+                  onClick={() => onCapture(capturedImage)}
+                  className="bg-[#00BCD4] border-[#00BCD4] hover:bg-[#00838F] hover:border-[#00838F]"
+                >
+                  Use Photo
+                </Button>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Instructions */}
+        <div className="bg-[#00BCD4]/10 backdrop-blur-[10px] rounded-[10px] p-3 border border-[#00BCD4]/30">
+          <h4 className="font-medium text-[#006064] mb-2">📸 How it works:</h4>
+          <ul className="text-sm text-[#00838F] space-y-1">
+            <li>• Point camera at broken item</li>
+            <li>• Tap capture button or upload photo</li>
+            <li>• AI analyzes and identifies issues</li>
+            <li>• Get instant repair estimates</li>
+          </ul>
+        </div>
+      </div>
+    </Modal>
   )
 }

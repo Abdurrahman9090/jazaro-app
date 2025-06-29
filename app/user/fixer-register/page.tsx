@@ -1,31 +1,24 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Row, Col,Button, Input, Select, Checkbox, Form, Typography } from "antd";
 import {
-  Eye,
-  EyeOff,
-  Mail,
-  Lock,
-  User,
-  Phone,
-  Briefcase,
-  MapPin,
-  Forward,
-} from "lucide-react";
+  MailOutlined,
+  UserOutlined,
+  PhoneOutlined,
+  IdcardOutlined,
+  EnvironmentOutlined,
+  ArrowRightOutlined,
+  ArrowLeftOutlined,
+  PlusOutlined,
+} from "@ant-design/icons";
 import Link from "next/link";
-import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { useSelector } from "react-redux";
 import { AuthSelector } from "@/redux/reducers";
+
+const { TextArea } = Input;
+const { Option } = Select;
+const { Title, Text } = Typography;
 
 export default function FixerRegisterPage() {
   const { user } = useSelector(AuthSelector);
@@ -109,227 +102,121 @@ export default function FixerRegisterPage() {
   };
 
   return (
-    <div className="bg-gradient-to-br from-[#E0F7FA] via-[#B2EBF2] to-[#80DEEA] p-4 flex items-center justify-center">
-      <div className="">
+    <div className="bg-gradient-to-br from-[#E0F7FA] via-[#B2EBF2] to-[#80DEEA] px-4 flex items-center justify-center min-h-screen">
+      <div className="w-full max-w-xl">
         {step === 1 ? (
-          <form onSubmit={handleNext}>
-            {/* Personal Information Section */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-[#00838F]">
-                Personal Information
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="Username" className="text-[#006064]">
-                    Username
-                  </Label>
-                  <div className="relative">
-                    <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-[#00838F]" />
-                    <Input
-                      id="Username"
-                      name="username"
-                      type="text"
-                      placeholder="your username"
-                      value={formData.fullName}
-                      onChange={handleChange}
-                      className="pl-10 bg-white/80 backdrop-blur-[10px] border border-[#00BCD4]/30 text-[#006064] placeholder:text-[#00838F] focus:border-[#00BCD4] focus:ring-[#00BCD4]/20 rounded-[10px]"
-                      required
-                    />
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="email" className="text-[#006064]">
-                    Email
-                  </Label>
-                  <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-[#00838F]" />
-                    <Input
-                      id="email"
-                      name="email"
-                      type="email"
-                      placeholder="your email"
-                      value={formData.email}
-                      onChange={handleChange}
-                      className="pl-10 bg-white/80 backdrop-blur-[10px] border border-[#00BCD4]/30 text-[#006064] placeholder:text-[#00838F] focus:border-[#00BCD4] focus:ring-[#00BCD4]/20 rounded-[10px]"
-                      required
-                    />
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="phone" className="text-[#006064]">
-                    Phone Number
-                  </Label>
-                  <div className="relative">
-                    <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-[#00838F]" />
-                    <Input
-                      id="phone"
-                      name="phone"
-                      type="tel"
-                      placeholder="Phone number"
-                      value={formData.phone}
-                      onChange={handleChange}
-                      className="pl-10 bg-white/80 backdrop-blur-[10px] border border-[#00BCD4]/30 text-[#006064] placeholder:text-[#00838F] focus:border-[#00BCD4] focus:ring-[#00BCD4]/20 rounded-[10px]"
-                      required
-                    />
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="location" className="text-[#006064]">
-                    Location
-                  </Label>
-                  <div className="relative">
-                    <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-[#00838F]" />
-                    <Input
-                      id="location"
-                      name="location"
-                      type="text"
-                      placeholder="Your location"
-                      value={formData.location}
-                      onChange={handleChange}
-                      className="pl-10 bg-white/80 backdrop-blur-[10px] border border-[#00BCD4]/30 text-[#006064] placeholder:text-[#00838F] focus:border-[#00BCD4] focus:ring-[#00BCD4]/20 rounded-[10px]"
-                      required
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
+          <Form layout="vertical" onSubmitCapture={handleNext}>
+            <Title level={4} className="text-[#00838F]">Personal Information</Title>
+            <Row gutter={16}>
+              <Col xs={24} md={12}>
+                <Form.Item label={<span className="text-[#006064]">Full Name</span>} required>
+                  <Input
+                    name="fullName"
+                    prefix={<UserOutlined className="text-[#00838F]" />}
+                    placeholder="Your full name"
+                    value={formData.fullName}
+                    onChange={handleChange}
+                    className="bg-white/80 border border-[#00BCD4]/30 text-[#006064] placeholder:text-[#00838F] rounded-[10px]"
+                  />
+                </Form.Item>
+              </Col>
+              <Col xs={24} md={12}>
+                <Form.Item label={<span className="text-[#006064]">Email</span>} required>
+                  <Input
+                    name="email"
+                    type="email"
+                    prefix={<MailOutlined className="text-[#00838F]" />}
+                    placeholder="Your email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    className="bg-white/80 border border-[#00BCD4]/30 text-[#006064] placeholder:text-[#00838F] rounded-[10px]"
+                  />
+                </Form.Item>
+              </Col>
+              <Col xs={24} md={12}>
+                <Form.Item label={<span className="text-[#006064]">Phone Number</span>} required>
+                  <Input
+                    name="phone"
+                    type="tel"
+                    prefix={<PhoneOutlined className="text-[#00838F]" />}
+                    placeholder="Phone number"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    className="bg-white/80 border border-[#00BCD4]/30 text-[#006064] placeholder:text-[#00838F] rounded-[10px]"
+                  />
+                </Form.Item>
+              </Col>
+              <Col xs={24} md={12}>
+                <Form.Item label={<span className="text-[#006064]">Location</span>} required>
+                  <Input
+                    name="location"
+                    prefix={<EnvironmentOutlined className="text-[#00838F]" />}
+                    placeholder="Your location"
+                    value={formData.location}
+                    onChange={handleChange}
+                    className="bg-white/80 border border-[#00BCD4]/30 text-[#006064] placeholder:text-[#00838F] rounded-[10px]"
+                  />
+                </Form.Item>
+              </Col>
+            </Row>
 
-            {/* Professional Information Section */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-[#00838F]">
-                Professional Information
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="profession" className="text-[#006064]">
-                    Main Profession
-                  </Label>
-                  <div className="relative">
-                    <Briefcase className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-[#00838F]" />
-                    <Input
-                      id="profession"
-                      name="profession"
-                      type="text"
-                      placeholder="Your Profession"
-                      value={formData.profession}
-                      onChange={handleChange}
-                      className="pl-10 bg-white/80 backdrop-blur-[10px] border border-[#00BCD4]/30 text-[#006064] placeholder:text-[#00838F] focus:border-[#00BCD4] focus:ring-[#00BCD4]/20 rounded-[10px]"
-                      required
-                    />
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="experience" className="text-[#006064]">
-                    Years of Experience
-                  </Label>
+            <Title level={4} className="text-[#00838F] mt-8 mb-4">Professional Information</Title>
+            <Row gutter={16}>
+              <Col xs={24} md={12}>
+                <Form.Item label={<span className="text-[#006064]">Main Profession</span>} required>
+                  <Input
+                    name="profession"
+                    prefix={<IdcardOutlined className="text-[#00838F]" />}
+                    placeholder="Your Profession"
+                    value={formData.profession}
+                    onChange={handleChange}
+                    className="bg-white/80 border border-[#00BCD4]/30 text-[#006064] placeholder:text-[#00838F] rounded-[10px]"
+                  />
+                </Form.Item>
+              </Col>
+              <Col xs={24} md={12}>
+                <Form.Item label={<span className="text-[#006064]">Years of Experience</span>} required>
                   <Select
-                    value={formData.experience}
-                    onValueChange={(value) =>
-                      setFormData((prev) => ({ ...prev, experience: value }))
-                    }
+                    value={formData.experience || undefined}
+                    onChange={(value) => setFormData((prev) => ({ ...prev, experience: value }))}
+                    placeholder="Select experience"
+                    className="bg-white/80 border border-[#00BCD4]/30 text-[#006064] rounded-[10px] w-full"
                   >
-                    <SelectTrigger className="bg-white/80 backdrop-blur-[10px] border border-[#00BCD4]/30 text-[#006064] focus:border-[#00BCD4] focus:ring-[#00BCD4]/20 rounded-[10px]">
-                      <SelectValue placeholder="Select experience" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="0-1">0-1 years</SelectItem>
-                      <SelectItem value="1-3">1-3 years</SelectItem>
-                      <SelectItem value="3-5">3-5 years</SelectItem>
-                      <SelectItem value="5-10">5-10 years</SelectItem>
-                      <SelectItem value="10+">10+ years</SelectItem>
-                    </SelectContent>
+                    <Option value="0-1">0-1 years</Option>
+                    <Option value="1-3">1-3 years</Option>
+                    <Option value="3-5">3-5 years</Option>
+                    <Option value="5-10">5-10 years</Option>
+                    <Option value="10+">10+ years</Option>
                   </Select>
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="bio" className="text-[#006064]">
-                  Professional Bio
-                </Label>
-                <Textarea
-                  id="bio"
-                  name="bio"
-                  placeholder="Tell us about your experience and expertise..."
-                  value={formData.bio}
-                  onChange={handleChange}
-                  className="bg-white/80 backdrop-blur-[10px] border border-[#00BCD4]/30 text-[#006064] placeholder:text-[#00838F] focus:border-[#00BCD4] focus:ring-[#00BCD4]/20 rounded-[10px] min-h-[100px]"
-                  required
-                />
-              </div>
-            </div>
-
-            {/* Account Security Section */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-[#00838F]">
-                Account Security
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="password" className="text-[#006064]">
-                    Password
-                  </Label>
-                  <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-[#00838F]" />
-                    <Input
-                      id="password"
-                      name="password"
-                      type={showPassword ? "text" : "password"}
-                      placeholder="Create a password"
-                      value={formData.password}
-                      onChange={handleChange}
-                      className="pl-10 bg-white/80 backdrop-blur-[10px] border border-[#00BCD4]/30 text-[#006064] placeholder:text-[#00838F] focus:border-[#00BCD4] focus:ring-[#00BCD4]/20 rounded-[10px]"
-                      required
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#00838F] hover:text-[#00BCD4] transition-colors"
-                    >
-                      {showPassword ? (
-                        <EyeOff className="h-4 w-4" />
-                      ) : (
-                        <Eye className="h-4 w-4" />
-                      )}
-                    </button>
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="confirmPassword" className="text-[#006064]">
-                    Confirm Password
-                  </Label>
-                  <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-[#00838F]" />
-                    <Input
-                      id="confirmPassword"
-                      name="confirmPassword"
-                      type={showPassword ? "text" : "password"}
-                      placeholder="Confirm your password"
-                      value={formData.confirmPassword}
-                      onChange={handleChange}
-                      className="pl-10 bg-white/80 backdrop-blur-[10px] border border-[#00BCD4]/30 text-[#006064] placeholder:text-[#00838F] focus:border-[#00BCD4] focus:ring-[#00BCD4]/20 rounded-[10px]"
-                      required
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
+                </Form.Item>
+              </Col>
+            </Row>
+            <Form.Item label={<span className="text-[#006064]">Professional Bio</span>} required>
+              <TextArea
+                name="bio"
+                placeholder="Tell us about your experience and expertise..."
+                value={formData.bio}
+                onChange={handleChange}
+                className="bg-white/80 border border-[#00BCD4]/30 text-[#006064] placeholder:text-[#00838F] rounded-[10px] min-h-[100px]"
+                rows={4}
+              />
+            </Form.Item>
 
             <Button
-              type="submit"
-              className="w-full bg-[#00BCD4] text-white hover:bg-[#00838F] rounded-[10px] mt-6"
+              htmlType="submit"
+              type="primary"
+              className="w-full bg-[#00BCD4] text-white hover:bg-[#00838F] rounded-[10px] mt-6 flex items-center justify-center"
             >
-              Next <Forward className="inline h-4 w-4 ml-2" />
+              Next <ArrowRightOutlined className="inline h-4 w-4 ml-2" />
             </Button>
-          </form>
+          </Form>
         ) : (
-          <form onSubmit={handleRegister} className="space-y-4">
-            {/* Specialties Section */}
-            <div className="space-y-2">
-              <Label className="text-[#006064]">Specialties</Label>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                {specialties.map((specialty) => (
+          <Form layout="vertical" onSubmitCapture={handleRegister} className="space-y-4">
+            <Title level={4} className="text-[#00838F] mb-4">Specialties</Title>
+            <Row gutter={12}>
+              {specialties.map((specialty) => (
+                <Col xs={12} md={8} key={specialty}>
                   <div
-                    key={specialty}
                     className={`flex items-center space-x-2 p-2 rounded-lg cursor-pointer transition-colors ${
                       formData.specialties.includes(specialty)
                         ? "bg-[#00BCD4] text-white"
@@ -337,89 +224,85 @@ export default function FixerRegisterPage() {
                     }`}
                     onClick={() => handleSpecialtyChange(specialty)}
                   >
-                    <input
-                      type="checkbox"
+                    <Checkbox
                       checked={formData.specialties.includes(specialty)}
-                      onChange={() => {}}
-                      className="hidden"
+                      onChange={() => handleSpecialtyChange(specialty)}
                     />
                     <span className="text-sm">{specialty}</span>
                   </div>
-                ))}
-              </div>
-            </div>
+                </Col>
+              ))}
+            </Row>
 
-            {/* Certifications Section */}
+            <Title level={4} className="text-[#00838F] mt-8 mb-4">Certifications</Title>
             <div className="space-y-2">
-              <Label className="text-[#006064]">Certifications</Label>
-              <div className="space-y-2">
-                {formData.certifications.map((cert, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center justify-between bg-white/80 p-2 rounded-lg"
-                  >
-                    <span className="text-[#006064]">{cert}</span>
-                    <button
-                      type="button"
-                      onClick={() => handleCertificationRemove(index)}
-                      className="text-[#00838F] hover:text-[#00BCD4] transition-colors"
-                    >
-                      Remove
-                    </button>
-                  </div>
-                ))}
-                <Button
-                  type="button"
-                  onClick={handleCertificationAdd}
-                  className="w-full bg-white/80 text-[#00838F] hover:bg-[#00BCD4]/10 border border-[#00BCD4]/30"
+              {formData.certifications.map((cert, index) => (
+                <div
+                  key={index}
+                  className="flex items-center justify-between bg-white/80 p-2 rounded-lg"
                 >
-                  Add Certification
-                </Button>
-              </div>
+                  <span className="text-[#006064]">{cert}</span>
+                  <Button
+                    type="link"
+                    danger
+                    onClick={() => handleCertificationRemove(index)}
+                  >
+                    Remove
+                  </Button>
+                </div>
+              ))}
+              <Button
+                type="dashed"
+                onClick={handleCertificationAdd}
+                className="w-full bg-white/80 text-[#00838F] hover:bg-[#00BCD4]/10 border border-[#00BCD4]/30"
+                icon={<PlusOutlined />}
+              >
+                Add Certification
+              </Button>
             </div>
 
-            <div className="flex items-center space-x-2">
-              <input
-                type="checkbox"
+            <div className="flex items-center space-x-2 mt-6">
+              <Checkbox
                 id="terms"
                 className="rounded border-[#00BCD4]/30 text-[#00BCD4] focus:ring-[#00BCD4]/20"
                 required
               />
-              <Label htmlFor="terms" className="text-sm text-[#00838F]">
-                I agree to the{" "}
+              <Text className="text-sm text-[#00838F]">
+                I agree to the{' '}
                 <Link
                   href="/terms"
                   className="text-[#00BCD4] hover:text-[#00838F] transition-colors"
                 >
                   Terms of Service
-                </Link>{" "}
-                and{" "}
+                </Link>{' '}
+                and{' '}
                 <Link
                   href="/privacy"
                   className="text-[#00BCD4] hover:text-[#00838F] transition-colors"
                 >
                   Privacy Policy
                 </Link>
-              </Label>
+              </Text>
             </div>
 
             <div className="flex justify-between gap-4 mt-6">
               <Button
-                type="button"
-                variant="outline"
-                className="bg-white/80 text-[#00838F] border border-[#00BCD4]/30 hover:bg-[#00BCD4]/10 rounded-[10px]"
+                type="default"
+                className="bg-white/80 text-[#00838F] border border-[#00BCD4]/30 hover:bg-[#00BCD4]/10 rounded-[10px] flex items-center"
                 onClick={handleBack}
+                icon={<ArrowLeftOutlined />}
               >
                 Back
               </Button>
               <Button
-                type="submit"
-                className="bg-[#00BCD4] text-white hover:bg-[#00838F] rounded-[10px]"
+                htmlType="submit"
+                type="primary"
+                className="bg-[#00BCD4] text-white hover:bg-[#00838F] rounded-[10px] flex items-center"
               >
                 Create Fixer Account
               </Button>
             </div>
-          </form>
+          </Form>
         )}
       </div>
     </div>

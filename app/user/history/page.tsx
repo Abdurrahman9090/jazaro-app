@@ -1,28 +1,22 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Input } from "@/components/ui/input";
+import { Button, Card, Badge, Avatar, Input, Tabs } from "antd";
 import {
-  Search,
-  Star,
-  Calendar,
-  DollarSign,
-  CheckCircle,
-  Clock,
-  Repeat,
-  MessageCircle,
-  MapPin,
-  User,
-  Filter,
-  Camera,
-  Menu,
-  Bell,
-} from "lucide-react";
+  SearchOutlined,
+  StarFilled,
+  CalendarOutlined,
+  DollarCircleOutlined,
+  CheckCircleOutlined,
+  ClockCircleOutlined,
+  RetweetOutlined,
+  MessageOutlined,
+  UserOutlined,
+  FilterOutlined,
+  CameraOutlined,
+  MenuOutlined,
+  BellOutlined,
+} from "@ant-design/icons";
 import Link from "next/link";
 import Image from "next/image";
 import CameraModal from "@/components/camera-modal";
@@ -162,7 +156,7 @@ export default function HistoryPage() {
               <span className="text-2xl font-bold text-[#006064]">
                 {avgRating.toFixed(1)}
               </span>
-              <Star className="h-5 w-5 fill-[#FF9800] text-[#FF9800]" />
+              <StarFilled className="text-[#FF9800]" />
             </div>
             <div className="text-xs text-[#00838F]">Avg Rating</div>
           </div>
@@ -170,239 +164,219 @@ export default function HistoryPage() {
       </div>
 
       <div className="relative z-10 px-4 py-4 pb-20">
-        <Tabs defaultValue="all" className="space-y-4">
-          <TabsList className="grid w-full grid-cols-2 bg-white/80 backdrop-blur-[10px] border border-[#00BCD4]/30 rounded-[10px]">
-            <TabsTrigger
-              value="all"
-              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#00BCD4] data-[state=active]:to-[#26C6DA] data-[state=active]:text-white text-[#00838F] rounded-[10px]"
-            >
-              All History
-            </TabsTrigger>
-            <TabsTrigger
-              value="recurring"
-              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#00BCD4] data-[state=active]:to-[#26C6DA] data-[state=active]:text-white text-[#00838F] rounded-[10px]"
-            >
-              Recurring Services
-            </TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="all" className="space-y-4">
-            {/* Search and Filter */}
-            <div className="space-y-3">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-[#00838F]" />
-                <Input
-                  placeholder="Search repairs..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 bg-white/80 backdrop-blur-[10px] border border-[#00BCD4]/30 text-[#006064] placeholder:text-[#00838F] focus:border-[#00BCD4] focus:ring-[#00BCD4]/20 rounded-[10px]"
-                />
+        <Tabs
+          defaultActiveKey="all"
+          className="space-y-4"
+          items={[{
+            key: 'all',
+            label: 'All History',
+            children: (
+              <div className="space-y-4">
+                {/* Search and Filter */}
+                <div className="space-y-3">
+                  <div className="relative">
+                    <SearchOutlined className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-[#00838F]" />
+                    <Input
+                      placeholder="Search repairs..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="pl-10 bg-white/80 backdrop-blur-[10px] border border-[#00BCD4]/30 text-[#006064] placeholder:text-[#00838F] focus:border-[#00BCD4] focus:ring-[#00BCD4]/20 rounded-[10px]"
+                    />
+                  </div>
+                  <div className="flex items-center gap-2 overflow-x-auto pb-2">
+                    <FilterOutlined className="h-4 w-4 text-[#006064] flex-shrink-0" />
+                    {filters.map((filter) => (
+                      <Button
+                        key={filter.id}
+                        type={selectedFilter === filter.id ? "primary" : "default"}
+                        size="small"
+                        onClick={() => setSelectedFilter(filter.id)}
+                        className={`whitespace-nowrap backdrop-blur-[10px] transition-all duration-300 rounded-[20px] ${
+                          selectedFilter === filter.id
+                            ? "bg-gradient-to-r from-[#00BCD4] to-[#26C6DA] text-white shadow-[0_0_20px_rgba(0,188,212,0.5)] border-0"
+                            : "bg-white/60 border border-[#00BCD4]/30 text-[#006064] hover:bg-white/80"
+                        }`}
+                      >
+                        {filter.name} ({filter.count})
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+                {/* History List */}
+                <div className="space-y-3">
+                  {filteredHistory.map((repair) => (
+                    <Card
+                      key={repair.id}
+                      className="border-0 bg-white/80 backdrop-blur-[10px] border border-[#00BCD4]/30 shadow-[0_4px_10px_rgba(0,188,212,0.3)] hover:shadow-[0_8px_20px_rgba(0,188,212,0.2)] transform hover:scale-105 transition-all duration-300 rounded-[10px]"
+                    >
+                      <div className="p-4">
+                        <div className="flex gap-3">
+                          <Image
+                            src={repair.image || "/placeholder.svg"}
+                            alt={repair.item}
+                            width={60}
+                            height={60}
+                            className="w-15 h-15 object-cover rounded-[10px] border border-[#00BCD4]/30"
+                          />
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-start justify-between mb-2">
+                              <div>
+                                <h3 className="font-semibold text-[#006064] flex items-center gap-2">
+                                  {repair.item}
+                                  {repair.recurring && (
+                                    <RetweetOutlined className="h-4 w-4 text-[#4DD0E1]" />
+                                  )}
+                                </h3>
+                                <p className="text-sm text-[#00838F]">
+                                  {repair.category}
+                                </p>
+                              </div>
+                              <Badge
+                                className="bg-[#4CAF50]/20 text-[#4CAF50] border border-[#4CAF50]/30 backdrop-blur-[10px]"
+                                count={<span className="flex items-center"><CheckCircleOutlined className="h-3 w-3 mr-1" />Completed</span>}
+                                style={{ backgroundColor: 'transparent', color: '#4CAF50', boxShadow: 'none' }}
+                              />
+                            </div>
+                            <div className="flex items-center gap-2 mb-2">
+                              <Avatar size={24} src={repair.fixerAvatar || "/placeholder.svg"}>
+                                {repair.fixer.slice(0, 2)}
+                              </Avatar>
+                              <span className="text-sm text-[#00838F]">
+                                {repair.fixer}
+                              </span>
+                            </div>
+                            <div className="flex items-center justify-between text-sm text-[#00838F]">
+                              <div className="flex items-center gap-4">
+                                <div className="flex items-center gap-1">
+                                  <CalendarOutlined className="h-4 w-4" />
+                                  <span>{repair.date}</span>
+                                </div>
+                                <div className="flex items-center gap-1">
+                                  <DollarCircleOutlined className="h-4 w-4" />
+                                  <span>${repair.cost}</span>
+                                </div>
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <StarFilled className="h-4 w-4 text-[#FF9800]" />
+                                <span className="text-[#006064]">
+                                  {repair.rating}
+                                </span>
+                              </div>
+                            </div>
+                            {repair.recurring && (
+                              <div className="mt-2 flex gap-2">
+                                <Button
+                                  size="small"
+                                  type="default"
+                                  className="flex-1 text-xs bg-white/60 border border-[#00BCD4]/30 text-[#006064] hover:bg-white/80 rounded-[10px]"
+                                >
+                                  <CalendarOutlined className="h-3 w-3 mr-1" />
+                                  Reschedule
+                                </Button>
+                                <Button
+                                  size="small"
+                                  type="default"
+                                  className="flex-1 text-xs bg-white/60 border border-[#00BCD4]/30 text-[#006064] hover:bg-white/80 rounded-[10px]"
+                                >
+                                  <ClockCircleOutlined className="h-3 w-3 mr-1" />
+                                  Manage
+                                </Button>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </Card>
+                  ))}
+                </div>
               </div>
-
-              <div className="flex items-center gap-2 overflow-x-auto pb-2">
-                <Filter className="h-4 w-4 text-[#006064] flex-shrink-0" />
-                {filters.map((filter) => (
-                  <Button
-                    key={filter.id}
-                    variant={
-                      selectedFilter === filter.id ? "default" : "outline"
-                    }
-                    size="sm"
-                    onClick={() => setSelectedFilter(filter.id)}
-                    className={`whitespace-nowrap backdrop-blur-[10px] transition-all duration-300 rounded-[20px] ${
-                      selectedFilter === filter.id
-                        ? "bg-gradient-to-r from-[#00BCD4] to-[#26C6DA] text-white shadow-[0_0_20px_rgba(0,188,212,0.5)] border-0"
-                        : "bg-white/60 border border-[#00BCD4]/30 text-[#006064] hover:bg-white/80"
-                    }`}
-                  >
-                    {filter.name} ({filter.count})
-                  </Button>
-                ))}
-              </div>
-            </div>
-
-            {/* History List */}
-            <div className="space-y-3">
-              {filteredHistory.map((repair) => (
-                <Card
-                  key={repair.id}
-                  className="border-0 bg-white/80 backdrop-blur-[10px] border border-[#00BCD4]/30 shadow-[0_4px_10px_rgba(0,188,212,0.3)] hover:shadow-[0_8px_20px_rgba(0,188,212,0.2)] transform hover:scale-105 transition-all duration-300 rounded-[10px]"
-                >
-                  <CardContent className="p-4">
-                    <div className="flex gap-3">
-                      <Image
-                        src={repair.image || "/placeholder.svg"}
-                        alt={repair.item}
-                        width={60}
-                        height={60}
-                        className="w-15 h-15 object-cover rounded-[10px] border border-[#00BCD4]/30"
-                      />
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-start justify-between mb-2">
+            ),
+          }, {
+            key: 'recurring',
+            label: 'Recurring Services',
+            children: (
+              <div className="space-y-4">
+                <div className="text-center py-4">
+                  <div className="w-16 h-16 bg-gradient-to-br from-[#4DD0E1] to-[#00BCD4] rounded-[20px] shadow-[0_0_20px_rgba(77,208,225,0.5)] flex items-center justify-center mx-auto mb-3">
+                    <RetweetOutlined className="h-8 w-8 text-white" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-[#006064] mb-2">
+                    Recurring Services
+                  </h3>
+                  <p className="text-sm text-[#00838F] mb-4">
+                    Manage your scheduled maintenance and recurring repairs
+                  </p>
+                </div>
+                <div className="space-y-3">
+                  {recurringServices.map((service) => (
+                    <Card
+                      key={service.id}
+                      className="border-0 bg-white/80 backdrop-blur-[10px] border-l-4 border-l-[#4DD0E1] border border-[#00BCD4]/30 shadow-[0_4px_10px_rgba(0,188,212,0.3)] rounded-[10px]"
+                    >
+                      <div className="p-4">
+                        <div className="flex items-start justify-between mb-3">
                           <div>
                             <h3 className="font-semibold text-[#006064] flex items-center gap-2">
-                              {repair.item}
-                              {repair.recurring && (
-                                <Repeat className="h-4 w-4 text-[#4DD0E1]" />
-                              )}
+                              {service.item}
+                              <Badge
+                                className="text-xs border-[#4DD0E1]/30 text-[#4DD0E1] bg-[#4DD0E1]/10 backdrop-blur-[10px]"
+                                count={<span className="flex items-center"><RetweetOutlined className="h-3 w-3 mr-1" />Monthly</span>}
+                                style={{ backgroundColor: 'transparent', color: '#4DD0E1', boxShadow: 'none' }}
+                              />
                             </h3>
                             <p className="text-sm text-[#00838F]">
-                              {repair.category}
+                              by {service.fixer}
                             </p>
                           </div>
-                          <Badge className="bg-[#4CAF50]/20 text-[#4CAF50] border border-[#4CAF50]/30 backdrop-blur-[10px]">
-                            <CheckCircle className="h-3 w-3 mr-1" />
-                            Completed
-                          </Badge>
-                        </div>
-
-                        <div className="flex items-center gap-2 mb-2">
-                          <Avatar className="h-6 w-6">
-                            <AvatarImage
-                              src={repair.fixerAvatar || "/placeholder.svg"}
-                            />
-                            <AvatarFallback className="text-xs bg-gradient-to-br from-[#00BCD4] to-[#26C6DA] text-white">
-                              {repair.fixer.slice(0, 2)}
-                            </AvatarFallback>
-                          </Avatar>
-                          <span className="text-sm text-[#00838F]">
-                            {repair.fixer}
+                          <span className="text-sm font-medium text-[#4DD0E1]">
+                            ${service.cost}/month
                           </span>
                         </div>
-
-                        <div className="flex items-center justify-between text-sm text-[#00838F]">
-                          <div className="flex items-center gap-4">
-                            <div className="flex items-center gap-1">
-                              <Calendar className="h-4 w-4" />
-                              <span>{repair.date}</span>
-                            </div>
-                            <div className="flex items-center gap-1">
-                              <DollarSign className="h-4 w-4" />
-                              <span>${repair.cost}</span>
-                            </div>
-                          </div>
-                          <div className="flex items-center gap-1">
-                            <Star className="h-4 w-4 fill-[#FF9800] text-[#FF9800]" />
-                            <span className="text-[#006064]">
-                              {repair.rating}
+                        <div className="bg-[#4DD0E1]/20 backdrop-blur-[10px] p-3 rounded-[10px] mb-3 border border-[#4DD0E1]/30">
+                          <div className="flex items-center gap-2 mb-1">
+                            <CalendarOutlined className="h-4 w-4 text-[#4DD0E1]" />
+                            <span className="text-sm font-medium text-[#006064]">
+                              Next Service
                             </span>
                           </div>
+                          <p className="text-sm text-[#00838F]">
+                            January 15, 2025 at 2:00 PM
+                          </p>
                         </div>
-
-                        {repair.recurring && (
-                          <div className="mt-2 flex gap-2">
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              className="flex-1 text-xs bg-white/60 border border-[#00BCD4]/30 text-[#006064] hover:bg-white/80 rounded-[10px]"
-                            >
-                              <Calendar className="h-3 w-3 mr-1" />
-                              Reschedule
-                            </Button>
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              className="flex-1 text-xs bg-white/60 border border-[#00BCD4]/30 text-[#006064] hover:bg-white/80 rounded-[10px]"
-                            >
-                              <Clock className="h-3 w-3 mr-1" />
-                              Manage
-                            </Button>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </TabsContent>
-
-          <TabsContent value="recurring" className="space-y-4">
-            <div className="text-center py-4">
-              <div className="w-16 h-16 bg-gradient-to-br from-[#4DD0E1] to-[#00BCD4] rounded-[20px] shadow-[0_0_20px_rgba(77,208,225,0.5)] flex items-center justify-center mx-auto mb-3">
-                <Repeat className="h-8 w-8 text-white" />
-              </div>
-              <h3 className="text-lg font-semibold text-[#006064] mb-2">
-                Recurring Services
-              </h3>
-              <p className="text-sm text-[#00838F] mb-4">
-                Manage your scheduled maintenance and recurring repairs
-              </p>
-            </div>
-
-            <div className="space-y-3">
-              {recurringServices.map((service) => (
-                <Card
-                  key={service.id}
-                  className="border-0 bg-white/80 backdrop-blur-[10px] border-l-4 border-l-[#4DD0E1] border border-[#00BCD4]/30 shadow-[0_4px_10px_rgba(0,188,212,0.3)] rounded-[10px]"
-                >
-                  <CardContent className="p-4">
-                    <div className="flex items-start justify-between mb-3">
-                      <div>
-                        <h3 className="font-semibold text-[#006064] flex items-center gap-2">
-                          {service.item}
-                          <Badge
-                            variant="outline"
-                            className="text-xs border-[#4DD0E1]/30 text-[#4DD0E1] bg-[#4DD0E1]/10 backdrop-blur-[10px]"
+                        <div className="flex gap-2">
+                          <Button
+                            size="small"
+                            type="default"
+                            className="flex-1 bg-white/60 border border-[#00BCD4]/30 text-[#006064] hover:bg-white/80 rounded-[10px]"
                           >
-                            <Repeat className="h-3 w-3 mr-1" />
-                            Monthly
-                          </Badge>
-                        </h3>
-                        <p className="text-sm text-[#00838F]">
-                          by {service.fixer}
-                        </p>
+                            <CalendarOutlined className="h-4 w-4 mr-1" />
+                            Reschedule
+                          </Button>
+                          <Button
+                            size="small"
+                            type="default"
+                            className="flex-1 bg-white/60 border border-[#00BCD4]/30 text-[#006064] hover:bg-white/80 rounded-[10px]"
+                          >
+                            <MessageOutlined className="h-4 w-4 mr-1" />
+                            Contact
+                          </Button>
+                          <Button
+                            size="small"
+                            type="default"
+                            className="flex-1 text-[#F44336] border-[#F44336]/30 bg-[#F44336]/10 hover:bg-[#F44336]/20 rounded-[10px]"
+                          >
+                            Cancel
+                          </Button>
+                        </div>
                       </div>
-                      <span className="text-sm font-medium text-[#4DD0E1]">
-                        ${service.cost}/month
-                      </span>
-                    </div>
-
-                    <div className="bg-[#4DD0E1]/20 backdrop-blur-[10px] p-3 rounded-[10px] mb-3 border border-[#4DD0E1]/30">
-                      <div className="flex items-center gap-2 mb-1">
-                        <Calendar className="h-4 w-4 text-[#4DD0E1]" />
-                        <span className="text-sm font-medium text-[#006064]">
-                          Next Service
-                        </span>
-                      </div>
-                      <p className="text-sm text-[#00838F]">
-                        January 15, 2025 at 2:00 PM
-                      </p>
-                    </div>
-
-                    <div className="flex gap-2">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className="flex-1 bg-white/60 border border-[#00BCD4]/30 text-[#006064] hover:bg-white/80 rounded-[10px]"
-                      >
-                        <Calendar className="h-4 w-4 mr-1" />
-                        Reschedule
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className="flex-1 bg-white/60 border border-[#00BCD4]/30 text-[#006064] hover:bg-white/80 rounded-[10px]"
-                      >
-                        <MessageCircle className="h-4 w-4 mr-1" />
-                        Contact
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className="flex-1 text-[#F44336] border-[#F44336]/30 bg-[#F44336]/10 hover:bg-[#F44336]/20 rounded-[10px]"
-                      >
-                        Cancel
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </TabsContent>
-        </Tabs>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            ),
+          }]}
+        />
       </div>
-
       {/* Camera Modal */}
       <CameraModal
         isOpen={isCameraOpen}
