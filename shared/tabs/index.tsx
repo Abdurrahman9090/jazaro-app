@@ -5,11 +5,11 @@ import { MapPin, MessageCircle, Search, User, Camera } from "lucide-react";
 
 const TabMenu = () => {
   const tabs = [
-    { href: "dashboard", label: "Home", icon: MapPin },
-    { href: "messages", label: "Messages", icon: MessageCircle },
+    { href: "/user/dashboard", label: "Home", icon: MapPin },
+    { href: "/user/messages", label: "Messages", icon: MessageCircle },
     { label: "AI", icon: Camera, isButton: true },
-    { href: "history", label: "History", icon: Search },
-    { href: "profile", label: "Profile", icon: User },
+    { href: "/user/history", label: "History", icon: Search },
+    { href: "/user/profile", label: "Profile", icon: User },
   ];
 
   return (

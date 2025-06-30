@@ -135,19 +135,19 @@ export default function ProfilePage() {
 
         {/* Stats */}
         <div className="grid grid-cols-3 gap-4 text-center">
-          <div className="bg-white/80 backdrop-blur-[10px] rounded-[10px] p-3 border border-[#00BCD4]/30 shadow-[0_4px_10px_rgba(0,188,212,0.3)]">
+          <div className="bg-white/80 backdrop-blur-[10px] rounded-[10px] p-2 border border-[#00BCD4]/30 shadow-[0_4px_10px_rgba(0,188,212,0.3)]">
             <div className="text-2xl font-bold text-[#006064]">
               {customerProfile.totalRequests}
             </div>
             <div className="text-xs text-[#00838F]">Requests</div>
           </div>
-          <div className="bg-white/80 backdrop-blur-[10px] rounded-[10px] p-3 border border-[#00BCD4]/30 shadow-[0_4px_10px_rgba(0,188,212,0.3)]">
+          <div className="bg-white/80 backdrop-blur-[10px] rounded-[10px] p-2 border border-[#00BCD4]/30 shadow-[0_4px_10px_rgba(0,188,212,0.3)]">
             <div className="text-2xl font-bold text-[#4CAF50]">
               {customerProfile.completedRepairs}
             </div>
             <div className="text-xs text-[#00838F]">Completed</div>
           </div>
-          <div className="bg-white/80 backdrop-blur-[10px] rounded-[10px] p-3 border border-[#00BCD4]/30 shadow-[0_4px_10px_rgba(0,188,212,0.3)]">
+          <div className="bg-white/80 backdrop-blur-[10px] rounded-[10px] p-2 border border-[#00BCD4]/30 shadow-[0_4px_10px_rgba(0,188,212,0.3)]">
             <div className="flex items-center justify-center gap-1">
               <span className="text-2xl font-bold text-[#006064]">
                 {customerProfile.avgRating}
@@ -160,7 +160,7 @@ export default function ProfilePage() {
       </div>
 
       {/* Tabs */}
-      <div className="relative z-10 px-4 py-4 pb-20">
+      <div className="relative z-10 px-2 py-2 pb-20">
         <Tabs
           defaultActiveKey="details"
           className="space-y-6"
@@ -175,7 +175,7 @@ export default function ProfilePage() {
                     <div className="pb-3 border-b border-[#00BCD4]/20">
                       <div className="text-lg text-[#006064] font-semibold">Contact Information</div>
                     </div>
-                    <div className="space-y-3 p-4">
+                    <div className="space-y-3 p-1">
                       <div className="flex items-center gap-3">
                         <MailOutlined className="h-5 w-5 text-[#00838F]" />
                         <span className="text-[#006064]">
@@ -204,7 +204,7 @@ export default function ProfilePage() {
                         Insurance
                       </div>
                     </div>
-                    <div className="p-4">
+                    <div className="p-2">
                       <div className="flex items-center justify-between">
                         <div>
                           <p className="font-medium text-[#006064]">Link Insurance</p>
@@ -218,7 +218,7 @@ export default function ProfilePage() {
                         />
                       </div>
                       {insuranceLinked && (
-                        <div className="mt-3 p-3 bg-[#4CAF50]/20 backdrop-blur-[10px] rounded-[10px] border border-[#4CAF50]/30">
+                        <div className="mt-3 p-2 bg-[#4CAF50]/20 backdrop-blur-[10px] rounded-[10px] border border-[#4CAF50]/30">
                           <div className="flex items-center gap-2">
                             <CheckCircleOutlined className="h-4 w-4 text-[#4CAF50]" />
                             <span className="text-sm font-medium text-[#006064]">
@@ -237,7 +237,7 @@ export default function ProfilePage() {
                     <div className="pb-3 border-b border-[#00BCD4]/20">
                       <div className="text-lg text-[#006064] font-semibold">Verification</div>
                     </div>
-                    <div className="space-y-3 p-4">
+                    <div className="space-y-3 p-2">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                           <CheckCircleOutlined className="h-5 w-5 text-[#4CAF50]" />
@@ -267,7 +267,7 @@ export default function ProfilePage() {
                       key={repair.id}
                       className="border-0 bg-white/80 backdrop-blur-[10px] border border-[#00BCD4]/30 shadow-[0_4px_10px_rgba(0,188,212,0.3)] rounded-[10px]"
                     >
-                      <div className="p-4">
+                      <div className="p-2">
                         <div className="flex items-start justify-between mb-2">
                           <div>
                             <h3 className="font-semibold text-[#006064]">

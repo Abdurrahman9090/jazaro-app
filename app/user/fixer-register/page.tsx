@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Row, Col,Button, Input, Select, Checkbox, Form, Typography } from "antd";
+import { Row, Col,Button, Input, Select, Checkbox, Form, Typography, Avatar, Upload, message } from "antd";
 import {
   MailOutlined,
   UserOutlined,
@@ -11,6 +11,17 @@ import {
   ArrowRightOutlined,
   ArrowLeftOutlined,
   PlusOutlined,
+  ToolOutlined,
+  ThunderboltOutlined,
+  BuildOutlined,
+  FormatPainterOutlined,
+  FireOutlined,
+  SettingOutlined,
+  CarOutlined,
+  LockOutlined,
+  HomeOutlined,
+  LaptopOutlined,
+  DeleteOutlined,
 } from "@ant-design/icons";
 import Link from "next/link";
 import { useSelector } from "react-redux";
@@ -19,6 +30,143 @@ import { AuthSelector } from "@/redux/reducers";
 const { TextArea } = Input;
 const { Option } = Select;
 const { Title, Text } = Typography;
+
+// Category and subcategory data (copied from app/user/services/[category]/page.tsx)
+const categoryData: Record<string, { name: string; subcategories: string[] }> = {
+  electricians: {
+    name: "Electricians",
+    subcategories: [
+      "General Electrical Repairing",
+      "House & Office Wiring",
+      "Switchboard & Panel Installation",
+      "Circuit Breaker & Fuse Repair",
+      "Lighting Installation (Indoor/Outdoor)",
+      "Generator & UPS Setup",
+    ],
+  },
+  plumbers: {
+    name: "Plumbers",
+    subcategories: [
+      "Water Pipe Installation & Repair",
+      "Sanitary Fitting & Replacement",
+      "Drainage & Sewerage Solutions",
+      "Water Tank Cleaning",
+      "Leak Detection & Fixing",
+      "Bathroom & Kitchen Fixture Installation",
+    ],
+  },
+  carpenters: {
+    name: "Carpenters",
+    subcategories: [
+      "Custom Woodwork",
+      "Furniture Making & Repair",
+      "Cabinet & Wardrobe Installation",
+      "Door and Window Fittings",
+      "Shelving and Storage Solutions",
+      "Wooden Flooring Installation",
+    ],
+  },
+  painters: {
+    name: "Painters",
+    subcategories: [
+      "Interior Wall Painting",
+      "Exterior Wall Painting",
+      "Ceiling & Decorative Paint",
+      "Wallpaper Installation & Removal",
+      "Surface Preparation (Plastering, Sanding)",
+    ],
+  },
+  hvac: {
+    name: "HVAC / AC Technicians",
+    subcategories: [
+      "Air Conditioner Installation & Repair",
+      "HVAC System Installation & Servicing",
+      "Split, Central, and Inverter AC Handling",
+      "Ventilation Setup and Maintenance",
+      "Gas Refilling & Pipe Insulation",
+    ],
+  },
+  "appliance-repair": {
+    name: "Appliance Repair",
+    subcategories: [
+      "Refrigerator, Washing Machine, Oven Fixing",
+      "Microwave, Dishwasher & Dryer Repairs",
+      "Water Dispenser and Heater Repair",
+      "TV and Home Theater Setup",
+    ],
+  },
+  mason: {
+    name: "Mason / Construction Workers",
+    subcategories: [
+      "Brickwork & Tiling",
+      "Home and Office Renovation",
+      "Wall Plastering & Painting Prep",
+      "Kitchen & Bathroom Remodeling",
+      "Ceiling Design (POP, Gypsum)",
+      "Foundation Repairs & Concrete Work",
+    ],
+  },
+  mechanics: {
+    name: "Mechanics",
+    subcategories: [
+      "Car Mechanical Repairs",
+      "Motorcycle/Bike Servicing",
+      "Engine Diagnostics",
+      "Battery Replacement",
+      "Oil & Filter Change",
+    ],
+  },
+  locksmiths: {
+    name: "Locksmiths",
+    subcategories: [
+      "Lock Installation & Repair",
+      "Digital & Smart Lock Services",
+      "Door Unlocking (Emergency)",
+      "Key Duplication",
+      "Safe Installation & Repair",
+    ],
+  },
+  handyman: {
+    name: "Handyman Services",
+    subcategories: [
+      "Tree Trimming & Cutting",
+      "Gutter Cleaning",
+      "Pest Control Services",
+      "Carpet Cleaning",
+      "Lawn Mowing & Landscaping",
+      "Wall Mounting (TVs, Shelves, etc.)",
+      "Minor Home Repairs",
+    ],
+  },
+  "vehicle-services": {
+    name: "Vehicle Services",
+    subcategories: [
+      "Car Detailing & Polishing",
+      "Touring Inspection & Pre-Trip Services",
+      "Tyre Fitting & Puncture Repair",
+      "Electric Vehicle (EV) Battery Installation & Maintenance",
+      "Windshield & Glass Repair",
+    ],
+  },
+  "it-smart-home": {
+    name: "IT & Smart Home Services",
+    subcategories: [
+      "CCTV Installation & Troubleshooting",
+      "Wi-Fi & Network Setup",
+      "Smart Home Device Setup (Lights, Thermostats)",
+      "Doorbell Cameras & Security Systems",
+    ],
+  },
+  cleaning: {
+    name: "Cleaning Services",
+    subcategories: [
+      "Deep Home Cleaning",
+      "Office/Commercial Cleaning",
+      "Move-in / Move-out Cleaning",
+      "Sofa & Mattress Cleaning",
+    ],
+  },
+};
 
 export default function FixerRegisterPage() {
   const { user } = useSelector(AuthSelector);
@@ -29,6 +177,8 @@ export default function FixerRegisterPage() {
     fullName: "",
     email: "",
     phone: "",
+    cnic: "",
+    cnicImage: undefined as any,
     password: "",
     confirmPassword: "",
     profession: "",
@@ -37,6 +187,8 @@ export default function FixerRegisterPage() {
     bio: "",
     specialties: [] as string[],
     certifications: [] as string[],
+    categories: [] as string[],
+    subcategories: {} as Record<string, string[]>,
   });
 
   const specialties = [
@@ -104,6 +256,30 @@ export default function FixerRegisterPage() {
   return (
     <div className="bg-gradient-to-br from-[#E0F7FA] via-[#B2EBF2] to-[#80DEEA] px-4 flex items-center justify-center min-h-screen">
       <div className="w-full max-w-xl">
+        {/* User Profile Card */}
+        {user && (
+          <div className="flex flex-col items-center justify-center mb-8">
+            <div className="w-24 h-24 bg-white/80 backdrop-blur-[10px] rounded-full shadow-[0_4px_10px_rgba(0,188,212,0.3)] border border-[#00BCD4]/30 flex items-center justify-center mb-3">
+              <Avatar size={96} src={user.avatar || "/placeholder-user.jpg"} className="bg-gradient-to-br from-[#00BCD4] to-[#26C6DA] text-white font-bold text-3xl flex items-center justify-center">
+                {user.username ? user.username.slice(0, 2).toUpperCase() : "U"}
+              </Avatar>
+            </div>
+            <div className="text-center">
+              <div className="flex items-center justify-center gap-2 mb-1">
+                <span className="text-xl font-bold text-[#006064]">
+                  {user.username || "User"}
+                </span>
+              </div>
+              {user.email && (
+                <div className="flex items-center justify-center gap-1 text-[#00838F] text-sm mb-1">
+                  <MailOutlined className="h-4 w-4" />
+                  <span>{user.email}</span>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+        {/* End User Profile Card */}
         {step === 1 ? (
           <Form layout="vertical" onSubmitCapture={handleNext}>
             <Title level={4} className="text-[#00838F]">Personal Information</Title>
@@ -146,6 +322,52 @@ export default function FixerRegisterPage() {
                   />
                 </Form.Item>
               </Col>
+              {/* Group CNIC number and image in a single row */}
+              <Col xs={24} md={12} className="flex flex-col gap-2">
+                <Form.Item label={<span className="text-[#006064]">CNIC</span>} required>
+                  <Input
+                    name="cnic"
+                    prefix={<IdcardOutlined className="text-[#00838F]" />}
+                    placeholder="Enter your CNIC number"
+                    value={formData.cnic}
+                    onChange={handleChange}
+                    className="bg-white/80 border border-[#00BCD4]/30 text-[#006064] placeholder:text-[#00838F] rounded-[10px]"
+                  />
+                </Form.Item>
+              </Col>
+              <Col xs={24} md={12} className="flex flex-col gap-2">
+                <Form.Item label={<span className="text-[#006064]">CNIC Image</span>} required>
+                  <Upload
+                    name="cnicImage"
+                    listType="picture-card"
+                    showUploadList={false}
+                    accept="image/*"
+                    beforeUpload={file => {
+                      const isImage = file.type.startsWith('image/');
+                      if (!isImage) {
+                        message.error('You can only upload image files!');
+                        return Upload.LIST_IGNORE;
+                      }
+                      setFormData(prev => ({ ...prev, cnicImage: file }));
+                      return false; // Prevent upload
+                    }}
+                    onRemove={() => setFormData(prev => ({ ...prev, cnicImage: undefined }))}
+                  >
+                    {formData.cnicImage ? (
+                      <img
+                        src={URL.createObjectURL(formData.cnicImage)}
+                        alt="CNIC"
+                        style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 8 }}
+                      />
+                    ) : (
+                      <div className="flex flex-col items-center justify-center text-[#00BCD4]">
+                        <PlusOutlined style={{ fontSize: 24 }} />
+                        <div className="mt-1 text-xs">Upload CNIC</div>
+                      </div>
+                    )}
+                  </Upload>
+                </Form.Item>
+              </Col>
               <Col xs={24} md={12}>
                 <Form.Item label={<span className="text-[#006064]">Location</span>} required>
                   <Input
@@ -158,6 +380,59 @@ export default function FixerRegisterPage() {
                   />
                 </Form.Item>
               </Col>
+              {/* Category Dropdown */}
+              <Col xs={24} md={12}>
+                <Form.Item label={<span className="text-[#006064]">Categories</span>} required>
+                  <Select
+                    mode="multiple"
+                    value={formData.categories}
+                    onChange={categories => {
+                      // Remove subcategories for unselected categories
+                      setFormData(prev => ({
+                        ...prev,
+                        categories,
+                        subcategories: Object.fromEntries(
+                          categories.map(cat => [cat, prev.subcategories[cat] || []])
+                        ),
+                      }));
+                    }}
+                    placeholder="Select categories"
+                    className="bg-white/80 border border-[#00BCD4]/30 text-[#006064] rounded-[10px] w-full"
+                    showSearch
+                    optionFilterProp="children"
+                  >
+                    {Object.entries(categoryData).map(([key, cat]) => (
+                      <Option key={key} value={key}>{cat.name}</Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+              </Col>
+              {/* For each selected category, show a multi-select for subcategories */}
+              {formData.categories.map((cat) => (
+                <Col xs={24} md={12} key={cat}>
+                  <Form.Item
+                    label={<span className="text-[#006064]">Subcategories for {categoryData[cat].name}</span>}
+                    required
+                  >
+                    <Select
+                      mode="multiple"
+                      value={formData.subcategories[cat] || []}
+                      onChange={subs => setFormData(prev => ({
+                        ...prev,
+                        subcategories: { ...prev.subcategories, [cat]: subs },
+                      }))}
+                      placeholder={`Select subcategories for ${categoryData[cat].name}`}
+                      className="bg-white/80 border border-[#00BCD4]/30 text-[#006064] rounded-[10px] w-full"
+                      showSearch
+                      optionFilterProp="children"
+                    >
+                      {categoryData[cat].subcategories.map((sub: string) => (
+                        <Option key={sub} value={sub}>{sub}</Option>
+                      ))}
+                    </Select>
+                  </Form.Item>
+                </Col>
+              ))}
             </Row>
 
             <Title level={4} className="text-[#00838F] mt-8 mb-4">Professional Information</Title>

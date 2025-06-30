@@ -137,21 +137,21 @@ export default function HistoryPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#E0F7FA] via-[#B2EBF2] to-[#80DEEA] max-w-md mx-auto relative overflow-hidden">
       {/* Stats */}
-      <div className="relative z-10 px-4 py-4 bg-white/50 backdrop-blur-[10px]">
+      <div className="relative z-10 px-2 py-4 bg-white/50 backdrop-blur-[10px]">
         <div className="grid grid-cols-3 gap-4 text-center">
-          <div className="bg-white/80 backdrop-blur-[10px] rounded-[10px] p-3 border border-[#00BCD4]/30 shadow-[0_4px_10px_rgba(0,188,212,0.3)]">
+          <div className="bg-white/80 backdrop-blur-[10px] rounded-[10px] p-2 border border-[#00BCD4]/30 shadow-[0_4px_10px_rgba(0,188,212,0.3)]">
             <div className="text-2xl font-bold text-[#006064]">
               {repairHistory.length}
             </div>
             <div className="text-xs text-[#00838F]">Total Repairs</div>
           </div>
-          <div className="bg-white/80 backdrop-blur-[10px] rounded-[10px] p-3 border border-[#00BCD4]/30 shadow-[0_4px_10px_rgba(0,188,212,0.3)]">
+          <div className="bg-white/80 backdrop-blur-[10px] rounded-[10px] p-2 border border-[#00BCD4]/30 shadow-[0_4px_10px_rgba(0,188,212,0.3)]">
             <div className="text-2xl font-bold text-[#4CAF50]">
               ${totalSpent}
             </div>
             <div className="text-xs text-[#00838F]">Total Spent</div>
           </div>
-          <div className="bg-white/80 backdrop-blur-[10px] rounded-[10px] p-3 border border-[#00BCD4]/30 shadow-[0_4px_10px_rgba(0,188,212,0.3)]">
+          <div className="bg-white/80 backdrop-blur-[10px] rounded-[10px] p-2 border border-[#00BCD4]/30 shadow-[0_4px_10px_rgba(0,188,212,0.3)]">
             <div className="flex items-center justify-center gap-1">
               <span className="text-2xl font-bold text-[#006064]">
                 {avgRating.toFixed(1)}
@@ -163,7 +163,7 @@ export default function HistoryPage() {
         </div>
       </div>
 
-      <div className="relative z-10 px-4 py-4 pb-20">
+      <div className="relative z-10 px-2 py-2 pb-20">
         <Tabs
           defaultActiveKey="all"
           className="space-y-4"
@@ -209,7 +209,7 @@ export default function HistoryPage() {
                       key={repair.id}
                       className="border-0 bg-white/80 backdrop-blur-[10px] border border-[#00BCD4]/30 shadow-[0_4px_10px_rgba(0,188,212,0.3)] hover:shadow-[0_8px_20px_rgba(0,188,212,0.2)] transform hover:scale-105 transition-all duration-300 rounded-[10px]"
                     >
-                      <div className="p-4">
+                      <div className="p-1">
                         <div className="flex gap-3">
                           <Image
                             src={repair.image || "/placeholder.svg"}
@@ -313,7 +313,7 @@ export default function HistoryPage() {
                       key={service.id}
                       className="border-0 bg-white/80 backdrop-blur-[10px] border-l-4 border-l-[#4DD0E1] border border-[#00BCD4]/30 shadow-[0_4px_10px_rgba(0,188,212,0.3)] rounded-[10px]"
                     >
-                      <div className="p-4">
+                      <div className="p-1">
                         <div className="flex items-start justify-between mb-3">
                           <div>
                             <h3 className="font-semibold text-[#006064] flex items-center gap-2">
