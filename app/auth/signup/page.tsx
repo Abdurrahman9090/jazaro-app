@@ -11,7 +11,7 @@ import {
 } from "@ant-design/icons";
 import Link from "next/link";
 
-import { signup } from "@/redux/actions/authActions";
+import { signup } from "@/redux/actions/authAction";
 import { useAppDispatch } from "@/redux/store";
 import { IRegisterFormData } from "@/types/reduxTypes/auth";
 

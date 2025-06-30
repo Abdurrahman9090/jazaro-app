@@ -1,9 +1,11 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { UserState, IUser } from "@/types/reduxTypes/user";
+import { UserState, IUser, IGetAllUser } from "@/types/reduxTypes/user";
+import { ZERO } from "@/constants";
 
 const initialState: UserState = {
   users: null,
   userLoading: true,
+  // totalDocumentsUser: null,
 };
 
 const userSlice = createSlice({
@@ -12,6 +14,7 @@ const userSlice = createSlice({
   reducers: {
     getUsersSuccess: (state, { payload }: PayloadAction<IUser[]>) => {
       state.users = payload;
+      // state.totalDocumentsUser = payload?.totalDocuments?.[ZERO]?.total;
       state.userLoading = false;
     },
     getUsersFailure: (state) => {

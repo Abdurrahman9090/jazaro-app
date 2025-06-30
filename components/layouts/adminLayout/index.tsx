@@ -1,4 +1,13 @@
-import { Layout, Menu, Button, Avatar, Dropdown, Space, Badge } from "antd";
+import {
+  Layout,
+  Menu,
+  Button,
+  Avatar,
+  Dropdown,
+  Space,
+  Badge,
+  Grid,
+} from "antd";
 import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
@@ -14,48 +23,31 @@ import {
 } from "@ant-design/icons";
 import React, { useState } from "react";
 import { useAppDispatch } from "@/redux/store";
+import { useRouter } from "next/navigation";
 
-import { logout } from "@/redux/actions/authActions";
+import { logout } from "@/redux/actions/authAction";
+import { ClientSider } from "@/shared/sider";
+import { UserRoles } from "@/types";
+import { getClientRoutes, siderAdminRoutes } from "@/routes/sider";
+import { AuthSelector } from "@/redux/reducers";
+import { useSelector } from "react-redux";
+import { humanize } from "@/utils";
 
-const { Header: AntHeader, Sider, Content } = Layout;
+const { useBreakpoint } = Grid;
+const { Header: AntHeader, Content } = Layout;
 
 const AdminLayout = ({ children }: any) => {
+  const { xs } = useBreakpoint();
+  const router = useRouter();
+  const { user } = useSelector(AuthSelector);
   const [collapsed, setCollapsed] = useState(false);
-  const [selectedKey, setSelectedKey] = useState("dashboard");
+
   const dispatch = useAppDispatch();
 
-  const menuItems = [
-    {
-      key: "dashboard",
-      icon: <DashboardOutlined />,
-      label: "Dashboard",
-    },
-    {
-      key: "users",
-      icon: <UserOutlined />,
-      label: "Users",
-    },
-    {
-      key: "fixers",
-      icon: <ToolOutlined />,
-      label: "Fixers",
-    },
-    {
-      key: "requests",
-      icon: <FileTextOutlined />,
-      label: "Requests",
-    },
-    {
-      key: "analytics",
-      icon: <BarChartOutlined />,
-      label: "Analytics",
-    },
-    {
-      key: "settings",
-      icon: <SettingOutlined />,
-      label: "Settings",
-    },
-  ];
+  const routes =
+    user?.role === UserRoles.Admin
+      ? siderAdminRoutes
+      : getClientRoutes(user?.role || "");
 
   const userMenuItems = [
     {
@@ -81,51 +73,35 @@ const AdminLayout = ({ children }: any) => {
   const handleMenuClick = ({ key }: { key: string }) => {
     if (key === "logout") {
       dispatch(logout());
+    } else {
+      // Navigate to the corresponding page
+      router.push(`/admin/${key}`);
     }
   };
 
   return (
     <Layout className="min-h-screen">
-      <Sider
-        trigger={null}
-        collapsible
+      <ClientSider
+        theme="light"
+        width={220}
+        breakpoint="xs"
+        className="relative"
+        collapsedWidth={xs ? 0 : 70}
         collapsed={collapsed}
-        className="bg-white shadow-lg border-r border-gray-200"
-        width={250}
-      >
-        <div className="p-4 border-b border-gray-200">
-          <div className="flex items-center justify-center">
-            <h1
-              className={`text-xl font-bold text-gray-800 transition-all duration-300 ${
-                collapsed ? "text-center" : ""
-              }`}
-            >
-              {collapsed ? "J" : "Jazaro Panel"}
-            </h1>
-          </div>
-        </div>
+        onCollapse={(value) => setCollapsed(value)}
+        menuItems={routes}
+      />
 
-        <Menu
-          mode="inline"
-          selectedKeys={[selectedKey]}
-          items={menuItems}
-          className="border-r-0"
-          onClick={({ key }) => setSelectedKey(key)}
-        />
-      </Sider>
-
-      <Layout>
-        <AntHeader className="bg-white px-6 flex items-center justify-between shadow-sm border-b border-gray-200">
-          <div className="flex items-center space-x-4">
+      <Layout className="relative">
+        <AntHeader className=" bg-white px-6 flex items-center justify-between shadow-sm border-b border-gray-200">
+          <div className="flex items-center ">
             <Button
               type="text"
               icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
               onClick={() => setCollapsed(!collapsed)}
               className="text-gray-600 hover:text-gray-800"
             />
-            <div className="text-lg font-semibold text-gray-800">
-              {menuItems.find((item) => item.key === selectedKey)?.label}
-            </div>
+            <div className="text-lg font-semibold text-gray-800">DashBoard</div>
           </div>
 
           <div className="flex items-center space-x-4">
@@ -146,13 +122,15 @@ const AdminLayout = ({ children }: any) => {
             >
               <Space className="cursor-pointer hover:bg-gray-50 px-3 py-2 rounded-lg transition-colors">
                 <Avatar size="small" icon={<UserOutlined />} />
-                <span className="text-gray-700 font-medium">Admin</span>
+                <span className="text-gray-700 font-medium">
+                  {humanize(user?.username || "Admin")}
+                </span>
               </Space>
             </Dropdown>
           </div>
         </AntHeader>
 
-        <Content className="m-6 p-6 bg-gray-50 rounded-lg min-h-[calc(100vh-120px)]">
+        <Content className="p-4 rounded-lg min-h-[calc(100vh-120px)]">
           {children}
         </Content>
       </Layout>

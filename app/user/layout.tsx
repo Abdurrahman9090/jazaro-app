@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useAppDispatch } from "@/redux/store";
 import { AuthSelector } from "@/redux/reducers";
 import { useSelector } from "react-redux";
-import { loadUser } from "@/redux/actions/authActions";
+import { loadUser } from "@/redux/actions/authAction";
 import React, { ReactElement, useEffect } from "react";
 import ClientLayout from "@/components/layouts/userLayout";
 

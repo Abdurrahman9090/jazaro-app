@@ -11,7 +11,7 @@ import {
 } from "@ant-design/icons";
 import Link from "next/link";
 import { useAppDispatch } from "@/redux/store";
-import { signin } from "@/redux/actions/authActions";
+import { signin } from "@/redux/actions/authAction";
 import { ILoginFormData } from "@/types/reduxTypes/auth";
 
 interface FormValues {

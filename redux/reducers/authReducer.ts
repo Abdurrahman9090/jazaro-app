@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { removeSecondaryToken } from "@/utils/Logout";
 import { AuthState } from "@/types/reduxTypes/auth";
+import { IUser } from "@/types/reduxTypes/user";
 
 // TODO change this state by maniging it from redux
 const initialState: AuthState = {
@@ -61,6 +62,12 @@ const AuthSlice = createSlice({
     signinFailure: (state) => {
       return state;
     },
+    updateUserProfileSuccess: (state, { payload }: PayloadAction<IUser>) => {
+      state.user = { ...state.user, ...payload };
+    },
+    updateUserProfileFailure: (state) => {
+      return state;
+    },
     authReset: () => {
       return {
         ...initialState,
@@ -97,6 +104,8 @@ export const {
   signinSuccess,
   authReset,
   clearSession,
+  updateUserProfileSuccess,
+  updateUserProfileFailure,
 } = AuthSlice.actions;
 
 export default AuthSlice.reducer;
