@@ -6,8 +6,16 @@ export interface IUser {
   role: UserRoles;
   avatar?: string;
   username: string;
+  phone:number;
   verified?: boolean;
   createdBy?: string;
   organization?: string;
   employee_limit?: number;
+}
+
+export interface IGetAllUser {
+  data: Array<IUser>;
+  totalDocuments: Array<{
+    total: number;
+  }>;
 }

@@ -1,6 +1,6 @@
 import { AuthErrors } from "@/types";
 import { store } from "@/redux/store/index";
-import { logout } from "@/redux/actions/authActions";
+import { logout } from "@/redux/actions/authAction";
 
 /**
  * Error handler for different response types

@@ -2,7 +2,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { config, BackendInstance } from "@/config";
 import { ILoginFormData, IRegisterFormData } from "@/types/reduxTypes/auth";
 import { handlerError } from "@/utils/ErrorHandler";
-import { updateAlert } from "./alertActions";
+import { updateAlert } from "./alertAction";
 import {
   authReset,
   clearSession,

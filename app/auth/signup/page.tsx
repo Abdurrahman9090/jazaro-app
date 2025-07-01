@@ -11,7 +11,7 @@ import {
 } from "@ant-design/icons";
 import Link from "next/link";
 
-import { signup } from "@/redux/actions/authActions";
+import { signup } from "@/redux/actions/authAction";
 import { useAppDispatch } from "@/redux/store";
 import { IRegisterFormData } from "@/types/reduxTypes/auth";
 
@@ -31,13 +31,8 @@ export default function Signup() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#E0F7FA] via-[#B2EBF2] to-[#80DEEA] flex items-center justify-center p-4">
-      {/* Decorative Background Elements */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-r from-[#00BCD4] to-[#26C6DA] rounded-full opacity-30 blur-xl animate-pulse"></div>
-        <div className="absolute bottom-40 right-10 w-24 h-24 bg-gradient-to-r from-[#4DD0E1] to-[#00BCD4] rounded-full opacity-30 blur-xl animate-pulse delay-1000"></div>
-      </div>
-
+    <div className="min-h-screen flex items-center justify-center p-4">
+     
       <Card
         className="w-full max-w-md bg-white/95 backdrop-blur-[10px] border border-[#00BCD4]/30 shadow-[0_8px_32px_rgba(0,188,212,0.3)] rounded-[20px]"
         style={{ borderRadius: "20px" }}

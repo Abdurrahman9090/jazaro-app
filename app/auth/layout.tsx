@@ -1,6 +1,6 @@
 "use client";
 
-import { loadUser } from "@/redux/actions/authActions";
+import { loadUser } from "@/redux/actions/authAction";
 import { AuthSelector } from "@/redux/reducers";
 import { useAppDispatch } from "@/redux/store";
 import { UserRoles } from "@/types";
