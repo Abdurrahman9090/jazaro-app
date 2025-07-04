@@ -4,7 +4,7 @@ import React, { useEffect } from "react";
 import "./globals.css";
 import { Provider } from "react-redux";
 import { store } from "@/redux/store";
-import { loadUser } from "@/redux/actions/authActions";
+import { loadUser } from "@/redux/actions/authAction";
 
 // export const metadata: Metadata = {
 //   title: "Jazaro",

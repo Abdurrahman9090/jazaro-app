@@ -185,19 +185,20 @@ export default function MessagesPage() {
               }`}
             >
               <div
-                className={`max-w-xs px-4 py-3 rounded-[10px] backdrop-blur-[10px] shadow-[0_4px_10px_rgba(0,188,212,0.3)] transition-all duration-300 hover:scale-105 ${
+                className={`max-w-xs px-1 py-1 rounded-[10px] backdrop-blur-[10px] shadow-[0_4px_10px_rgba(0,188,212,0.3)] transition-all duration-300 hover:scale-105 ${
                   message.sender === "user"
                     ? "bg-gradient-to-br from-[#00BCD4] to-[#26C6DA] text-white shadow-[0_0_20px_rgba(0,188,212,0.3)]"
                     : "bg-white/80 border border-[#00BCD4]/30 text-[#006064]"
                 }`}
               >
-                <p className="text-sm">{message.content}</p>
+                <p className="text-sm m-0 p-0">{message.content}</p>
                 <p
                   className={`text-xs mt-1 ${
                     message.sender === "user"
                       ? "text-white/70"
                       : "text-[#00838F]"
                   }`}
+                  style={{margin: 0, padding: 0}}
                 >
                   {message.timestamp}
                 </p>
@@ -285,7 +286,7 @@ export default function MessagesPage() {
             className="border-0 bg-white/80 backdrop-blur-[10px] border border-[#00BCD4]/30 cursor-pointer hover:bg-white/90 transition-all duration-300 hover:border-[#00BCD4]/50 shadow-[0_4px_10px_rgba(0,188,212,0.3)] hover:shadow-[0_8px_20px_rgba(0,188,212,0.2)] transform hover:scale-105 rounded-[10px]"
             onClick={() => setSelectedChat(conversation.id)}
           >
-            <div className="p-4">
+            <div className="p-1">
               <div className="flex items-start gap-3">
                 <div className="relative">
                   <div className="w-14 h-14 bg-white/80 backdrop-blur-[10px] rounded-[10px] shadow-[0_4px_10px_rgba(0,188,212,0.3)] border border-[#00BCD4]/30 flex items-center justify-center">

@@ -94,7 +94,7 @@ export default function OnboardingScreen() {
         <div className="flex justify-end p-6">
           <Button
             onClick={handleSkip}
-            className="text-white/80 hover:text-white hover:bg-white/10"
+            className="text-black hover:text-white hover:bg-white/10"
           >
             Skip
           </Button>

@@ -5,7 +5,7 @@ import { Menu, Bell, User } from "lucide-react";
 import { AuthSelector } from "@/redux/reducers";
 import { useSelector } from "react-redux";
 import { useAppDispatch } from "@/redux/store";
-import { logout } from "@/redux/actions/authActions";
+import { logout } from "@/redux/actions/authAction";
 
 // antd imports
 import { Button, Dropdown, Avatar } from "antd";
@@ -15,9 +15,9 @@ const Header = ({ onMenuClick = () => {} }) => {
   const { user } = useSelector(AuthSelector);
   const dispatch = useAppDispatch();
 
-  const userMenuItems: MenuProps['items'] = [
+  const userMenuItems: MenuProps["items"] = [
     {
-      key: 'profile',
+      key: "profile",
       label: (
         <Link href="/profile" className="text-[#006064] hover:text-[#00838F]">
           Profile Settings
@@ -25,12 +25,12 @@ const Header = ({ onMenuClick = () => {} }) => {
       ),
     },
     {
-      type: 'divider',
+      type: "divider",
     },
     {
-      key: 'logout',
+      key: "logout",
       label: (
-        <span 
+        <span
           className="text-[#006064] hover:text-[#00838F] cursor-pointer"
           onClick={() => dispatch(logout())}
         >
@@ -49,7 +49,9 @@ const Header = ({ onMenuClick = () => {} }) => {
             onClick={onMenuClick}
             className="focus:outline-none p-0 border-0 shadow-none"
             aria-label="Open menu"
-            icon={<Menu className="h-6 w-6 text-[#006064] hover:text-[#00838F] transition-colors" />}
+            icon={
+              <Menu className="h-6 w-6 text-[#006064] hover:text-[#00838F] transition-colors" />
+            }
           />
           {/* 3D Jazaro Logo */}
           <div className="flex items-center gap-2">
@@ -81,7 +83,7 @@ const Header = ({ onMenuClick = () => {} }) => {
           <Dropdown
             menu={{ items: userMenuItems }}
             placement="bottomRight"
-            trigger={['click']}
+            trigger={["click"]}
             overlayClassName="w-40"
           >
             <Button

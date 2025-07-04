@@ -18,7 +18,7 @@
     "utils": "@/utils",
     "config": "@/config",
     "shared": "@/shared",
-    "ui": "@/components/ui",
+    "contacts": "@/contacts",
     "components": "@/components",
     "reduxTypes": "@/types/reduxTypes",
     "@layouts": "@/components/layouts"
