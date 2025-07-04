@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { Card, Input, Typography } from "antd";
-import { ToolOutlined, ThunderboltOutlined, BuildOutlined, FormatPainterOutlined, FireOutlined, SettingOutlined, CarOutlined, LockOutlined, HomeOutlined, UserOutlined, LaptopOutlined, DeleteOutlined, SearchOutlined, MenuOutlined, CameraOutlined, HistoryOutlined, UserSwitchOutlined, MessageOutlined } from "@ant-design/icons";
+import { Card, Input, Typography, Avatar, Button } from "antd";
+import { ToolOutlined, ThunderboltOutlined, BuildOutlined, FormatPainterOutlined, FireOutlined, SettingOutlined, CarOutlined, LockOutlined, HomeOutlined, UserOutlined, LaptopOutlined, DeleteOutlined, SearchOutlined, MenuOutlined, CameraOutlined, HistoryOutlined, UserSwitchOutlined, MessageOutlined, StarFilled, EnvironmentOutlined, ClockCircleOutlined } from "@ant-design/icons";
 
 const { Title } = Typography;
 

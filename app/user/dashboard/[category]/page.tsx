@@ -1,7 +1,18 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import { Card, Button } from "antd";
+import {
+  Card,
+  Button,
+  Input,
+  Checkbox,
+  Typography,
+  Form,
+  Radio,
+  Select,
+  Upload,
+  message,
+} from "antd";
 import {
   ToolOutlined,
   ThunderboltOutlined,
@@ -15,8 +26,18 @@ import {
   UserOutlined,
   LaptopOutlined,
   DeleteOutlined,
+  CreditCardOutlined,
+  DollarOutlined,
+  CameraOutlined,
+  AudioOutlined,
+  EnvironmentOutlined,
+  MobileOutlined,
+  PlusOutlined,
 } from "@ant-design/icons";
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+
+const { Title, Text } = Typography;
 
 // Main categories data (copied from main dashboard page for consistency)
 const categories = [
@@ -198,6 +219,24 @@ const subcategoriesMap: Record<string, { key: string; name: string; description:
   ],
 };
 
+const urgencyLevels = [
+  { id: "low", label: "Within a week", color: "#E8F5E8", textColor: "#2E7D32" },
+  { id: "medium", label: "2-3 days", color: "#FFF8E1", textColor: "#F57C00" },
+  { id: "high", label: "Today/Tomorrow", color: "#FFF3E0", textColor: "#E65100" },
+  { id: "emergency", label: "ASAP", color: "#FFEBEE", textColor: "#C62828" },
+];
+
+const bankOptions = [
+  { id: "chase", name: "Chase Bank", logo: "🏦" },
+  { id: "bofa", name: "Bank of America", logo: "🏛️" },
+  { id: "wells", name: "Wells Fargo", logo: "🏪" },
+  { id: "citi", name: "Citibank", logo: "🏢" },
+  { id: "usbank", name: "US Bank", logo: "🏦" },
+  { id: "pnc", name: "PNC Bank", logo: "🏛️" },
+  { id: "td", name: "TD Bank", logo: "🏪" },
+  { id: "capital", name: "Capital One", logo: "🏢" },
+];
+
 const CategoryPage = () => {
   const params = useParams();
   const categoryKey = params?.category as string;
@@ -217,24 +256,6 @@ const CategoryPage = () => {
       prev.includes(key)
         ? prev.filter((k) => k !== key)
         : [...prev, key]
-    );
-  };
-
-  // Handle Find Fixer For Me button click
-  const handleFindFixer = () => {
-    // For now, just alert the selected subcategories
-    // In real app, you would route or send this data to backend
-    if (selectedSubs.length === 0) {
-      alert("Please select at least one service.");
-      return;
-    }
-    alert(
-      `Selected services:\n${selectedSubs
-        .map(
-          (key) =>
-            subcategories.find((s) => s.key === key)?.name || key
-        )
-        .join(", ")}`
     );
   };
 
@@ -281,12 +302,10 @@ const CategoryPage = () => {
                 >
                   <div className="flex flex-col items-center gap-3 w-full">
                     <div className="relative flex items-center justify-center w-full">
-                      <input
-                        type="checkbox"
+                      <Checkbox
                         checked={selectedSubs.includes(sub.key)}
                         onChange={() => handleToggle(sub.key)}
-                        className="absolute left-0 top-1/2 -translate-y-1/2 accent-[#00BCD4] w-5 h-5"
-                        style={{ zIndex: 2 }}
+                        style={{ position: "absolute", left: 0, top: "50%", transform: "translateY(-50%)", zIndex: 2 }}
                         onClick={(e) => e.stopPropagation()}
                         tabIndex={-1}
                         aria-label={`Select ${sub.name}`}
@@ -310,17 +329,8 @@ const CategoryPage = () => {
                 </Card>
               ))}
             </div>
-            <div className="mt-8 flex justify-center">
-              <Button
-                type="primary"
-                size="large"
-                className="bg-[#00BCD4] hover:bg-[#00838F] text-white font-semibold rounded-lg px-8 py-2 shadow-md transition-all duration-200"
-                onClick={handleFindFixer}
-                disabled={selectedSubs.length === 0}
-              >
-                Find Fixer For Me
-              </Button>
-            </div>
+            {/* Request Form (from RequestPage, without service selection) */}
+            <RequestForm categoryKey={categoryKey} />
           </>
         ) : (
           <div className="text-gray-500 text-center">
@@ -331,5 +341,311 @@ const CategoryPage = () => {
     </div>
   );
 };
+
+function RequestForm({ categoryKey }: { categoryKey: string }) {
+  const router = useRouter();
+  const [form] = Form.useForm();
+  const [formData, setFormData] = React.useState<{
+    location: string;
+    description: string;
+    urgency: string[];
+    photos: string[];
+    paymentMethod: string[];
+    selectedBank: string;
+    pricingType: string;
+    price: string;
+  }>({
+    location: "",
+    description: "",
+    urgency: [],
+    photos: [],
+    paymentMethod: [],
+    selectedBank: "",
+    pricingType: "",
+    price: "",
+  });
+
+  const handleSubmit = (values: any) => {
+    // Redirect to the available fixers page for this category
+    router.push(`/user/dashboard/${categoryKey}/fixers`);
+  };
+
+  return (
+    <Form
+      form={form}
+      layout="vertical"
+      onFinish={handleSubmit}
+      className="p-4 space-y-6 pb-8"
+      initialValues={formData}
+      onValuesChange={(_, allValues) => setFormData(allValues)}
+    >
+      {/* Location */}
+      <Form.Item
+        label={<span className="text-base font-medium text-[#00838F]">Your Location</span>}
+        name="location"
+        rules={[{ required: true, message: "Please enter your address" }]}
+      >
+        <Input
+          prefix={<EnvironmentOutlined className="text-[#00838F]/60" />}
+          placeholder="Enter your address"
+          className="pl-2"
+        />
+      </Form.Item>
+      <Form.Item>
+        <Button
+          type="link"
+          className="mt-2 text-[#00BCD4] border-none bg-transparent shadow-none p-0"
+          icon={<EnvironmentOutlined className="h-4 w-4 mr-2" />}
+        >
+          Use Current Location
+        </Button>
+      </Form.Item>
+
+      {/* Description */}
+      <Form.Item
+        label={<span className="text-base font-medium text-[#00838F]">Describe the Problem</span>}
+        name="description"
+        rules={[{ required: true, message: "Please describe the problem" }]}
+      >
+        <Input.TextArea
+          placeholder="Tell us what's wrong and any details that might help..."
+          className="min-h-[100px] text-base resize-none rounded-lg border-[#B2EBF2] focus:border-[#00BCD4] bg-white"
+        />
+      </Form.Item>
+      <Form.Item>
+        <div className="flex gap-2 mt-3">
+          <Button
+            type="default"
+            className="flex-1 border border-[#00BCD4] bg-white text-[#00BCD4]"
+            icon={<CameraOutlined className="h-4 w-4 mr-2" />}
+          >
+            Add Photos
+          </Button>
+          <Button
+            type="default"
+            className="flex-1 border border-[#00BCD4] bg-white text-[#00BCD4]"
+            icon={<AudioOutlined className="h-4 w-4 mr-2" />}
+          >
+            Voice Note
+          </Button>
+        </div>
+      </Form.Item>
+
+      {/* Urgency */}
+      <Form.Item
+        label={<span className="text-base font-medium text-[#00838F]">How urgent is this?</span>}
+        name="urgency"
+        rules={[{ required: true, message: "Please select at least one urgency level", type: "array" }]}
+      >
+        <div className="grid grid-cols-2 gap-2">
+          {urgencyLevels.map((level) => {
+            const selected = formData.urgency.includes(level.id);
+            return (
+              <Card
+                key={level.id}
+                className={selected ? "ring-2 ring-[#00BCD4]" : ""}
+                hoverable
+                style={{
+                  background: selected ? level.color : undefined,
+                  borderColor: selected ? "#00BCD4" : undefined,
+                  cursor: "pointer",
+                }}
+                onClick={() => {
+                  const current = formData.urgency;
+                  const next = selected
+                    ? current.filter((id: string) => id !== level.id)
+                    : [...current, level.id];
+                  setFormData({ ...formData, urgency: next });
+                  form.setFieldsValue({ urgency: next });
+                }}
+              >
+                <div className="p-4 flex items-center justify-between">
+                  <span className="font-medium text-[#00838F]">{level.label}</span>
+                  <span
+                    className="px-3 py-1 rounded-full text-xs font-semibold"
+                    style={{ background: level.color, color: level.textColor }}
+                  >
+                    {level.id.toUpperCase()}
+                  </span>
+                </div>
+              </Card>
+            );
+          })}
+        </div>
+      </Form.Item>
+
+      {/* Pricing Type */}
+      <Form.Item
+        label={<span className="text-base font-medium text-[#00838F]">Select Pricing Type</span>}
+        name="pricingType"
+        rules={[{ required: true, message: "Please select a pricing type" }]}
+      >
+        <Radio.Group
+          optionType="button"
+          buttonStyle="solid"
+          className="w-full flex gap-4"
+          onChange={e => {
+            setFormData({ ...formData, pricingType: e.target.value, price: "" });
+            form.setFieldsValue({ pricingType: e.target.value, price: "" });
+          }}
+        >
+          <Radio.Button value="hourly" className="flex-1 text-center">Hourly</Radio.Button>
+          <Radio.Button value="fixed" className="flex-1 text-center">Fixed</Radio.Button>
+        </Radio.Group>
+      </Form.Item>
+      {/* Price Input */}
+      <Form.Item
+        shouldUpdate={(prev, curr) => prev.pricingType !== curr.pricingType}
+        noStyle
+      >
+        {({ getFieldValue }) => {
+          const pricingType = getFieldValue("pricingType");
+          if (!pricingType) return null;
+          return (
+            <Form.Item
+              name="price"
+              label={<span className="text-base font-medium text-[#00838F]">{pricingType === "hourly" ? "Hourly Rate" : "Fixed Price"}</span>}
+              rules={[{ required: true, message: `Please enter a ${pricingType === "hourly" ? "hourly rate" : "fixed price"}` }]}
+            >
+              <Input
+                prefix="$"
+                suffix={pricingType === "hourly" ? "/hr" : undefined}
+                placeholder={pricingType === "hourly" ? "$00/hr" : "$00"}
+                type="number"
+                min={0}
+                className="w-full"
+              />
+            </Form.Item>
+          );
+        }}
+      </Form.Item>
+
+      {/* Payment Method */}
+      <Form.Item
+        label={<span className="text-base font-medium text-[#00838F]">How would you like to pay?</span>}
+        name="paymentMethod"
+        rules={[{ required: true, message: "Please select at least one payment method", type: "array" }]}
+      >
+        <div className="grid grid-cols-1 gap-2">
+          {/* Bank Payment */}
+          {(() => {
+            const selected = formData.paymentMethod.includes("bank");
+            return (
+              <Card
+                className={selected ? "ring-2 ring-[#00BCD4] bg-[#E0F7FA]" : ""}
+                hoverable
+                style={{
+                  borderColor: selected ? "#00BCD4" : undefined,
+                  background: selected ? "#E0F7FA" : undefined,
+                  cursor: "pointer",
+                }}
+                onClick={() => {
+                  const current = formData.paymentMethod;
+                  const next = selected
+                    ? current.filter((id: string) => id !== "bank")
+                    : [...current, "bank"];
+                  setFormData({ ...formData, paymentMethod: next });
+                  form.setFieldsValue({ paymentMethod: next });
+                }}
+              >
+                <div className="p-4 flex items-center gap-3 mb-3">
+                  <div className="w-10 h-10 bg-gradient-to-br from-[#00BCD4] to-[#00838F] rounded-full flex items-center justify-center shadow-sm">
+                    <CreditCardOutlined className="h-5 w-5 text-white" />
+                  </div>
+                  <div>
+                    <h4 className="font-medium text-[#00838F]">Bank Transfer</h4>
+                    <p className="text-sm text-[#00838F]/60">Pay securely through your bank</p>
+                  </div>
+                </div>
+              </Card>
+            );
+          })()}
+          {/* Cash Payment */}
+          {(() => {
+            const selected = formData.paymentMethod.includes("cash");
+            return (
+              <Card
+                className={selected ? "ring-2 ring-[#00BCD4] bg-[#E0F7FA]" : ""}
+                hoverable
+                style={{
+                  borderColor: selected ? "#00BCD4" : undefined,
+                  background: selected ? "#E0F7FA" : undefined,
+                  cursor: "pointer",
+                }}
+                onClick={() => {
+                  const current = formData.paymentMethod;
+                  const next = selected
+                    ? current.filter((id: string) => id !== "cash")
+                    : [...current, "cash"];
+                  setFormData({ ...formData, paymentMethod: next });
+                  form.setFieldsValue({ paymentMethod: next });
+                }}
+              >
+                <div className="p-4 flex items-center gap-3">
+                  <div className="w-10 h-10 bg-gradient-to-br from-[#4CAF50] to-[#2E7D32] rounded-full flex items-center justify-center shadow-sm">
+                    <DollarOutlined className="h-5 w-5 text-white" />
+                  </div>
+                  <div>
+                    <h4 className="font-medium text-[#00838F]">Cash Payment</h4>
+                    <p className="text-sm text-[#00838F]/60">Pay directly to the fixer in cash</p>
+                  </div>
+                  <span className="ml-auto px-3 py-1 rounded-full text-xs font-semibold bg-[#4CAF50] text-white">Popular</span>
+                </div>
+              </Card>
+            );
+          })()}
+          {/* Digital Wallets */}
+          {(() => {
+            const selected = formData.paymentMethod.includes("wallet");
+            return (
+              <Card
+                className={selected ? "ring-2 ring-[#00BCD4] border-dashed border-2 border-[#B2EBF2] opacity-60" : "border-dashed border-2 border-[#B2EBF2] opacity-60"}
+                hoverable
+                style={{
+                  borderColor: selected ? "#00BCD4" : undefined,
+                  background: undefined,
+                  cursor: "pointer",
+                }}
+                onClick={() => {
+                  const current = formData.paymentMethod;
+                  const next = selected
+                    ? current.filter((id: string) => id !== "wallet")
+                    : [...current, "wallet"];
+                  setFormData({ ...formData, paymentMethod: next });
+                  form.setFieldsValue({ paymentMethod: next });
+                }}
+              >
+                <div className="p-4 text-center flex items-center gap-3">
+                  <MobileOutlined className="h-8 w-8 mx-auto text-[#00838F]" />
+                  <div className="flex-1 text-left">
+                    <p className="text-sm text-[#00838F]/60 mb-2">Digital Wallets</p>
+                    <p className="text-xs text-[#00838F]/40">Apple Pay, Google Pay, PayPal</p>
+                  </div>
+                  <span className="ml-auto px-3 py-1 rounded-full text-xs font-semibold border border-[#E0F7FA] text-[#00838F]">Coming Soon</span>
+                </div>
+              </Card>
+            );
+          })()}
+        </div>
+      </Form.Item>
+
+      {/* Hidden field for selectedBank */}
+      <Form.Item name="selectedBank" style={{ display: "none" }}>
+        <Input />
+      </Form.Item>
+
+      {/* Submit Button */}
+      <Form.Item>
+        <Button
+          className="w-full h-12 text-base font-semibold shadow-lg bg-[#00BCD4] text-white"
+          disabled={!formData.location || !formData.paymentMethod.length}
+          htmlType="submit"
+        >
+          Submit Request
+        </Button>
+      </Form.Item>
+    </Form>
+  );
+}
 
 export default CategoryPage;
