@@ -161,7 +161,8 @@ export default function OnboardingScreen() {
             </Button>
           </div>
         </div>
-      </div>
+
+              </div>
 
       {/* Decorative Elements */}
       <div className="absolute top-20 left-10 w-20 h-20 bg-white/10 rounded-full blur-xl animate-pulse" />
