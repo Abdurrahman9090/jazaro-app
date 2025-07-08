@@ -280,19 +280,19 @@ const CustomTable: React.FC<ITableProps> = (props: ITableProps) => {
     </>
   );
 };
-// CustomTable.defaultProps = {
-//   scroll: { x: true },
-//   selectable: true,
-//   className: "tbody-primary thead-primary",
-//   search: "",
-//   searchFilter: [],
-//   pagination: {
-//     position: ["bottomCenter"],
-//     showSizeChanger: true,
-//     defaultPageSize: 5,
-//     // eslint-disable-next-line no-magic-numbers
-//     pageSizeOptions: [5, 10, 20, 50],
-//   },
-// };
-CustomTable.displayName = "CustomTable";
+CustomTable.defaultProps = {
+  scroll: { x: true },
+  selectable: true,
+  className: "tbody-primary thead-primary",
+  search: "",
+  searchFilter: [],
+  pagination: {
+    position: ["bottomCenter"],
+    showSizeChanger: true,
+    defaultPageSize: 5,
+    // eslint-disable-next-line no-magic-numbers
+    pageSizeOptions: [5, 10, 20, 50],
+  },
+};
+ExpandIconRenderer.defaultProps = {};
 export default CustomTable;

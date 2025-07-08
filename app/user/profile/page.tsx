@@ -21,22 +21,26 @@ import {
 } from "@ant-design/icons";
 import Link from "next/link";
 import CameraModal from "@/components/camera-modal";
+import { AuthSelector } from "@/redux/reducers";
+import { useSelector } from "react-redux";
+import { FixerStatus } from "@/types";
 
 export default function ProfilePage() {
-  const [userRole] = useState<"customer" | "fixer">("customer");
+  const { user } = useSelector(AuthSelector);
+  const fixerDetails = user?.fixerDetails;
+
   const [insuranceLinked, setInsuranceLinked] = useState(false);
   const [isCameraOpen, setIsCameraOpen] = useState(false);
 
   const customerProfile = {
-    name: "John Smith",
-    email: "john.smith@email.com",
-    phone: "+1 (555) 123-4567",
-    location: "New York, NY",
-    memberSince: "January 2024",
-    avatar: "/placeholder.svg?height=80&width=80",
+    name: user?.username,
+    email: user?.email,
+    phone: user?.phone,
+    memberSince: "Jan 2023",
+    avatar: user?.avatar,
     totalRequests: 12,
-    completedRepairs: 10,
-    avgRating: 4.8,
+    completedRepairs: fixerDetails?.jobsCompleted,
+    avgRating: fixerDetails?.rating,
   };
 
   const repairHistory = [
@@ -87,9 +91,13 @@ export default function ProfilePage() {
       {/* Profile Header */}
       <div className="relative z-10 bg-white/50 backdrop-blur-[10px] px-4 py-6 border-b border-[#00BCD4]/20">
         <div className="flex items-center gap-4 mb-4">
-          <div className="w-20 h-20 bg-white/80 backdrop-blur-[10px] rounded-[20px] shadow-[0_4px_10px_rgba(0,188,212,0.3)] border border-[#00BCD4]/30 flex items-center justify-center">
-            <Avatar size={80} src={customerProfile.avatar} className="h-18 w-18 bg-gradient-to-br from-[#00BCD4] to-[#26C6DA] text-white font-bold text-lg flex items-center justify-center">
-              {customerProfile.name.slice(0, 2)}
+          <div className="w-20 h-20 backdrop-blur-[10px] rounded-full border border-[#00BCD4]/30 flex items-center justify-center">
+            <Avatar
+              size={80}
+              src={customerProfile.avatar}
+              className="h-18 w-18 bg-gradient-to-br from-[#00BCD4] to-[#26C6DA] text-white font-bold text-lg flex items-center justify-center"
+            >
+              {customerProfile?.name?.slice(0, 2)}
             </Avatar>
           </div>
           <div className="flex-1">
@@ -103,7 +111,7 @@ export default function ProfilePage() {
             <div className="flex items-center gap-4 text-sm text-[#00838F]">
               <div className="flex items-center gap-1">
                 <EnvironmentOutlined className="h-4 w-4" />
-                <span>{customerProfile.location}</span>
+                <span>{"Location"}</span>
               </div>
               <div className="flex items-center gap-1">
                 <CalendarOutlined className="h-4 w-4" />
@@ -114,7 +122,7 @@ export default function ProfilePage() {
           <Button
             size="small"
             type="default"
-            className="bg-white/60 border border-[#00BCD4]/30 text-[#006064] hover:bg-white/80 rounded-[10px] flex items-center"
+            className="bg-white/60 border border-[#00BCD4]/30 text-[#006064] hover:bg-white/80 flex items-center"
           >
             <EditOutlined className="h-4 w-4 mr-1" />
             Edit
@@ -123,14 +131,41 @@ export default function ProfilePage() {
 
         {/* Become a Fixer Button */}
         <div className="flex justify-center mt-6 mb-3">
-          <Link href="/user/fixer-register" className="w-full">
+          {fixerDetails?.fixerRequestStatus === FixerStatus.Pending ? (
             <Button
-              className="w-full py-5 text-lg font-bold bg-gradient-to-r from-[#00BCD4] to-[#00838F] text-white shadow-lg rounded-[16px] hover:from-[#00838F] hover:to-[#00BCD4] transition-all duration-200 border-2 border-[#00BCD4]/40"
+              className="w-full py-5 text-lg font-bold bg-gradient-to-r from-[#FF9800] to-[#F57C00] text-white shadow-lg hover:from-[#F57C00] hover:to-[#FF9800] transition-all duration-200 border-2 border-[#FF9800]/40"
+              size="large"
+              disabled
+            >
+              Application Pending
+            </Button>
+          ) : fixerDetails?.fixerRequestStatus === FixerStatus.Approved ? (
+            <Link href="/user/dashboard" className="w-full">
+              <Button
+                className="w-full py-5 text-lg font-bold bg-gradient-to-r from-[#4CAF50] to-[#388E3C] text-white shadow-lg rounded-[16px] hover:from-[#388E3C] hover:to-[#4CAF50] transition-all duration-200 border-2 border-[#4CAF50]/40"
+                size="large"
+                disabled
+              >
+                Fixer Approved
+              </Button>
+            </Link>
+          ) : fixerDetails?.fixerRequestStatus === FixerStatus.Rejected ? (
+            <Button
+              className="w-full py-5 text-lg font-bold bg-red-800 hover:bg-gray-100 text-white shadow-lg border-2 border-[#F44336]/40"
               size="large"
             >
-              Become a Fixer
+              Application Rejected
             </Button>
-          </Link>
+          ) : (
+            <Link href="/user/fixer-register" className="w-full">
+              <Button
+                className="w-full py-5 text-lg font-bold bg-gradient-to-r from-[#00BCD4] to-[#00838F] text-white shadow-lg rounded-[16px] hover:from-[#00838F] hover:to-[#00BCD4] transition-all duration-200 border-2 border-[#00BCD4]/40"
+                size="large"
+              >
+                Become a Fixer
+              </Button>
+            </Link>
+          )}
         </div>
 
         {/* Stats */}
@@ -173,7 +208,9 @@ export default function ProfilePage() {
                   {/* Contact Information */}
                   <Card className="border-0 bg-white/80 backdrop-blur-[10px] border border-[#00BCD4]/30 shadow-[0_4px_10px_rgba(0,188,212,0.3)] rounded-[10px]">
                     <div className="pb-3 border-b border-[#00BCD4]/20">
-                      <div className="text-lg text-[#006064] font-semibold">Contact Information</div>
+                      <div className="text-lg text-[#006064] font-semibold">
+                        Contact Information
+                      </div>
                     </div>
                     <div className="space-y-3 p-1">
                       <div className="flex items-center gap-3">
@@ -190,9 +227,7 @@ export default function ProfilePage() {
                       </div>
                       <div className="flex items-center gap-3">
                         <EnvironmentOutlined className="h-5 w-5 text-[#00838F]" />
-                        <span className="text-[#006064]">
-                          {customerProfile.location}
-                        </span>
+                        <span className="text-[#006064]">{"location"}</span>
                       </div>
                     </div>
                   </Card>
@@ -207,7 +242,9 @@ export default function ProfilePage() {
                     <div className="p-2">
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className="font-medium text-[#006064]">Link Insurance</p>
+                          <p className="font-medium text-[#006064]">
+                            Link Insurance
+                          </p>
                           <p className="text-sm text-[#00838F]">
                             Connect your insurance for covered repairs
                           </p>
@@ -235,7 +272,9 @@ export default function ProfilePage() {
                   {/* Verification Status */}
                   <Card className="border-0 bg-white/80 backdrop-blur-[10px] border border-[#00BCD4]/30 shadow-[0_4px_10px_rgba(0,188,212,0.3)] rounded-[10px]">
                     <div className="pb-3 border-b border-[#00BCD4]/20">
-                      <div className="text-lg text-[#006064] font-semibold">Verification</div>
+                      <div className="text-lg text-[#006064] font-semibold">
+                        Verification
+                      </div>
                     </div>
                     <div className="space-y-3 p-2">
                       <div className="flex items-center justify-between">
@@ -243,14 +282,18 @@ export default function ProfilePage() {
                           <CheckCircleOutlined className="h-5 w-5 text-[#4CAF50]" />
                           <span className="text-[#006064]">Email Verified</span>
                         </div>
-                        <Badge className="bg-[#4CAF50]/20 text-[#4CAF50] border border-[#4CAF50]/30">Verified</Badge>
+                        <Badge className="bg-[#4CAF50]/20 text-[#4CAF50] border border-[#4CAF50]/30">
+                          Verified
+                        </Badge>
                       </div>
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                           <CheckCircleOutlined className="h-5 w-5 text-[#4CAF50]" />
                           <span className="text-[#006064]">Phone Verified</span>
                         </div>
-                        <Badge className="bg-[#4CAF50]/20 text-[#4CAF50] border border-[#4CAF50]/30">Verified</Badge>
+                        <Badge className="bg-[#4CAF50]/20 text-[#4CAF50] border border-[#4CAF50]/30">
+                          Verified
+                        </Badge>
                       </div>
                     </div>
                   </Card>
@@ -295,7 +338,9 @@ export default function ProfilePage() {
                           </div>
                           <div className="flex items-center gap-1">
                             <StarFilled className="h-4 w-4 text-[#FF9800]" />
-                            <span className="text-[#006064]">{repair.rating}</span>
+                            <span className="text-[#006064]">
+                              {repair.rating}
+                            </span>
                           </div>
                         </div>
                       </div>
@@ -311,7 +356,9 @@ export default function ProfilePage() {
                 <div className="space-y-4">
                   <Card className="border-0 bg-white/80 backdrop-blur-[10px] border border-[#00BCD4]/30 shadow-[0_4px_10px_rgba(0,188,212,0.3)] rounded-[10px]">
                     <div className="pb-3 border-b border-[#00BCD4]/20">
-                      <div className="text-lg text-[#006064] font-semibold">Account Settings</div>
+                      <div className="text-lg text-[#006064] font-semibold">
+                        Account Settings
+                      </div>
                     </div>
                     <div className="space-y-4 p-4">
                       <Button

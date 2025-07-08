@@ -6,14 +6,28 @@ import {
   addEditUserSuccess,
   addEditUserFailure,
   userReset,
-} from "../reducers/userReducer";
-import { BackendInstance, config } from "@/config";
-import { handlerError } from "@/utils/ErrorHandler";
+} from "@/redux/reducers/userReducer";
 import { updateAlert } from "./alertAction";
+import { BackendInstance, config } from "@/config";
 import { createAsyncThunk } from "@reduxjs/toolkit";
+import { handlerError } from "@/utils/ErrorHandler";
 import { IUser, IUserAddEditFormData } from "@/types/reduxTypes/user";
-import { ISearchParams } from "@/types";
-import { updateUserProfileFailure } from "../reducers/authReducer";
+import { updateUserProfileFailure } from "@/redux/reducers/authReducer";
+
+export const switchUserRole = createAsyncThunk(
+  "user/switchUserRole",
+  async (_, { dispatch }) => {
+    try {
+      await BackendInstance.post("auth/switch", config);
+      return true;
+    } catch (err) {
+      handlerError(err).forEach((error: string) => {
+        dispatch(updateAlert({ place: "tc", message: error, type: "danger" }));
+      });
+      return false;
+    }
+  }
+);
 
 export const getAllUsers = createAsyncThunk(
   "user/getUserPaginated",

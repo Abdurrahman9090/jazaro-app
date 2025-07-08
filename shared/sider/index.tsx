@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import { Image, Layout, Menu } from "antd";
+import { Layout, Menu } from "antd";
 import { IClientSiderProps } from "./types";
 
 const { Sider } = Layout;
@@ -17,32 +17,16 @@ export const ClientSider: React.FC<IClientSiderProps> = (
 
   return (
     <Sider {...props}>
-      <div
-        style={{
-          height: 38,
-          margin: 12,
-          borderRadius: 4,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
+      <Link
+        href={"/"}
+        className="h-16 border flex items-center justify-center bg-[#26C6DA]"
       >
-        <Link href={"/"}>
-          {collapsed ? (
-             <span className="font-bold text-xl text-blue-600 tracking-widest">J</span>
-          ) : (
-            <span className="font-bold text-xl text-blue-600 tracking-widest">Jazaro</span>
-          )}
-        </Link>
-      </div>
-      <hr
-        style={{
-          border: "none",
-          height: "2px",
-          background:
-            "linear-gradient(to right, rgba(255, 255, 255, 0), rgba(0, 0, 0, 5), rgba(255, 255, 255, 0))",
-        }}
-      />
+        {collapsed ? (
+          <span className="font-bold text-white text-3xl">J</span>
+        ) : (
+          <span className="font-bold text-white text-3xl">J a z a r o</span>
+        )}
+      </Link>
       <Menu
         theme="light"
         mode="inline"
