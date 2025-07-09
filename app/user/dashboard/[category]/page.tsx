@@ -437,7 +437,7 @@ function RequestForm({ categoryKey }: { categoryKey: string }) {
         name="urgency"
         rules={[{ required: true, message: "Please select at least one urgency level", type: "array" }]}
       >
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-1 gap-2">
           {urgencyLevels.map((level) => {
             const selected = formData.urgency.includes(level.id);
             return (
@@ -459,10 +459,10 @@ function RequestForm({ categoryKey }: { categoryKey: string }) {
                   form.setFieldsValue({ urgency: next });
                 }}
               >
-                <div className="p-4 flex items-center justify-between">
+                <div className=" flex items-center justify-between">
                   <span className="font-medium text-[#00838F]">{level.label}</span>
                   <span
-                    className="px-3 py-1 rounded-full text-xs font-semibold"
+                    className=" rounded-full text-l font-semibold"
                     style={{ background: level.color, color: level.textColor }}
                   >
                     {level.id.toUpperCase()}
@@ -635,7 +635,7 @@ function RequestForm({ categoryKey }: { categoryKey: string }) {
       </Form.Item>
 
       {/* Submit Button */}
-      <Form.Item>
+      <Form.Item style={{ marginTop: 28, marginBottom: 40 }}>
         <Button
           className="w-full h-12 text-base font-semibold shadow-lg bg-[#00BCD4] text-white"
           disabled={!formData.location || !formData.paymentMethod.length}

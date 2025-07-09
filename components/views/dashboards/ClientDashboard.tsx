@@ -51,7 +51,7 @@ const categories = [
   {
     key: "painters",
     name: "Painters",
-    description: "Interior and exterior painting",
+    description: "Interior and exterior",
     icon: <FormatPainterOutlined className="text-4xl text-[#00BCD4]" />,
   },
   {
@@ -129,7 +129,7 @@ export const ClientDashboard = () => {
 
       {/* Category Cards */}
       <main className="flex-1 p-4 overflow-y-auto">
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-4" style={{ marginBottom: 80 }}>
           {categories.map((cat) => (
             <Link key={cat.key} href={`/user/dashboard/${cat.key}`}>
               <ScalableCard

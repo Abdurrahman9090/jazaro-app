@@ -57,7 +57,7 @@ export default function FixersPage() {
         </Card>
       </div>
       {/* Fixers List */}
-      <div className="flex-1 overflow-y-auto px-4 pb-4">
+      <div className="flex-1 overflow-y-auto px-4 pb-4" style={{ marginBottom: 80 }}>
         <List
           itemLayout="vertical"
           dataSource={fixers}
