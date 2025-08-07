@@ -1,7 +1,7 @@
 // Auth action types
 
 export interface ILoginFormData {
-  email: string;
+  phone: number;
   password: string;
 }
 
