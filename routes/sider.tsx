@@ -15,10 +15,18 @@ export const siderClientRoutes: Array<SiderRoutes> = [
   {
     title: "Dashboard",
     label: <Link href={"/user/dashboard"}>Dashboard</Link>,
+    key: "0",
+    icon: <DashboardFilled style={{ fontSize: 18 }} />,
+    authenticatedUsers: [UserRoles.Client],
+  },
+  {
+    title: "fixer",
+    label: <Link href={"/user/fixer"}>Dashboard</Link>,
     key: "1",
     icon: <DashboardFilled style={{ fontSize: 18 }} />,
     authenticatedUsers: [UserRoles.Client],
   },
+
   {
     title: "Messages",
     label: <Link href={"/user/messages"}>Messages</Link>,

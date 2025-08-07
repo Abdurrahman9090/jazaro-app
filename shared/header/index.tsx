@@ -79,6 +79,11 @@ const Header = ({ onMenuClick = () => {} }) => {
           <Link href="/notifications">
             <Bell className="h-6 w-6 text-[#006064] hover:text-[#00838F] transition-colors" />
           </Link>
+          <Link href="/user/fixer">
+            <Button type="primary" className="bg-[#00BCD4] hover:bg-[#00838F] text-white font-semibold shadow-md">
+              Fixer Dashboard
+            </Button>
+          </Link>
           {/* antd dropdown for user profile */}
           <Dropdown
             menu={{ items: userMenuItems }}
