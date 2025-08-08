@@ -15,7 +15,7 @@ import { signin } from "@/redux/actions/authAction";
 import { ILoginFormData } from "@/types/reduxTypes/auth";
 
 interface FormValues {
-  email: string;
+  phone: number;
   password: string;
   remember: boolean;
 }
@@ -23,13 +23,12 @@ interface FormValues {
 export default function Signin() {
   const dispatch = useAppDispatch();
   const [form] = Form.useForm();
-  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const handleLogin = async (values: FormValues) => {
     setLoading(true);
     const data = {
-      email: values.email,
+      phone: values.phone,
       password: values.password,
     } as ILoginFormData;
 
@@ -40,8 +39,6 @@ export default function Signin() {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
-  
-
       <div className="w-full max-w-md bg-white/95 backdrop-blur-[10px] border border-[#00BCD4]/30 shadow-[0_8px_32px_rgba(0,188,212,0.3)] rounded-[20px] p-6">
         <div className="space-y-1">
           <div className="flex items-center justify-between">
@@ -86,25 +83,28 @@ export default function Signin() {
             className="space-y-4"
           >
             <Form.Item
-              name="email"
+              name="phone"
               label={
                 <span className="text-[#006064] text-sm font-medium">
-                  Email
+                  Phone No
                 </span>
               }
               rules={[
-                { required: true, message: "Email is required" },
+                { required: true, message: "Phone is required" },
                 {
-                  type: "email",
-                  message: "Please enter a valid email address",
+                  pattern: /^\d{11}$/,
+                  message: "Phone number must be exactly 11 digits",
                 },
               ]}
             >
               <Input
                 prefix={<MailOutlined className="text-[#00838F]" />}
-                placeholder="Enter your email"
+                placeholder="Enter your phone number"
                 className="bg-white/80 backdrop-blur-[10px] border border-[#00BCD4]/30 text-[#006064] placeholder:text-[#00838F] focus:border-[#00BCD4] focus:ring-[#00BCD4]/20"
-                autoComplete="email"
+                autoComplete="phone"
+                maxLength={11}
+                inputMode="numeric"
+                pattern="\d*"
               />
             </Form.Item>
 
