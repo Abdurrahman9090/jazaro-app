@@ -1,15 +1,19 @@
 "use client";
 
 import * as React from "react";
-import { Drawer, Avatar, Typography, List, Button, Space } from "antd";
-import {
+import { Drawer, Avatar, Typography, List, Button } from "antd";
+import Icon, {
   HomeOutlined,
   UserOutlined,
   SettingOutlined,
   MenuOutlined,
   HistoryOutlined,
   LogoutOutlined,
+  MessageOutlined,
 } from "@ant-design/icons";
+import { useSelector } from "react-redux";
+import { AuthSelector } from "@/redux/reducers";
+import Link from "next/link";
 
 const { Title, Text } = Typography;
 
@@ -19,77 +23,90 @@ interface IDrawerProps {
 }
 
 const menuItems = [
-  { icon: <HomeOutlined />, label: "Home" },
-  { icon: <UserOutlined />, label: "Profile" },
-  { icon: <SettingOutlined />, label: "Settings" },
-  { icon: <MenuOutlined />, label: "Bookings" },
-  { icon: <HistoryOutlined />, label: "History" },
+  { icon: HomeOutlined, label: "Home" },
+  { icon: MessageOutlined, label: "Messages" },
+  { icon: HistoryOutlined, label: "History" },
+  { icon: MenuOutlined, label: "Bookings" },
+  { icon: SettingOutlined, label: "Settings" },
 ];
 
 const SheetDrawer = (props: IDrawerProps) => {
   const { open, setOpen } = props;
+
+  const { user } = useSelector(AuthSelector);
 
   return (
     <Drawer
       open={open}
       onClose={() => setOpen(false)}
       placement="left"
-      width={320}
+      width="320px"
+      height={"100vh"}
       title={null}
       closable={false}
-      styles={{ body: { padding: 0, background: 'transparent' } }}
-      className="!bg-gradient-to-br from-[#E0F7FA] via-[#B2EBF2] to-[#80DEEA]"
+      styles={{
+        body: {
+          paddingInline: 0,
+          background: "transparent",
+          minHeight: "100vh",
+          display: "flex",
+          flexDirection: "column",
+        },
+      }}
     >
-      {/* Drawer Header with Ant Design components */}
-      <div className="bg-white/80 backdrop-blur-[10px] rounded-b-2xl text-center p-8 relative shadow-[0_4px_10px_rgba(0,188,212,0.15)] border-b border-[#00BCD4]/20">
-        <Avatar
-          size={80}
-          style={{
-            border: "4px solid #00BCD4",
-            boxShadow: "0 4px 10px rgba(0,188,212,0.15)",
-            backgroundColor: "#E0F7FA",
-            marginBottom: 16,
-            color: '#00838F',
-            fontWeight: 700,
-            fontSize: 32,
-          }}
-        >
-          U
-        </Avatar>
-        <Typography.Title level={4} className="!text-[#006064] !mb-0 !mt-2 !font-bold">
-          Username
-        </Typography.Title>
-        <Typography.Text className="!text-[#00838F] !text-sm">
-          user@email.com
-        </Typography.Text>
+      {/* Drawer Header */}
+      <div className="bg-white/90 backdrop-blur-[12px] rounded-b-3xl text-center px-6 pt-10 pb-6 relative shadow-[0_4px_16px_rgba(0,188,212,0.18)] border-b border-[#00BCD4]/20">
+        <div className="flex flex-col items-center gap-2">
+          <Avatar
+            size={88}
+            src={user?.avatar || undefined}
+            icon={<UserOutlined />}
+            className="object-cover border-4 border-[#00BCD4] shadow-[0_6px_18px_rgba(0,188,212,0.18)] bg-gradient-to-br from-[#E0F7FA] to-[#B2EBF2] text-[#00838F] font-bold text-[36px] mb-2"
+          >
+            U
+          </Avatar>
+          <Title
+            level={4}
+            className="!text-[#006064] !mb-0 !mt-2 !font-bold !text-lg md:!text-xl"
+            style={{ letterSpacing: 0.5 }}
+          >
+            {user?.username}
+          </Title>
+          <Text className="!text-[#00838F] !text-xs md:!text-sm !font-medium">
+            {user?.email}
+          </Text>
+        </div>
       </div>
 
-      {/* Drawer Items using Ant Design List */}
-      <List
-        itemLayout="horizontal"
-        dataSource={menuItems}
-        renderItem={item => (
-          <List.Item className="!p-0">
-            <Button
-              type="text"
-              icon={item.icon}
-              className="w-full text-left text-[#00838F] hover:text-[#00BCD4] px-6 py-4 font-medium text-base rounded-none transition-colors duration-200"
-              style={{ background: 'transparent' }}
-              onClick={() => setOpen(false)}
-            >
-              {item.label}
-            </Button>
-          </List.Item>
-        )}
-        className="mt-8"
-      />
+      {/* Drawer Items */}
+      <div className="flex-1 overflow-y-auto">
+        <List
+          itemLayout="horizontal"
+          dataSource={menuItems}
+          renderItem={(item) => (
+            <List.Item className="ml-2">
+              <Link
+                href={`/${item.label.toLowerCase()}`}
+                className="w-full flex gap-2 text-left text-[#00838F] hover:text-[#00BCD4] font-semibold text-base md:text-lg"
+                onClick={() => setOpen(false)}
+              >
+                <Icon className="text-cyan-200 " component={item.icon} />
+                <span className="flex-1">{item.label}</span>
+              </Link>
+            </List.Item>
+          )}
+          className="mt-2"
+        />
+      </div>
 
-      {/* Drawer Footer with Ant Design Button */}
-      <div className="mx-4 mt-8 mb-2">
+      {/* Drawer Footer - Logout Button fixed at bottom */}
+      <div className="sticky bottom-2 px-2 z-10 flex flex-col items-center">
         <Button
-          type="primary"
+          type="dashed"
+          danger
+          size="large"
           icon={<LogoutOutlined />}
-          className="w-full flex items-center justify-center py-4 text-base rounded-[12px] bg-gradient-to-r from-[#00BCD4] to-[#00838F] border-0 text-white shadow-md hover:from-[#00838F] hover:to-[#00BCD4] transition-all duration-200"
+          className="w-full mb-4 left-4 py-4 flex items-center justify-center text-base md:text-lg font-bold"
           onClick={() => {
             // TODO: Add logout logic here
             setOpen(false);

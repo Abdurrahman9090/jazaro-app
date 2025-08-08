@@ -113,9 +113,7 @@ const ScalableCard: React.FC<ICardProps> = (props: ICardProps) => {
           </Space>
         </Card>
       ) : (
-        <Card title={title} bordered={false}>
-          {children}
-        </Card>
+        <Card title={title}>{children}</Card>
       )}
     </React.Fragment>
   );

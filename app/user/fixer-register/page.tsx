@@ -196,7 +196,7 @@ export default function FixerRegisterPage() {
 
   return (
     <div className="bg-gradient-to-br from-[#E0F7FA] via-[#B2EBF2] to-[#80DEEA] px-4 flex items-center justify-center min-h-screen">
-      <div className="w-full max-w-xl">
+      <div className="w-full max-w-xl" style={{marginBottom: 60 }}> >
         {/* User Profile Card */}
         {user && (
           <div className="flex flex-col items-center justify-center mb-8">

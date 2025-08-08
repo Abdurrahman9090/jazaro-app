@@ -72,8 +72,8 @@ export const siderAdminRoutes: Array<SiderRoutes> = [
     authenticatedUsers: [UserRoles.Admin],
   },
   {
-    title: "Services",
-    label: <Link href={"/admin/services"}>Services</Link>,
+    title: "Categories",
+    label: <Link href={"/admin/categories"}>Categories</Link>,
     key: "5",
     icon: <AppstoreOutlined style={{ fontSize: 18 }} />,
     authenticatedUsers: [UserRoles.Admin],

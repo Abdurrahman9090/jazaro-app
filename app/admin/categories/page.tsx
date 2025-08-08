@@ -1,32 +1,29 @@
 "use client";
 
 import pDebounce from "p-debounce";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
-  Button as AntdButton,
-  Form,
   Card,
-  Row,
+  Form,
   Col,
-  Statistic,
-  Avatar,
-  Badge,
-  Input,
-  Space,
   Typography,
+  Space,
   Tag,
+  Progress,
+  Button,
+  Tooltip,
+  Row,
 } from "antd";
-import { UserAddEditModal } from "@/components/modals";
 import {
-  EditFilled,
+  FileTextOutlined,
+  EnvironmentOutlined,
   MoreOutlined,
-  SearchOutlined,
-  UserOutlined,
+  EditOutlined,
 } from "@ant-design/icons";
+
 import CustomTable from "@/components/table";
 import ScalableCard from "@/components/card";
 import TableToolBar from "@/components/tableToolbar";
-import { IUsersColumns } from "@/components/tableColumn";
-import { useCallback, useEffect, useRef, useState } from "react";
 import {
   DEFAULT_PAGE_NO,
   DEFAULT_PAGE_SIZE,
@@ -36,60 +33,107 @@ import {
   TWENTY,
   ZERO,
 } from "@/constants";
+
 // Redux
 import { useSelector } from "react-redux";
 import { useAppDispatch } from "@/redux/store";
-import { UserSelector } from "@/redux/reducers";
-import { deleteUser, getAllUsers } from "@/redux/actions/userAction";
-import { IUser, IUserAddEditFormData } from "@/types/reduxTypes/user";
+import { CategorySelector } from "@/redux/reducers";
+import { ICategory } from "@/types/reduxTypes/category";
+import {
+  deleteCategories,
+  getCategories,
+} from "@/redux/actions/categoryAction";
+import CategoryAddEditModal from "@/components/modals/category/CategoryAddEditModal";
+import { ICategoriesColumns } from "@/components/tableColumn";
+import { Edit } from "lucide-react";
 
 const { Title, Text } = Typography;
 
-// Demo stats and users for dashboard
 const stats = [
-  { title: "Total Users", value: "12,847", color: "#2563eb" },
-  { title: "Active Users", value: "11,234", color: "#16a34a" },
-  { title: "New This Month", value: "1,613", color: "#eab308" },
-  { title: "Suspended", value: "45", color: "#ef4444" },
+  {
+    title: "Total Requests",
+    value: "8,923",
+    color: "#2563eb",
+    icon: <FileTextOutlined style={{ fontSize: 32, color: "#2563eb" }} />,
+  },
+  {
+    title: "Pending",
+    value: "234",
+    color: "#eab308",
+    icon: <FileTextOutlined style={{ fontSize: 32, color: "#eab308" }} />,
+  },
+  {
+    title: "In Progress",
+    value: "456",
+    color: "#2563eb",
+    icon: <FileTextOutlined style={{ fontSize: 32, color: "#2563eb" }} />,
+  },
+  {
+    title: "Completed",
+    value: "8,233",
+    color: "#22c55e",
+    icon: <FileTextOutlined style={{ fontSize: 32, color: "#22c55e" }} />,
+  },
 ];
 
-const demoUsers = [
+const requests = [
   {
-    id: 1,
-    name: "Sarah Johnson",
-    email: "sarah.j@email.com",
-    phone: "+1 (555) 123-4567",
-    joinDate: "2024-01-15",
-    totalRequests: 12,
-    status: "Active",
+    id: "SR-1234",
+    user: "Sarah Johnson",
+    fixer: "John Martinez",
+    service: "Leaky Kitchen Faucet",
+    category: "Plumbing",
+    status: "In Progress",
+    priority: "Medium",
+    amount: "$85",
+    createdAt: "2024-01-15 10:30 AM",
     location: "New York, NY",
+    aiConfidence: 95,
   },
   {
-    id: 2,
-    name: "Mike Chen",
-    email: "mike.chen@email.com",
-    phone: "+1 (555) 234-5678",
-    joinDate: "2024-02-20",
-    totalRequests: 8,
-    status: "Active",
+    id: "SR-1235",
+    user: "Mike Chen",
+    fixer: "Lisa Thompson",
+    service: "Electrical Outlet Repair",
+    category: "Electrical",
+    status: "Completed",
+    priority: "High",
+    amount: "$120",
+    createdAt: "2024-01-15 09:15 AM",
     location: "Los Angeles, CA",
+    aiConfidence: 88,
   },
   {
-    id: 3,
-    name: "Emily Davis",
-    email: "emily.d@email.com",
-    phone: "+1 (555) 345-6789",
-    joinDate: "2024-01-08",
-    totalRequests: 15,
-    status: "Suspended",
+    id: "SR-1236",
+    user: "Emily Davis",
+    fixer: "Unassigned",
+    service: "Washing Machine Not Spinning",
+    category: "Appliance Repair",
+    status: "Pending",
+    priority: "Low",
+    amount: "Pending",
+    createdAt: "2024-01-15 08:45 AM",
     location: "Chicago, IL",
+    aiConfidence: 92,
   },
 ];
 
-export default function Users() {
+const statusColor = {
+  Completed: "success",
+  "In Progress": "processing",
+  Pending: "warning",
+  Rejected: "error",
+};
+
+const priorityColor = {
+  High: "error",
+  Medium: "processing",
+  Low: "default",
+};
+
+export const Categories = () => {
   const dispatch = useAppDispatch();
-  const IUserState = useSelector(UserSelector);
-  const { users, userLoading } = IUserState;
+  const { categories, categoryLoading } = useSelector(CategorySelector);
 
   const [form] = Form.useForm();
 
@@ -100,10 +144,10 @@ export default function Users() {
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   const [currentPage, setCurrentPage] = useState(DEFAULT_PAGE_NO);
   const [deleteBtnDisabled, setDeleteBtnDisabled] = useState(true);
-  const [selectedUsers, setSelectedUsers] = useState(Array<string>);
+  const [selectedCategories, setSelectedCategories] = useState(Array<string>);
 
-  const [dataSet, setDataSet] = useState<IUser>();
-  const [userEditModal, setUserEditModal] = useState<boolean>(false);
+  const [dataSet, setDataSet] = useState<ICategory | undefined>();
+  const [categoryEditModal, setCategoryEditModal] = useState<boolean>(false);
   const [modalVisibility, setModalVisibility] = useState<boolean>(false);
 
   /**
@@ -118,21 +162,24 @@ export default function Users() {
   ) => {
     setCurrentPage(page);
     setPageSize(currentPageSize);
-    const currentSelectedUser = form.getFieldValue("users") || [];
-    const newSelectedUsers = [...selectedUsers, ...currentSelectedUser];
-    const updatedSelectedUsers: string[] = newSelectedUsers.filter(
+    const currentSelectedCategory = form.getFieldValue("categories") || [];
+    const newSelectedCategories = [
+      ...selectedCategories,
+      ...currentSelectedCategory,
+    ];
+    const updatedSelectedCategories: string[] = newSelectedCategories.filter(
       (payload, index, self) => {
         return self.indexOf(payload) === index;
       }
     );
-    setSelectedUsers(updatedSelectedUsers);
+    setSelectedCategories(updatedSelectedCategories);
     setLoading(true);
     await dispatch(
-      getAllUsers()
+      getCategories()
       // { page: page, pageSize: currentPageSize }
     );
     setLoading(false);
-    form.setFieldsValue({ payloads: updatedSelectedUsers });
+    form.setFieldsValue({ payloads: updatedSelectedCategories });
   };
 
   /**
@@ -141,21 +188,23 @@ export default function Users() {
    * @param {string} modalMode - modal visibility for edit or new
    */
   const showModal = (modalMode: string) => {
-    modalMode === "edit" ? setUserEditModal(true) : setUserEditModal(false);
+    modalMode === "edit"
+      ? setCategoryEditModal(true)
+      : setCategoryEditModal(false);
     setModalVisibility(true);
   };
 
   useEffect(() => {
-    if (users === null || userLoading) {
+    if (categories === null || categoryLoading) {
       dispatch(
-        getAllUsers()
+        getCategories()
         //{
         // page: currentPage,
         // pageSize: pageSize,
         //}
       );
     }
-  }, [users, userLoading]);
+  }, [categories, categoryLoading]);
 
   useEffect(() => {
     searchRef.current = search;
@@ -166,7 +215,7 @@ export default function Users() {
       setLoading(true);
       if (searchRef.current.length > 0) {
         await dispatch(
-          getAllUsers()
+          getCategories()
           //   {
           //   page: curPage,
           //   pageSize: currentPageSize,
@@ -196,7 +245,7 @@ export default function Users() {
   useEffect(() => {
     (async () => {
       await dispatch(
-        getAllUsers()
+        getCategories()
         //{
         // page: DEFAULT_PAGE_NO,
         // pageSize: DEFAULT_PAGE_SIZE,
@@ -209,43 +258,35 @@ export default function Users() {
   /**
    * add, edit user handler
    *
-   * @param {IUserAddEditFormData} fieldData -  edit or new
+   * @param {ICategory} fieldData -  edit or new
    */
-  const handleEdit = (fieldData: IUserAddEditFormData) => {
+  const handleEdit = (fieldData: ICategory) => {
     showModal("edit");
     setDataSet(fieldData);
   };
 
   const tableData =
-    (users &&
-      users?.map((obj, idx) => {
-        return {
-          key: obj._id,
-          role: obj.role,
-          email: obj.email,
-          username: obj.username,
-          phone: obj.phone,
-          verified: obj.verified,
-          modify: (
-            <AntdButton
-              size="small"
-              shape="circle"
-              icon={<EditFilled />}
-              onClick={() => {
-                return handleEdit(obj);
-              }}
-            />
-          ),
-        };
-      })) ||
-    [];
+    categories?.map((category) => ({
+      key: category._id,
+      name: category.name,
+      subCategories: category.subCategories,
+      createdAt: category.createdAt,
+      actions: (
+        <Button
+          onClick={() => handleEdit(category)}
+          icon={<EditOutlined />}
+        ></Button>
+      ),
+    })) || [];
 
   return (
     <Row gutter={[10, 10]}>
       <Col span={24}>
-        <div className="bg-white rounded-lg p-6">
-          <Title level={2}>User Management</Title>
-          <Text type="secondary">Manage and monitor platform users</Text>
+        <div className="bg-white p-6 rounded-lg">
+          <Title level={2}>All Categories</Title>
+          <Text type="secondary">
+            Monitor and manage all service categories
+          </Text>
         </div>
       </Col>
 
@@ -269,20 +310,13 @@ export default function Users() {
                       style={{
                         fontSize: 28,
                         fontWeight: 700,
-                        color: "#0f172a",
+                        color: stat.color,
                       }}
                     >
                       {stat.value}
                     </div>
                   </div>
-                  <Avatar
-                    style={{
-                      backgroundColor: stat.color,
-                      verticalAlign: "middle",
-                    }}
-                    size={48}
-                    icon={<UserOutlined />}
-                  />
+                  {stat.icon}
                 </Space>
               </Card>
             </Col>
@@ -290,12 +324,11 @@ export default function Users() {
         </Row>
       </Col>
 
-      {/* Existing Table Section */}
       <Col span={24}>
         <ScalableCard>
-          <UserAddEditModal
+          <CategoryAddEditModal
             dataSet={dataSet}
-            edit={userEditModal}
+            edit={categoryEditModal}
             setDataSet={setDataSet}
             modalVisibility={modalVisibility}
             setModalVisibility={setModalVisibility}
@@ -312,7 +345,7 @@ export default function Users() {
               form.resetFields();
               setSearch("");
               await dispatch(
-                getAllUsers()
+                getCategories()
                 // {
                 //   page: currentPage,
                 //   pageSize: pageSize,
@@ -324,7 +357,9 @@ export default function Users() {
               setLoading(false);
             }}
             deleteEventListener={async () => {
-              await dispatch(deleteUser(form.getFieldValue("users")));
+              await dispatch(
+                deleteCategories(form.getFieldValue("categories"))
+              );
               form.resetFields();
               setPageSize(DEFAULT_PAGE_SIZE);
               setDeleteBtnDisabled(true);
@@ -348,19 +383,19 @@ export default function Users() {
             layout="vertical"
             form={form}
           >
-            <Form.Item name="users" hidden initialValue={[]} />
+            <Form.Item name="categories" hidden initialValue={[]} />
 
             <CustomTable
               form={{
                 formData: form,
-                key: "users",
+                key: "categories",
               }}
               selectable
-              dataSource={tableData}
               search={search}
-              loading={loading || userLoading}
-              columns={IUsersColumns}
-              hasSelectedTitle={"Users"}
+              dataSource={tableData}
+              loading={loading || categoryLoading}
+              columns={ICategoriesColumns}
+              hasSelectedTitle={"Categories"}
               onChange={(pagination) => {
                 handlePaginationChange(
                   pagination.current as number,
@@ -383,4 +418,6 @@ export default function Users() {
       </Col>
     </Row>
   );
-}
+};
+
+export default Categories;

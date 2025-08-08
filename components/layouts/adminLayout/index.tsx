@@ -120,7 +120,7 @@ const AdminLayout = ({ children }: any) => {
               }}
               placement="bottomRight"
             >
-              <Space className="cursor-pointer hover:bg-gray-50 px-3 py-2 rounded-lg transition-colors">
+              <Space className="cursor-pointer px-3 rounded-lg transition-colors">
                 <Avatar size="small" icon={<UserOutlined />} />
                 <span className="text-gray-700 font-medium">
                   {humanize(user?.username || "Admin")}

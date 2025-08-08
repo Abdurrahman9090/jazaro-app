@@ -1,16 +1,26 @@
 import { combineReducers } from "@reduxjs/toolkit";
 // imports
-import alertReducer, { AlertSelector } from "./alertReducer";
 import authReducer, { AuthSelector } from "./authReducer";
 import userReducer, { UserSelector } from "./userReducer";
+import alertReducer, { AlertSelector } from "./alertReducer";
+import fixerReducer, { FixerSelector } from "./fixerReducer";
+import categoryReducer, { CategorySelector } from "./categoryReducer";
 
 const appReducer = combineReducers({
   auth: authReducer,
   user: userReducer,
   alert: alertReducer,
+  fixer: fixerReducer,
+  category: categoryReducer,
 });
 
-export { AuthSelector, UserSelector, AlertSelector };
+export {
+  AuthSelector,
+  UserSelector,
+  AlertSelector,
+  CategorySelector,
+  FixerSelector,
+};
 
 export type RootState = ReturnType<typeof appReducer>;
 

@@ -8,6 +8,12 @@ export enum UserRoles {
   Customer = "customer",
 }
 
+export enum FixerStatus {
+  Pending = "pending",
+  Approved = "approved",
+  Rejected = "rejected",
+}
+
 export enum AuthErrors {
   LogOut = "Session Expired, Loging Out!",
   LoginNeeded = "Previous Session Expired, Please login Again!",
