@@ -115,10 +115,10 @@ const Fixers = () => {
       username: fixer.username,
       rating: fixer.rating,
       cnicImages: {
-        front: fixer.cnicFrontImage,
-        back: fixer.cnicBackImage,
+        front: fixer.cnicFrontImage || "",
+        back: fixer.cnicBackImage || "",
       },
-      categorie: fixer.categories,
+      categories: fixer.categories,
       subCategories: fixer.subCategories,
       reviewsCount: fixer.reviewsCount,
       completedJobs: fixer.jobsCompleted,

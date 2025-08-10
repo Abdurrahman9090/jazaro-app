@@ -4,7 +4,7 @@ import { ColumnsType } from "antd/es/table";
 import { humanize } from "@/utils";
 import { UserRoles } from "@/types";
 import { ICategory, IFixer, IUserInfo } from "./types";
-import { Tag, Tooltip, Typography, Select, Rate, Image } from "antd";
+import { Tag, Tooltip, Typography, Select, Rate, Image, Badge } from "antd";
 import {
   UserOutlined,
   LaptopOutlined,
@@ -196,31 +196,33 @@ export const IFixerColumns: ColumnsType<IFixer> = [
   },
   {
     title: "CNIC Images",
-    dataIndex: "cnicImage",
-    render: (cnicImages: { front: string; back: string }) =>
-      cnicImages.front ? (
-        <>
-          <Image
-            src={cnicImages.front}
-            width={40}
-            height={40}
-            className="w-10 border h-10 bg-slate-200 rounded-lg"
-            alt="Fixer"
-          />
-          <Image
-            src={cnicImages.back}
-            width={40}
-            height={40}
-            className="w-10 border h-10 bg-slate-200 rounded-lg"
-            alt="Fixer"
-          />
-        </>
-      ) : (
-        <div className="flex">
-          <ImageOff className="mx-auto" />
-          <ImageOff className="mx-auto" />
+    dataIndex: "cnicImages",
+    render: (cnicImages: { front: string; back: string }) => {
+      return (
+        <div className="flex justify-center gap-1">
+          {cnicImages?.front ? (
+            <Image
+              width={40}
+              src={cnicImages?.front}
+              className="border rounded-lg"
+              alt="Fixer CNIC Front"
+            />
+          ) : (
+            <ImageOff />
+          )}
+          {cnicImages?.back ? (
+            <Image
+              width={40}
+              src={cnicImages?.back}
+              className="border rounded-lg"
+              alt="Fixer CNIC Back"
+            />
+          ) : (
+            <ImageOff />
+          )}
         </div>
-      ),
+      );
+    },
     align: "center" as const,
   },
   {
@@ -233,10 +235,8 @@ export const IFixerColumns: ColumnsType<IFixer> = [
     render: (categories: string[]) => (
       <Select
         showSearch
+        className="w-full"
         value={"See Categories"}
-        dropdownStyle={{ minWidth: 120 }}
-        dropdownRender={(menu) => menu}
-        open={false}
         options={
           categories?.map((cat: string) => ({
             label: cat,
@@ -252,10 +252,8 @@ export const IFixerColumns: ColumnsType<IFixer> = [
     render: (subCategories: string[]) => (
       <Select
         showSearch
+        className="w-full"
         value={"See Sub Categories"}
-        dropdownStyle={{ minWidth: 120 }}
-        dropdownRender={(menu) => menu}
-        open={false}
         options={
           subCategories?.map((cat: string) => ({
             label: cat,
@@ -277,7 +275,9 @@ export const IFixerColumns: ColumnsType<IFixer> = [
   {
     title: "Completed Jobs",
     dataIndex: "completedJobs",
-    render: (jobs: number) => <span>{jobs} jobs</span>,
+    render: (jobs: number) => (
+      <Badge count={jobs} color="green" className="font-bold" />
+    ),
     align: "center" as const,
   },
   {
@@ -285,18 +285,21 @@ export const IFixerColumns: ColumnsType<IFixer> = [
     dataIndex: "status",
     key: "status",
     render: (status: string) => {
-      let color = "#2563eb";
-      let bg = "#e0f2fe";
-      if (status === "Pending") {
-        color = "#eab308";
-        bg = "#fef9c3";
-      } else if (status === "Rejected") {
-        color = "#dc2626";
-        bg = "#fee2e2";
+      let color = "";
+      let bg = "";
+      if (status === "pending") {
+        color = "text-white";
+        bg = "bg-gray-500";
+      } else if (status === "accepted") {
+        color = "text-white";
+        bg = "bg-green-700";
+      } else if (status === "rejected") {
+        color = "text-white";
+        bg = "bg-red-400";
       }
       return (
-        <Tag style={{ backgroundColor: color }} className={`p-1 text-white`}>
-          {status}
+        <Tag className={`p-2 rounded-3xl font-semibold ${bg} text-white`}>
+          {humanize(status || "N/A")}
         </Tag>
       );
     },
