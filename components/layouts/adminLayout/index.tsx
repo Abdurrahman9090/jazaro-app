@@ -1,83 +1,28 @@
-import {
-  Layout,
-  Menu,
-  Button,
-  Avatar,
-  Dropdown,
-  Space,
-  Badge,
-  Grid,
-} from "antd";
+import { Layout, Button, Badge, Grid } from "antd";
 import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
-  DashboardOutlined,
-  UserOutlined,
-  SettingOutlined,
   BellOutlined,
-  LogoutOutlined,
-  HomeOutlined,
-  ToolOutlined,
-  FileTextOutlined,
-  BarChartOutlined,
 } from "@ant-design/icons";
 import React, { useState } from "react";
-import { useAppDispatch } from "@/redux/store";
-import { useRouter } from "next/navigation";
 
-import { logout } from "@/redux/actions/authAction";
 import { ClientSider } from "@/shared/sider";
 import { UserRoles } from "@/types";
-import { getClientRoutes, siderAdminRoutes } from "@/routes/sider";
+import { siderClientMenuItems, siderAdminMenuItems } from "@/routes/sider";
 import { AuthSelector } from "@/redux/reducers";
 import { useSelector } from "react-redux";
-import { humanize } from "@/utils";
+import NavProfile from "@/components/navProfile";
 
 const { useBreakpoint } = Grid;
 const { Header: AntHeader, Content } = Layout;
 
 const AdminLayout = ({ children }: any) => {
   const { xs } = useBreakpoint();
-  const router = useRouter();
   const { user } = useSelector(AuthSelector);
   const [collapsed, setCollapsed] = useState(false);
 
-  const dispatch = useAppDispatch();
-
   const routes =
-    user?.role === UserRoles.Admin
-      ? siderAdminRoutes
-      : getClientRoutes(user?.role || "");
-
-  const userMenuItems = [
-    {
-      key: "profile",
-      icon: <UserOutlined />,
-      label: "Profile",
-    },
-    {
-      key: "settings",
-      icon: <SettingOutlined />,
-      label: "Settings",
-    },
-    {
-      type: "divider" as const,
-    },
-    {
-      key: "logout",
-      icon: <LogoutOutlined />,
-      label: "Logout",
-    },
-  ];
-
-  const handleMenuClick = ({ key }: { key: string }) => {
-    if (key === "logout") {
-      dispatch(logout());
-    } else {
-      // Navigate to the corresponding page
-      router.push(`/admin/${key}`);
-    }
-  };
+    user?.role === UserRoles.Admin ? siderAdminMenuItems : siderClientMenuItems;
 
   return (
     <Layout className="min-h-screen">
@@ -113,20 +58,7 @@ const AdminLayout = ({ children }: any) => {
               />
             </Badge>
 
-            <Dropdown
-              menu={{
-                items: userMenuItems,
-                onClick: handleMenuClick,
-              }}
-              placement="bottomRight"
-            >
-              <Space className="cursor-pointer px-3 rounded-lg transition-colors">
-                <Avatar size="small" icon={<UserOutlined />} />
-                <span className="text-gray-700 font-medium">
-                  {humanize(user?.username || "Admin")}
-                </span>
-              </Space>
-            </Dropdown>
+            <NavProfile />
           </div>
         </AntHeader>
 

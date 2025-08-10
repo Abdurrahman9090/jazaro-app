@@ -112,7 +112,7 @@ export default function MessagesPage() {
               icon={<ArrowLeftOutlined className="h-6 w-6" />}
             />
             <div className="w-12 h-12 bg-white/80 backdrop-blur-[10px] rounded-[10px] shadow-[0_4px_10px_rgba(0,188,212,0.3)] border border-[#00BCD4]/30 flex items-center justify-center">
-              <Avatar 
+              <Avatar
                 size={40}
                 src={currentChat?.avatar || "/placeholder.svg"}
                 className="bg-gradient-to-br from-[#00BCD4] to-[#26C6DA] text-white font-bold"
@@ -198,7 +198,7 @@ export default function MessagesPage() {
                       ? "text-white/70"
                       : "text-[#00838F]"
                   }`}
-                  style={{margin: 0, padding: 0}}
+                  style={{ margin: 0, padding: 0 }}
                 >
                   {message.timestamp}
                 </p>
@@ -290,7 +290,10 @@ export default function MessagesPage() {
               <div className="flex items-start gap-3">
                 <div className="relative">
                   <div className="w-14 h-14 bg-white/80 backdrop-blur-[10px] rounded-[10px] shadow-[0_4px_10px_rgba(0,188,212,0.3)] border border-[#00BCD4]/30 flex items-center justify-center">
-                    <Avatar className="h-12 w-12" src={conversation.avatar || "/placeholder.svg"}>
+                    <Avatar
+                      className="h-12 w-12"
+                      src={conversation.avatar || "/placeholder.svg"}
+                    >
                       {conversation.name.slice(0, 2)}
                     </Avatar>
                   </div>

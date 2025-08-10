@@ -2,13 +2,29 @@
 
 import { useRouter } from "next/navigation";
 import { Card, Typography } from "antd";
-import { ToolOutlined, ThunderboltOutlined, BuildOutlined, FormatPainterOutlined, FireOutlined, SettingOutlined, CarOutlined, LockOutlined, HomeOutlined, UserOutlined, LaptopOutlined, DeleteOutlined } from "@ant-design/icons";
+import {
+  ToolOutlined,
+  ThunderboltOutlined,
+  BuildOutlined,
+  FormatPainterOutlined,
+  FireOutlined,
+  SettingOutlined,
+  CarOutlined,
+  LockOutlined,
+  HomeOutlined,
+  UserOutlined,
+  LaptopOutlined,
+  DeleteOutlined,
+} from "@ant-design/icons";
 import type { ReactElement } from "react";
 import React from "react";
 
 const { Title } = Typography;
 
-const categoryData: Record<string, { name: string; icon: ReactElement; subcategories: string[] }> = {
+const categoryData: Record<
+  string,
+  { name: string; icon: ReactElement; subcategories: string[] }
+> = {
   electricians: {
     name: "Electricians",
     icon: <ThunderboltOutlined className="text-4xl text-[#00BCD4]" />,
@@ -157,7 +173,11 @@ const categoryData: Record<string, { name: string; icon: ReactElement; subcatego
   },
 };
 
-export default function SubcategoryPage({ params }: { params: { category: string } }) {
+export default function SubcategoryPage({
+  params,
+}: {
+  params: { category: string };
+}) {
   const category = params?.category;
   const data = categoryData[category];
   const router = useRouter();
@@ -166,7 +186,9 @@ export default function SubcategoryPage({ params }: { params: { category: string
   if (!data) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#E0F7FA] via-[#B2EBF2] to-[#80DEEA]">
-        <span className="text-[#00838F] text-lg font-semibold">Category not found</span>
+        <span className="text-[#00838F] text-lg font-semibold">
+          Category not found
+        </span>
       </div>
     );
   }
@@ -175,7 +197,9 @@ export default function SubcategoryPage({ params }: { params: { category: string
     <div className="min-h-screen bg-gradient-to-br from-[#E0F7FA] via-[#B2EBF2] to-[#80DEEA] max-w-md mx-auto flex flex-col relative overflow-hidden py-8 px-2">
       <div className="flex flex-col items-center mb-8">
         {data.icon}
-        <Title level={3} className="text-[#00838F] mt-2 mb-0 text-center">{data.name}</Title>
+        <Title level={3} className="text-[#00838F] mt-2 mb-0 text-center">
+          {data.name}
+        </Title>
       </div>
       <div className="grid grid-cols-1 gap-4 w-full max-w-md mx-auto mb-8">
         {data.subcategories.map((sub: string, idx: number) => (
@@ -183,7 +207,9 @@ export default function SubcategoryPage({ params }: { params: { category: string
             key={idx}
             hoverable
             onClick={() => setSelectedSub(sub)}
-            className={`flex items-center bg-white/80 backdrop-blur-[10px] border border-[#00BCD4]/30 rounded-[14px] shadow-[0_4px_10px_rgba(0,188,212,0.10)] transition-transform duration-200 hover:scale-105 cursor-pointer px-4 py-4 ${selectedSub === sub ? 'ring-2 ring-[#00BCD4]' : ''}`}
+            className={`flex items-center bg-white/80 backdrop-blur-[10px] border border-[#00BCD4]/30 rounded-[14px] shadow-[0_4px_10px_rgba(0,188,212,0.10)] transition-transform duration-200 hover:scale-105 cursor-pointer px-4 py-4 ${
+              selectedSub === sub ? "ring-2 ring-[#00BCD4]" : ""
+            }`}
             bodyStyle={{ padding: 0 }}
           >
             <span className="text-base font-medium text-[#006064]">{sub}</span>
@@ -192,11 +218,22 @@ export default function SubcategoryPage({ params }: { params: { category: string
       </div>
       <button
         disabled={!selectedSub}
-        onClick={() => selectedSub && router.push(`/user/services/${category}/${encodeURIComponent(selectedSub)}/find-fixer`)}
-        className={`w-full py-3 rounded-lg text-white font-bold text-lg transition-all duration-200 ${selectedSub ? 'bg-gradient-to-r from-[#00BCD4] to-[#00838F] hover:from-[#00838F] hover:to-[#00BCD4]' : 'bg-gray-300 cursor-not-allowed'}`}
+        onClick={() =>
+          selectedSub &&
+          router.push(
+            `/user/services/${category}/${encodeURIComponent(
+              selectedSub
+            )}/find-fixer`
+          )
+        }
+        className={`w-full py-3 rounded-lg text-white font-bold text-lg transition-all duration-200 ${
+          selectedSub
+            ? "bg-gradient-to-r from-[#00BCD4] to-[#00838F] hover:from-[#00838F] hover:to-[#00BCD4]"
+            : "bg-gray-300 cursor-not-allowed"
+        }`}
       >
         Find the fixer for me
       </button>
     </div>
   );
-} 
+}

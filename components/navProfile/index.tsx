@@ -18,8 +18,7 @@ const NavProfile = () => {
 
   const isClient = user?.role === UserRoles.Client;
   const isFixer =
-    user?.role === UserRoles.Fixer &&
-    user?.fixerDetails?.fixerRequestStatus === FixerStatus.Approved;
+    user?.role === UserRoles.Fixer && user?.status === FixerStatus.Approved;
 
   let userMenuItems: MenuProps["items"] = [
     {
@@ -55,7 +54,7 @@ const NavProfile = () => {
     });
   } else if (isClient) {
     // If currently Client, show "Switch to Fixer" (if fixer is approved)
-    if (user?.fixerDetails?.fixerRequestStatus === FixerStatus.Approved) {
+    if (user?.status === FixerStatus.Approved) {
       userMenuItems.push({
         key: "switch-fixer",
         label: (

@@ -7,19 +7,18 @@ export interface IUser {
   avatar?: string;
   username: string;
   phone: number;
-  verified?: boolean;
-  fixerDetails?: {
-    cnicImage: string;
-    categories: string[];
-    subCategories: string[];
-    rating: number;
-    reviewsCount: number;
-    jobsCompleted: number;
-    fixerRequestStatus: FixerStatus;
-  };
+  cnic?: number;
+  cnicFrontImage?: string;
+  cnicBackImage?: string;
+  verify?: boolean;
+  cnicImage: string;
+  categories: string[];
+  subCategories: string[];
+  rating: number;
+  reviewsCount: number;
+  jobsCompleted: number;
+  status: FixerStatus;
   createdBy?: string;
-  organization?: string;
-  employee_limit?: number;
 }
 
 export interface IGetAllUser {

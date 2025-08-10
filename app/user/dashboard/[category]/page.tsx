@@ -122,107 +122,387 @@ const categories = [
 ];
 
 // Updated subcategories for all main categories
-const subcategoriesMap: Record<string, { key: string; name: string; description: string }[]> = {
+const subcategoriesMap: Record<
+  string,
+  { key: string; name: string; description: string }[]
+> = {
   electricians: [
-    { key: "general-repair", name: "General Electrical Repairing", description: "All types of electrical repairs for home and office" },
-    { key: "wiring", name: "House & Office Wiring", description: "Complete wiring solutions for buildings" },
-    { key: "switchboard-panel", name: "Switchboard & Panel Installation", description: "Installation of switchboards and electrical panels" },
-    { key: "circuit-breaker", name: "Circuit Breaker & Fuse Repair", description: "Repair and replacement of circuit breakers and fuses" },
-    { key: "lighting", name: "Lighting Installation (Indoor/Outdoor)", description: "Indoor and outdoor lighting setup" },
-    { key: "generator-ups", name: "Generator & UPS Setup", description: "Installation and maintenance of generators and UPS systems" },
+    {
+      key: "general-repair",
+      name: "General Electrical Repairing",
+      description: "All types of electrical repairs for home and office",
+    },
+    {
+      key: "wiring",
+      name: "House & Office Wiring",
+      description: "Complete wiring solutions for buildings",
+    },
+    {
+      key: "switchboard-panel",
+      name: "Switchboard & Panel Installation",
+      description: "Installation of switchboards and electrical panels",
+    },
+    {
+      key: "circuit-breaker",
+      name: "Circuit Breaker & Fuse Repair",
+      description: "Repair and replacement of circuit breakers and fuses",
+    },
+    {
+      key: "lighting",
+      name: "Lighting Installation (Indoor/Outdoor)",
+      description: "Indoor and outdoor lighting setup",
+    },
+    {
+      key: "generator-ups",
+      name: "Generator & UPS Setup",
+      description: "Installation and maintenance of generators and UPS systems",
+    },
   ],
   plumbers: [
-    { key: "water-pipe", name: "Water Pipe Installation & Repair", description: "Install and repair water supply pipes" },
-    { key: "sanitary-fitting", name: "Sanitary Fitting & Replacement", description: "Sanitary ware installation and replacement" },
-    { key: "drainage", name: "Drainage & Sewerage Solutions", description: "Drainage and sewerage system services" },
-    { key: "tank-cleaning", name: "Water Tank Cleaning", description: "Cleaning of water storage tanks" },
-    { key: "leak", name: "Leak Detection & Fixing", description: "Fixing pipe and faucet leaks" },
-    { key: "fixture-installation", name: "Bathroom & Kitchen Fixture Installation", description: "Install new bathroom and kitchen fixtures" },
+    {
+      key: "water-pipe",
+      name: "Water Pipe Installation & Repair",
+      description: "Install and repair water supply pipes",
+    },
+    {
+      key: "sanitary-fitting",
+      name: "Sanitary Fitting & Replacement",
+      description: "Sanitary ware installation and replacement",
+    },
+    {
+      key: "drainage",
+      name: "Drainage & Sewerage Solutions",
+      description: "Drainage and sewerage system services",
+    },
+    {
+      key: "tank-cleaning",
+      name: "Water Tank Cleaning",
+      description: "Cleaning of water storage tanks",
+    },
+    {
+      key: "leak",
+      name: "Leak Detection & Fixing",
+      description: "Fixing pipe and faucet leaks",
+    },
+    {
+      key: "fixture-installation",
+      name: "Bathroom & Kitchen Fixture Installation",
+      description: "Install new bathroom and kitchen fixtures",
+    },
   ],
   carpenters: [
-    { key: "custom-woodwork", name: "Custom Woodwork", description: "Custom wood designs for home and office" },
-    { key: "furniture", name: "Furniture Making & Repair", description: "Custom furniture and repairs" },
-    { key: "cabinet-wardrobe", name: "Cabinet & Wardrobe Installation", description: "Installation of cabinets and wardrobes" },
-    { key: "door-window", name: "Door and Window Fittings", description: "Fitting and repair of doors and windows" },
-    { key: "shelving-storage", name: "Shelving and Storage Solutions", description: "Custom shelving and storage units" },
-    { key: "wooden-flooring", name: "Wooden Flooring Installation", description: "Installation of wooden flooring" },
+    {
+      key: "custom-woodwork",
+      name: "Custom Woodwork",
+      description: "Custom wood designs for home and office",
+    },
+    {
+      key: "furniture",
+      name: "Furniture Making & Repair",
+      description: "Custom furniture and repairs",
+    },
+    {
+      key: "cabinet-wardrobe",
+      name: "Cabinet & Wardrobe Installation",
+      description: "Installation of cabinets and wardrobes",
+    },
+    {
+      key: "door-window",
+      name: "Door and Window Fittings",
+      description: "Fitting and repair of doors and windows",
+    },
+    {
+      key: "shelving-storage",
+      name: "Shelving and Storage Solutions",
+      description: "Custom shelving and storage units",
+    },
+    {
+      key: "wooden-flooring",
+      name: "Wooden Flooring Installation",
+      description: "Installation of wooden flooring",
+    },
   ],
   painters: [
-    { key: "interior-painting", name: "Interior Wall Painting", description: "Painting for indoor walls" },
-    { key: "exterior-painting", name: "Exterior Wall Painting", description: "Painting for outdoor walls" },
-    { key: "ceiling-decorative", name: "Ceiling & Decorative Paint", description: "Ceiling and decorative painting services" },
-    { key: "wallpaper", name: "Wallpaper Installation & Removal", description: "Installation and removal of wallpapers" },
-    { key: "surface-prep", name: "Surface Preparation (Plastering, Sanding)", description: "Plastering and sanding for painting prep" },
+    {
+      key: "interior-painting",
+      name: "Interior Wall Painting",
+      description: "Painting for indoor walls",
+    },
+    {
+      key: "exterior-painting",
+      name: "Exterior Wall Painting",
+      description: "Painting for outdoor walls",
+    },
+    {
+      key: "ceiling-decorative",
+      name: "Ceiling & Decorative Paint",
+      description: "Ceiling and decorative painting services",
+    },
+    {
+      key: "wallpaper",
+      name: "Wallpaper Installation & Removal",
+      description: "Installation and removal of wallpapers",
+    },
+    {
+      key: "surface-prep",
+      name: "Surface Preparation (Plastering, Sanding)",
+      description: "Plastering and sanding for painting prep",
+    },
   ],
   hvac: [
-    { key: "ac-install-repair", name: "Air Conditioner Installation & Repair", description: "Install and repair air conditioners" },
-    { key: "hvac-system", name: "HVAC System Installation & Servicing", description: "Complete HVAC system services" },
-    { key: "split-central-inverter", name: "Split, Central, and Inverter AC Handling", description: "Services for all AC types" },
-    { key: "ventilation", name: "Ventilation Setup and Maintenance", description: "Ventilation system installation and upkeep" },
-    { key: "gas-refilling", name: "Gas Refilling & Pipe Insulation", description: "AC gas refilling and pipe insulation" },
+    {
+      key: "ac-install-repair",
+      name: "Air Conditioner Installation & Repair",
+      description: "Install and repair air conditioners",
+    },
+    {
+      key: "hvac-system",
+      name: "HVAC System Installation & Servicing",
+      description: "Complete HVAC system services",
+    },
+    {
+      key: "split-central-inverter",
+      name: "Split, Central, and Inverter AC Handling",
+      description: "Services for all AC types",
+    },
+    {
+      key: "ventilation",
+      name: "Ventilation Setup and Maintenance",
+      description: "Ventilation system installation and upkeep",
+    },
+    {
+      key: "gas-refilling",
+      name: "Gas Refilling & Pipe Insulation",
+      description: "AC gas refilling and pipe insulation",
+    },
   ],
   "appliance-repair": [
-    { key: "fridge-washing-oven", name: "Refrigerator, Washing Machine, Oven Fixing", description: "Repair of major home appliances" },
-    { key: "microwave-dryer", name: "Microwave, Dishwasher & Dryer Repairs", description: "Fixing smaller household appliances" },
-    { key: "water-dispenser-heater", name: "Water Dispenser and Heater Repair", description: "Repair of water dispensers and heaters" },
-    { key: "tv-home-theater", name: "TV and Home Theater Setup", description: "Installation and repair of TVs and home theater systems" },
+    {
+      key: "fridge-washing-oven",
+      name: "Refrigerator, Washing Machine, Oven Fixing",
+      description: "Repair of major home appliances",
+    },
+    {
+      key: "microwave-dryer",
+      name: "Microwave, Dishwasher & Dryer Repairs",
+      description: "Fixing smaller household appliances",
+    },
+    {
+      key: "water-dispenser-heater",
+      name: "Water Dispenser and Heater Repair",
+      description: "Repair of water dispensers and heaters",
+    },
+    {
+      key: "tv-home-theater",
+      name: "TV and Home Theater Setup",
+      description: "Installation and repair of TVs and home theater systems",
+    },
   ],
   mason: [
-    { key: "brickwork-tiling", name: "Brickwork & Tiling", description: "Brickwork and tile installation services" },
-    { key: "renovation", name: "Home and Office Renovation", description: "Complete renovation services" },
-    { key: "plastering", name: "Wall Plastering & Painting Prep", description: "Plastering and prep for painting" },
-    { key: "kitchen-bathroom", name: "Kitchen & Bathroom Remodeling", description: "Remodeling kitchens and bathrooms" },
-    { key: "ceiling-design", name: "Ceiling Design (POP, Gypsum)", description: "Ceiling design with POP or gypsum" },
-    { key: "foundation-repairs", name: "Foundation Repairs & Concrete Work", description: "Concrete work and foundation repairs" },
+    {
+      key: "brickwork-tiling",
+      name: "Brickwork & Tiling",
+      description: "Brickwork and tile installation services",
+    },
+    {
+      key: "renovation",
+      name: "Home and Office Renovation",
+      description: "Complete renovation services",
+    },
+    {
+      key: "plastering",
+      name: "Wall Plastering & Painting Prep",
+      description: "Plastering and prep for painting",
+    },
+    {
+      key: "kitchen-bathroom",
+      name: "Kitchen & Bathroom Remodeling",
+      description: "Remodeling kitchens and bathrooms",
+    },
+    {
+      key: "ceiling-design",
+      name: "Ceiling Design (POP, Gypsum)",
+      description: "Ceiling design with POP or gypsum",
+    },
+    {
+      key: "foundation-repairs",
+      name: "Foundation Repairs & Concrete Work",
+      description: "Concrete work and foundation repairs",
+    },
   ],
   mechanics: [
-    { key: "car-repairs", name: "Car Mechanical Repairs", description: "Mechanical repairs for cars" },
-    { key: "bike-servicing", name: "Motorcycle/Bike Servicing", description: "Servicing for motorcycles and bikes" },
-    { key: "engine-diagnostics", name: "Engine Diagnostics", description: "Diagnosing engine issues" },
-    { key: "battery-replacement", name: "Battery Replacement", description: "Replacing vehicle batteries" },
-    { key: "oil-filter", name: "Oil & Filter Change", description: "Oil changes and filter replacements" },
+    {
+      key: "car-repairs",
+      name: "Car Mechanical Repairs",
+      description: "Mechanical repairs for cars",
+    },
+    {
+      key: "bike-servicing",
+      name: "Motorcycle/Bike Servicing",
+      description: "Servicing for motorcycles and bikes",
+    },
+    {
+      key: "engine-diagnostics",
+      name: "Engine Diagnostics",
+      description: "Diagnosing engine issues",
+    },
+    {
+      key: "battery-replacement",
+      name: "Battery Replacement",
+      description: "Replacing vehicle batteries",
+    },
+    {
+      key: "oil-filter",
+      name: "Oil & Filter Change",
+      description: "Oil changes and filter replacements",
+    },
   ],
   locksmiths: [
-    { key: "lock-install-repair", name: "Lock Installation & Repair", description: "Installing and repairing locks" },
-    { key: "digital-smart-lock", name: "Digital & Smart Lock Services", description: "Services for digital and smart locks" },
-    { key: "door-un/SPDX-License-Identifier: MITunlocking", name: "Door Unlocking (Emergency)", description: "Emergency door unlocking services" },
-    { key: "key-duplication", name: "Key Duplication", description: "Duplicating keys for homes and vehicles" },
-    { key: "safe-install-repair", name: "Safe Installation & Repair", description: "Installing and repairing safes" },
+    {
+      key: "lock-install-repair",
+      name: "Lock Installation & Repair",
+      description: "Installing and repairing locks",
+    },
+    {
+      key: "digital-smart-lock",
+      name: "Digital & Smart Lock Services",
+      description: "Services for digital and smart locks",
+    },
+    {
+      key: "door-un/SPDX-License-Identifier: MITunlocking",
+      name: "Door Unlocking (Emergency)",
+      description: "Emergency door unlocking services",
+    },
+    {
+      key: "key-duplication",
+      name: "Key Duplication",
+      description: "Duplicating keys for homes and vehicles",
+    },
+    {
+      key: "safe-install-repair",
+      name: "Safe Installation & Repair",
+      description: "Installing and repairing safes",
+    },
   ],
   handyman: [
-    { key: "tree-trimming", name: "Tree Trimming & Cutting", description: "Trimming and cutting trees" },
-    { key: "gutter-cleaning", name: "Gutter Cleaning", description: "Cleaning and maintaining gutters" },
-    { key: "pest-control", name: "Pest Control Services", description: "Pest removal and prevention" },
-    { key: "carpet-cleaning", name: "Carpet Cleaning", description: "Deep cleaning of carpets" },
-    { key: "lawn-mowing", name: "Lawn Mowing & Landscaping", description: "Lawn care and landscaping services" },
-    { key: "wall-mounting", name: "Wall Mounting (TVs, Shelves, etc.)", description: "Mounting TVs and shelves" },
-    { key: "minor-repairs", name: "Minor Home Repairs", description: "General minor repair services" },
+    {
+      key: "tree-trimming",
+      name: "Tree Trimming & Cutting",
+      description: "Trimming and cutting trees",
+    },
+    {
+      key: "gutter-cleaning",
+      name: "Gutter Cleaning",
+      description: "Cleaning and maintaining gutters",
+    },
+    {
+      key: "pest-control",
+      name: "Pest Control Services",
+      description: "Pest removal and prevention",
+    },
+    {
+      key: "carpet-cleaning",
+      name: "Carpet Cleaning",
+      description: "Deep cleaning of carpets",
+    },
+    {
+      key: "lawn-mowing",
+      name: "Lawn Mowing & Landscaping",
+      description: "Lawn care and landscaping services",
+    },
+    {
+      key: "wall-mounting",
+      name: "Wall Mounting (TVs, Shelves, etc.)",
+      description: "Mounting TVs and shelves",
+    },
+    {
+      key: "minor-repairs",
+      name: "Minor Home Repairs",
+      description: "General minor repair services",
+    },
   ],
   "vehicle-services": [
-    { key: "car-detailing", name: "Car Detailing & Polishing", description: "Detailing and polishing vehicles" },
-    { key: "touring-inspection", name: "Touring Inspection & Pre-Trip Services", description: "Vehicle checks for trips" },
-    { key: "tyre-fitting", name: "Tyre Fitting & Puncture Repair", description: "Tyre services and puncture repairs" },
-    { key: "ev-battery", name: "Electric Vehicle (EV) Battery Installation & Maintenance", description: "EV battery services" },
-    { key: "windshield-repair", name: "Windshield & Glass Repair", description: "Repairing vehicle windshields and glass" },
+    {
+      key: "car-detailing",
+      name: "Car Detailing & Polishing",
+      description: "Detailing and polishing vehicles",
+    },
+    {
+      key: "touring-inspection",
+      name: "Touring Inspection & Pre-Trip Services",
+      description: "Vehicle checks for trips",
+    },
+    {
+      key: "tyre-fitting",
+      name: "Tyre Fitting & Puncture Repair",
+      description: "Tyre services and puncture repairs",
+    },
+    {
+      key: "ev-battery",
+      name: "Electric Vehicle (EV) Battery Installation & Maintenance",
+      description: "EV battery services",
+    },
+    {
+      key: "windshield-repair",
+      name: "Windshield & Glass Repair",
+      description: "Repairing vehicle windshields and glass",
+    },
   ],
   "it-smart-home": [
-    { key: "cctv-install", name: "CCTV Installation & Troubleshooting", description: "CCTV setup and troubleshooting" },
-    { key: "wifi-network", name: "Wi-Fi & Network Setup", description: "Setting up Wi-Fi and networks" },
-    { key: "smart-home-devices", name: "Smart Home Device Setup (Lights, Thermostats)", description: "Installing smart home devices" },
-    { key: "doorbell-cameras", name: "Doorbell Cameras & Security Systems", description: "Setting up security cameras and doorbells" },
+    {
+      key: "cctv-install",
+      name: "CCTV Installation & Troubleshooting",
+      description: "CCTV setup and troubleshooting",
+    },
+    {
+      key: "wifi-network",
+      name: "Wi-Fi & Network Setup",
+      description: "Setting up Wi-Fi and networks",
+    },
+    {
+      key: "smart-home-devices",
+      name: "Smart Home Device Setup (Lights, Thermostats)",
+      description: "Installing smart home devices",
+    },
+    {
+      key: "doorbell-cameras",
+      name: "Doorbell Cameras & Security Systems",
+      description: "Setting up security cameras and doorbells",
+    },
   ],
   cleaning: [
-    { key: "deep-home-cleaning", name: "Deep Home Cleaning", description: "Thorough cleaning of homes" },
-    { key: "office-cleaning", name: "Office/Commercial Cleaning", description: "Cleaning for offices and commercial spaces" },
-    { key: "move-in-out", name: "Move-in / Move-out Cleaning", description: "Cleaning for moving in or out" },
-    { key: "sofa-mattress", name: "Sofa & Mattress Cleaning", description: "Cleaning sofas and mattresses" },
+    {
+      key: "deep-home-cleaning",
+      name: "Deep Home Cleaning",
+      description: "Thorough cleaning of homes",
+    },
+    {
+      key: "office-cleaning",
+      name: "Office/Commercial Cleaning",
+      description: "Cleaning for offices and commercial spaces",
+    },
+    {
+      key: "move-in-out",
+      name: "Move-in / Move-out Cleaning",
+      description: "Cleaning for moving in or out",
+    },
+    {
+      key: "sofa-mattress",
+      name: "Sofa & Mattress Cleaning",
+      description: "Cleaning sofas and mattresses",
+    },
   ],
 };
 
 const urgencyLevels = [
   { id: "low", label: "Within a week", color: "#E8F5E8", textColor: "#2E7D32" },
   { id: "medium", label: "2-3 days", color: "#FFF8E1", textColor: "#F57C00" },
-  { id: "high", label: "Today/Tomorrow", color: "#FFF3E0", textColor: "#E65100" },
+  {
+    id: "high",
+    label: "Today/Tomorrow",
+    color: "#FFF3E0",
+    textColor: "#E65100",
+  },
   { id: "emergency", label: "ASAP", color: "#FFEBEE", textColor: "#C62828" },
 ];
 
@@ -253,9 +533,7 @@ const CategoryPage = () => {
   // Handle checkbox toggle
   const handleToggle = (key: string) => {
     setSelectedSubs((prev) =>
-      prev.includes(key)
-        ? prev.filter((k) => k !== key)
-        : [...prev, key]
+      prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key]
     );
   };
 
@@ -305,7 +583,13 @@ const CategoryPage = () => {
                       <Checkbox
                         checked={selectedSubs.includes(sub.key)}
                         onChange={() => handleToggle(sub.key)}
-                        style={{ position: "absolute", left: 0, top: "50%", transform: "translateY(-50%)", zIndex: 2 }}
+                        style={{
+                          position: "absolute",
+                          left: 0,
+                          top: "50%",
+                          transform: "translateY(-50%)",
+                          zIndex: 2,
+                        }}
                         onClick={(e) => e.stopPropagation()}
                         tabIndex={-1}
                         aria-label={`Select ${sub.name}`}
@@ -381,7 +665,11 @@ function RequestForm({ categoryKey }: { categoryKey: string }) {
     >
       {/* Location */}
       <Form.Item
-        label={<span className="text-base font-medium text-[#00838F]">Your Location</span>}
+        label={
+          <span className="text-base font-medium text-[#00838F]">
+            Your Location
+          </span>
+        }
         name="location"
         rules={[{ required: true, message: "Please enter your address" }]}
       >
@@ -403,7 +691,11 @@ function RequestForm({ categoryKey }: { categoryKey: string }) {
 
       {/* Description */}
       <Form.Item
-        label={<span className="text-base font-medium text-[#00838F]">Describe the Problem</span>}
+        label={
+          <span className="text-base font-medium text-[#00838F]">
+            Describe the Problem
+          </span>
+        }
         name="description"
         rules={[{ required: true, message: "Please describe the problem" }]}
       >
@@ -433,9 +725,19 @@ function RequestForm({ categoryKey }: { categoryKey: string }) {
 
       {/* Urgency */}
       <Form.Item
-        label={<span className="text-base font-medium text-[#00838F]">How urgent is this?</span>}
+        label={
+          <span className="text-base font-medium text-[#00838F]">
+            How urgent is this?
+          </span>
+        }
         name="urgency"
-        rules={[{ required: true, message: "Please select at least one urgency level", type: "array" }]}
+        rules={[
+          {
+            required: true,
+            message: "Please select at least one urgency level",
+            type: "array",
+          },
+        ]}
       >
         <div className="grid grid-cols-1 gap-2">
           {urgencyLevels.map((level) => {
@@ -460,7 +762,9 @@ function RequestForm({ categoryKey }: { categoryKey: string }) {
                 }}
               >
                 <div className=" flex items-center justify-between">
-                  <span className="font-medium text-[#00838F]">{level.label}</span>
+                  <span className="font-medium text-[#00838F]">
+                    {level.label}
+                  </span>
                   <span
                     className=" rounded-full text-l font-semibold"
                     style={{ background: level.color, color: level.textColor }}
@@ -476,7 +780,11 @@ function RequestForm({ categoryKey }: { categoryKey: string }) {
 
       {/* Pricing Type */}
       <Form.Item
-        label={<span className="text-base font-medium text-[#00838F]">Select Pricing Type</span>}
+        label={
+          <span className="text-base font-medium text-[#00838F]">
+            Select Pricing Type
+          </span>
+        }
         name="pricingType"
         rules={[{ required: true, message: "Please select a pricing type" }]}
       >
@@ -484,13 +792,21 @@ function RequestForm({ categoryKey }: { categoryKey: string }) {
           optionType="button"
           buttonStyle="solid"
           className="w-full flex gap-4"
-          onChange={e => {
-            setFormData({ ...formData, pricingType: e.target.value, price: "" });
+          onChange={(e) => {
+            setFormData({
+              ...formData,
+              pricingType: e.target.value,
+              price: "",
+            });
             form.setFieldsValue({ pricingType: e.target.value, price: "" });
           }}
         >
-          <Radio.Button value="hourly" className="flex-1 text-center">Hourly</Radio.Button>
-          <Radio.Button value="fixed" className="flex-1 text-center">Fixed</Radio.Button>
+          <Radio.Button value="hourly" className="flex-1 text-center">
+            Hourly
+          </Radio.Button>
+          <Radio.Button value="fixed" className="flex-1 text-center">
+            Fixed
+          </Radio.Button>
         </Radio.Group>
       </Form.Item>
       {/* Price Input */}
@@ -504,8 +820,19 @@ function RequestForm({ categoryKey }: { categoryKey: string }) {
           return (
             <Form.Item
               name="price"
-              label={<span className="text-base font-medium text-[#00838F]">{pricingType === "hourly" ? "Hourly Rate" : "Fixed Price"}</span>}
-              rules={[{ required: true, message: `Please enter a ${pricingType === "hourly" ? "hourly rate" : "fixed price"}` }]}
+              label={
+                <span className="text-base font-medium text-[#00838F]">
+                  {pricingType === "hourly" ? "Hourly Rate" : "Fixed Price"}
+                </span>
+              }
+              rules={[
+                {
+                  required: true,
+                  message: `Please enter a ${
+                    pricingType === "hourly" ? "hourly rate" : "fixed price"
+                  }`,
+                },
+              ]}
             >
               <Input
                 prefix="$"
@@ -522,9 +849,19 @@ function RequestForm({ categoryKey }: { categoryKey: string }) {
 
       {/* Payment Method */}
       <Form.Item
-        label={<span className="text-base font-medium text-[#00838F]">How would you like to pay?</span>}
+        label={
+          <span className="text-base font-medium text-[#00838F]">
+            How would you like to pay?
+          </span>
+        }
         name="paymentMethod"
-        rules={[{ required: true, message: "Please select at least one payment method", type: "array" }]}
+        rules={[
+          {
+            required: true,
+            message: "Please select at least one payment method",
+            type: "array",
+          },
+        ]}
       >
         <div className="grid grid-cols-1 gap-2">
           {/* Bank Payment */}
@@ -553,8 +890,12 @@ function RequestForm({ categoryKey }: { categoryKey: string }) {
                     <CreditCardOutlined className="h-5 w-5 text-white" />
                   </div>
                   <div>
-                    <h4 className="font-medium text-[#00838F]">Bank Transfer</h4>
-                    <p className="text-sm text-[#00838F]/60">Pay securely through your bank</p>
+                    <h4 className="font-medium text-[#00838F]">
+                      Bank Transfer
+                    </h4>
+                    <p className="text-sm text-[#00838F]/60">
+                      Pay securely through your bank
+                    </p>
                   </div>
                 </div>
               </Card>
@@ -587,9 +928,13 @@ function RequestForm({ categoryKey }: { categoryKey: string }) {
                   </div>
                   <div>
                     <h4 className="font-medium text-[#00838F]">Cash Payment</h4>
-                    <p className="text-sm text-[#00838F]/60">Pay directly to the fixer in cash</p>
+                    <p className="text-sm text-[#00838F]/60">
+                      Pay directly to the fixer in cash
+                    </p>
                   </div>
-                  <span className="ml-auto px-3 py-1 rounded-full text-xs font-semibold bg-[#4CAF50] text-white">Popular</span>
+                  <span className="ml-auto px-3 py-1 rounded-full text-xs font-semibold bg-[#4CAF50] text-white">
+                    Popular
+                  </span>
                 </div>
               </Card>
             );
@@ -599,7 +944,11 @@ function RequestForm({ categoryKey }: { categoryKey: string }) {
             const selected = formData.paymentMethod.includes("wallet");
             return (
               <Card
-                className={selected ? "ring-2 ring-[#00BCD4] border-dashed border-2 border-[#B2EBF2] opacity-60" : "border-dashed border-2 border-[#B2EBF2] opacity-60"}
+                className={
+                  selected
+                    ? "ring-2 ring-[#00BCD4] border-dashed border-2 border-[#B2EBF2] opacity-60"
+                    : "border-dashed border-2 border-[#B2EBF2] opacity-60"
+                }
                 hoverable
                 style={{
                   borderColor: selected ? "#00BCD4" : undefined,
@@ -618,10 +967,16 @@ function RequestForm({ categoryKey }: { categoryKey: string }) {
                 <div className="p-4 text-center flex items-center gap-3">
                   <MobileOutlined className="h-8 w-8 mx-auto text-[#00838F]" />
                   <div className="flex-1 text-left">
-                    <p className="text-sm text-[#00838F]/60 mb-2">Digital Wallets</p>
-                    <p className="text-xs text-[#00838F]/40">Apple Pay, Google Pay, PayPal</p>
+                    <p className="text-sm text-[#00838F]/60 mb-2">
+                      Digital Wallets
+                    </p>
+                    <p className="text-xs text-[#00838F]/40">
+                      Apple Pay, Google Pay, PayPal
+                    </p>
                   </div>
-                  <span className="ml-auto px-3 py-1 rounded-full text-xs font-semibold border border-[#E0F7FA] text-[#00838F]">Coming Soon</span>
+                  <span className="ml-auto px-3 py-1 rounded-full text-xs font-semibold border border-[#E0F7FA] text-[#00838F]">
+                    Coming Soon
+                  </span>
                 </div>
               </Card>
             );

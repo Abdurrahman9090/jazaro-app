@@ -1,16 +1,33 @@
-import { Tag, Tooltip, Typography, Select, Rate, Image } from "antd";
-import { ColumnsType } from "antd/es/table";
-import { ICategory, IFixer, IUserInfo } from "./types";
-import { UserRoles } from "@/types";
-import { humanize } from "@/utils";
-import { UserOutlined, LaptopOutlined } from "@ant-design/icons";
-import type { TableColumnsType } from "antd";
 import moment from "moment";
 import { ImageOff } from "lucide-react";
+import { ColumnsType } from "antd/es/table";
+import { humanize } from "@/utils";
+import { UserRoles } from "@/types";
+import { ICategory, IFixer, IUserInfo } from "./types";
+import { Tag, Tooltip, Typography, Select, Rate, Image } from "antd";
+import {
+  UserOutlined,
+  LaptopOutlined,
+  TrophyOutlined,
+} from "@ant-design/icons";
 
 const { Text } = Typography;
 
 export const IUsersColumns: ColumnsType<IUserInfo> = [
+  {
+    title: "",
+    dataIndex: "avatar",
+    render: (avatar) => {
+      return (
+        <Image
+          src={avatar}
+          height={30}
+          width={30}
+          className="rounded p-1 bg-cyan-600"
+        />
+      );
+    },
+  },
   {
     title: "Username",
     dataIndex: "username",
@@ -27,15 +44,26 @@ export const IUsersColumns: ColumnsType<IUserInfo> = [
     title: "Role",
     dataIndex: "role",
     render: (role: string) => {
-      if (role === UserRoles.Admin) {
-        return (
-          <Tag icon={<LaptopOutlined />} color="success">
-            <strong>{humanize(role)}</strong>
-          </Tag>
-        );
+      let icon, color;
+      switch (role) {
+        case UserRoles.Admin:
+          icon = <LaptopOutlined />;
+          color = "gold";
+          break;
+        case UserRoles.Fixer:
+          icon = <TrophyOutlined />;
+          color = "volcano";
+          break;
+        case UserRoles.Client:
+          icon = <UserOutlined />;
+          color = "geekblue";
+          break;
+        default:
+          icon = <UserOutlined />;
+          color = "default";
       }
       return (
-        <Tag icon={<UserOutlined />} color="geekblue">
+        <Tag icon={icon} color={color}>
           <strong>{humanize(role)}</strong>
         </Tag>
       );
@@ -53,11 +81,11 @@ export const IUsersColumns: ColumnsType<IUserInfo> = [
   },
   {
     title: "Status",
-    dataIndex: "verified",
-    render: (verified: boolean) => {
+    dataIndex: "verify",
+    render: (verify: boolean) => {
       return (
-        <Tag color={verified ? "green" : "red"}>
-          <strong>{verified ? "Active" : "Not Active"}</strong>
+        <Tag color={verify ? "green" : "red"}>
+          <strong>{verify ? "Active" : "Not Active"}</strong>
         </Tag>
       );
     },
@@ -149,21 +177,49 @@ export const IFixerColumns: ColumnsType<IFixer> = [
   {
     title: "CNIC",
     dataIndex: "cnic",
+    render: (cnic: string) => {
+      // If CNIC exists, render it; otherwise, show default "12345-2344556-5"
+      return (
+        <Tag
+          color={
+            cnic && typeof cnic === "string" && cnic.length > 0
+              ? "green"
+              : "gray"
+          }
+        >
+          {cnic && typeof cnic === "string" && cnic.length > 0
+            ? cnic
+            : "12345-2344556-5"}
+        </Tag>
+      );
+    },
   },
   {
-    title: "CNIC Image",
+    title: "CNIC Images",
     dataIndex: "cnicImage",
-    render: (cnicImage: string) =>
-      cnicImage ? (
-        <Image
-          src={cnicImage}
-          width={40}
-          height={40}
-          className="w-10 border h-10 bg-slate-200 rounded-lg"
-          alt="Fixer"
-        />
+    render: (cnicImages: { front: string; back: string }) =>
+      cnicImages.front ? (
+        <>
+          <Image
+            src={cnicImages.front}
+            width={40}
+            height={40}
+            className="w-10 border h-10 bg-slate-200 rounded-lg"
+            alt="Fixer"
+          />
+          <Image
+            src={cnicImages.back}
+            width={40}
+            height={40}
+            className="w-10 border h-10 bg-slate-200 rounded-lg"
+            alt="Fixer"
+          />
+        </>
       ) : (
-        <ImageOff className="mx-auto" />
+        <div className="flex">
+          <ImageOff className="mx-auto" />
+          <ImageOff className="mx-auto" />
+        </div>
       ),
     align: "center" as const,
   },
@@ -172,29 +228,41 @@ export const IFixerColumns: ColumnsType<IFixer> = [
     dataIndex: "phoneNo",
   },
   {
-    title: "Category",
+    title: "Categories",
     dataIndex: "categories",
-    render: (_: any, record: any) => (
-      <div>
-        {record.categories?.map((cat: string) => (
-          <Tag key={cat} color="geekblue">
-            {cat}
-          </Tag>
-        )) || "N/A"}
-      </div>
+    render: (categories: string[]) => (
+      <Select
+        showSearch
+        value={"See Categories"}
+        dropdownStyle={{ minWidth: 120 }}
+        dropdownRender={(menu) => menu}
+        open={false}
+        options={
+          categories?.map((cat: string) => ({
+            label: cat,
+            value: cat,
+          })) || []
+        }
+      />
     ),
   },
   {
     title: "Sub Category / Skills",
     dataIndex: "subCategories",
-    render: (_: any, record: any) => (
-      <div>
-        {record.subCategories?.map((skill: string) => (
-          <Tag key={skill} color="purple">
-            {skill}
-          </Tag>
-        ))}
-      </div>
+    render: (subCategories: string[]) => (
+      <Select
+        showSearch
+        value={"See Sub Categories"}
+        dropdownStyle={{ minWidth: 120 }}
+        dropdownRender={(menu) => menu}
+        open={false}
+        options={
+          subCategories?.map((cat: string) => ({
+            label: cat,
+            value: cat,
+          })) || []
+        }
+      />
     ),
   },
   {

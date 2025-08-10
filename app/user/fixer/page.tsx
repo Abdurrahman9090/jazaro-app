@@ -1,6 +1,6 @@
- "use client"
+"use client";
 
-import { useState } from "react"
+import { useState } from "react";
 import {
   Bell,
   MessageCircle,
@@ -16,7 +16,7 @@ import {
   HelpCircle,
   AlertTriangle,
   Navigation,
-} from "lucide-react"
+} from "lucide-react";
 import {
   Button,
   Card,
@@ -26,10 +26,10 @@ import {
   Input,
   Modal,
   message as antdMessage,
-} from "antd"
-import { UserOutlined } from "@ant-design/icons"
+} from "antd";
+import { UserOutlined } from "@ant-design/icons";
 
-const { TabPane } = Tabs
+const { TabPane } = Tabs;
 
 // Mock data
 const serviceRequests = [
@@ -75,7 +75,7 @@ const serviceRequests = [
     lat: 40.7505,
     lng: -73.9934,
   },
-]
+];
 
 const acceptedJobDetails = {
   customer: "John Martinez",
@@ -93,81 +93,166 @@ const acceptedJobDetails = {
     { step: "Working", time: "", completed: false, current: true },
     { step: "Completed", time: "", completed: false },
   ],
-}
+};
 
 const chatMessages = [
-  { id: 1, sender: "customer", message: "Hi, when can you arrive?", time: "2:30 PM" },
-  { id: 2, sender: "fixer", message: "I'll be there in about 30 minutes. Just gathering my tools.", time: "2:32 PM" },
-  { id: 3, sender: "customer", message: "Perfect, thank you!", time: "2:33 PM" },
-  { id: 4, sender: "fixer", message: "I've arrived and am at your front door.", time: "3:15 PM" },
-]
+  {
+    id: 1,
+    sender: "customer",
+    message: "Hi, when can you arrive?",
+    time: "2:30 PM",
+  },
+  {
+    id: 2,
+    sender: "fixer",
+    message: "I'll be there in about 30 minutes. Just gathering my tools.",
+    time: "2:32 PM",
+  },
+  {
+    id: 3,
+    sender: "customer",
+    message: "Perfect, thank you!",
+    time: "2:33 PM",
+  },
+  {
+    id: 4,
+    sender: "fixer",
+    message: "I've arrived and am at your front door.",
+    time: "3:15 PM",
+  },
+];
 
-type ServiceRequest = typeof serviceRequests[number]
-type AcceptedJob = typeof acceptedJobDetails
+type ServiceRequest = (typeof serviceRequests)[number];
+type AcceptedJob = typeof acceptedJobDetails;
 
 export default function FixerApp() {
-  const [activeTab, setActiveTab] = useState("home")
-  const [acceptedJob, setAcceptedJob] = useState<AcceptedJob | null>(null)
-  const [showEmergencyDialog, setShowEmergencyDialog] = useState(false)
-  const [newMessage, setNewMessage] = useState("")
-  const [selectedRequestForCounter, setSelectedRequestForCounter] = useState<ServiceRequest | null>(null)
-  const [counterOfferAmount, setCounterOfferAmount] = useState("")
-  const [showCounterOfferScreen, setShowCounterOfferScreen] = useState(false)
+  const [activeTab, setActiveTab] = useState("home");
+  const [acceptedJob, setAcceptedJob] = useState<AcceptedJob | null>(null);
+  const [showEmergencyDialog, setShowEmergencyDialog] = useState(false);
+  const [newMessage, setNewMessage] = useState("");
+  const [selectedRequestForCounter, setSelectedRequestForCounter] =
+    useState<ServiceRequest | null>(null);
+  const [counterOfferAmount, setCounterOfferAmount] = useState("");
+  const [showCounterOfferScreen, setShowCounterOfferScreen] = useState(false);
 
   const handleAcceptJob = (requestId: number) => {
-    setAcceptedJob(acceptedJobDetails)
-    antdMessage.success("Job accepted!")
-  }
+    setAcceptedJob(acceptedJobDetails);
+    antdMessage.success("Job accepted!");
+  };
 
   const handleCounterOffer = (requestId: number) => {
-    const request = serviceRequests.find((req) => req.id === requestId)
+    const request = serviceRequests.find((req) => req.id === requestId);
     if (request) {
-      setSelectedRequestForCounter(request)
-      setCounterOfferAmount(request.pricing.amount.toString())
-      setShowCounterOfferScreen(true)
+      setSelectedRequestForCounter(request);
+      setCounterOfferAmount(request.pricing.amount.toString());
+      setShowCounterOfferScreen(true);
     }
-  }
+  };
 
   const getUrgencyColor = (urgency: string) => {
     switch (urgency) {
       case "High":
-        return { background: "linear-gradient(to right, #ef4444, #dc2626)", color: "#fff" }
+        return {
+          background: "linear-gradient(to right, #ef4444, #dc2626)",
+          color: "#fff",
+        };
       case "Medium":
-        return { background: "linear-gradient(to right, #f59e42, #f97316)", color: "#fff" }
+        return {
+          background: "linear-gradient(to right, #f59e42, #f97316)",
+          color: "#fff",
+        };
       case "Low":
-        return { background: "linear-gradient(to right, #10b981, #22c55e)", color: "#fff" }
+        return {
+          background: "linear-gradient(to right, #10b981, #22c55e)",
+          color: "#fff",
+        };
       default:
-        return { background: "linear-gradient(to right, #6b7280, #374151)", color: "#fff" }
+        return {
+          background: "linear-gradient(to right, #6b7280, #374151)",
+          color: "#fff",
+        };
     }
-  }
+  };
 
-  const getStatusIcon = (step: string, completed?: boolean, current?: boolean) => {
-    if (completed) return <CheckCircle className="w-6 h-6" style={{ color: "#10b981" }} />
+  const getStatusIcon = (
+    step: string,
+    completed?: boolean,
+    current?: boolean
+  ) => {
+    if (completed)
+      return <CheckCircle className="w-6 h-6" style={{ color: "#10b981" }} />;
     if (current) {
       switch (step) {
         case "Fixer Preparing":
-          return <Wrench className="w-6 h-6 animate-pulse" style={{ color: "#2563eb" }} />
+          return (
+            <Wrench
+              className="w-6 h-6 animate-pulse"
+              style={{ color: "#2563eb" }}
+            />
+          );
         case "On the Way":
-          return <Car className="w-6 h-6 animate-pulse" style={{ color: "#2563eb" }} />
+          return (
+            <Car
+              className="w-6 h-6 animate-pulse"
+              style={{ color: "#2563eb" }}
+            />
+          );
         case "Arrived":
-          return <MapPin className="w-6 h-6 animate-pulse" style={{ color: "#2563eb" }} />
+          return (
+            <MapPin
+              className="w-6 h-6 animate-pulse"
+              style={{ color: "#2563eb" }}
+            />
+          );
         case "Working":
-          return <Wrench className="w-6 h-6 animate-bounce" style={{ color: "#2563eb" }} />
+          return (
+            <Wrench
+              className="w-6 h-6 animate-bounce"
+              style={{ color: "#2563eb" }}
+            />
+          );
         default:
-          return <Clock className="w-6 h-6 animate-pulse" style={{ color: "#2563eb" }} />
+          return (
+            <Clock
+              className="w-6 h-6 animate-pulse"
+              style={{ color: "#2563eb" }}
+            />
+          );
       }
     }
-    return <div style={{ width: 24, height: 24, borderRadius: 12, border: "2px solid #d1d5db", background: "#fff" }} />
-  }
+    return (
+      <div
+        style={{
+          width: 24,
+          height: 24,
+          borderRadius: 12,
+          border: "2px solid #d1d5db",
+          background: "#fff",
+        }}
+      />
+    );
+  };
 
   // Remove header and bottom tab bar: just render the content of the "home" tab directly
   return (
-    <div style={{ minHeight: "100vh", background: "linear-gradient(135deg, #f8fafc 0%, #e0e7ff 100%)" }}>
+    <div
+      style={{
+        minHeight: "100vh",
+        background: "linear-gradient(135deg, #f8fafc 0%, #e0e7ff 100%)",
+      }}
+    >
       <div style={{ maxWidth: 400, margin: "0 auto" }}>
         {showCounterOfferScreen ? (
           // Counter Offer Screen
           <div style={{ padding: 24 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 24 }}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 16,
+                marginBottom: 24,
+              }}
+            >
               <Button
                 type="text"
                 onClick={() => setShowCounterOfferScreen(false)}
@@ -189,11 +274,18 @@ export default function FixerApp() {
               </h2>
             </div>
             {selectedRequestForCounter && (
-              <Card style={{ boxShadow: "0 4px 24px 0 rgba(59,130,246,0.10)", border: 0 }}>
+              <Card
+                style={{
+                  boxShadow: "0 4px 24px 0 rgba(59,130,246,0.10)",
+                  border: 0,
+                }}
+              >
                 <div style={{ padding: 24 }}>
                   <div style={{ marginBottom: 16 }}>
                     <img
-                      src={selectedRequestForCounter.photo || "/placeholder.svg"}
+                      src={
+                        selectedRequestForCounter.photo || "/placeholder.svg"
+                      }
                       alt="Service issue"
                       style={{
                         width: "100%",
@@ -205,7 +297,9 @@ export default function FixerApp() {
                     />
                   </div>
                   <div style={{ marginBottom: 16 }}>
-                    <h3 style={{ fontSize: 18, fontWeight: 700, marginBottom: 4 }}>
+                    <h3
+                      style={{ fontSize: 18, fontWeight: 700, marginBottom: 4 }}
+                    >
                       {selectedRequestForCounter.service}
                     </h3>
                     <p style={{ color: "#64748b", fontWeight: 500, margin: 0 }}>
@@ -235,8 +329,16 @@ export default function FixerApp() {
                         flex: 1,
                       }}
                     >
-                      <Clock style={{ width: 20, height: 20, color: "#2563eb" }} />
-                      <span style={{ fontSize: 14, fontWeight: 500, color: "#1e293b" }}>
+                      <Clock
+                        style={{ width: 20, height: 20, color: "#2563eb" }}
+                      />
+                      <span
+                        style={{
+                          fontSize: 14,
+                          fontWeight: 500,
+                          color: "#1e293b",
+                        }}
+                      >
                         {selectedRequestForCounter.estimatedTime}
                       </span>
                     </div>
@@ -251,8 +353,16 @@ export default function FixerApp() {
                         flex: 1,
                       }}
                     >
-                      <MapPin style={{ width: 20, height: 20, color: "#7c3aed" }} />
-                      <span style={{ fontSize: 14, fontWeight: 500, color: "#6d28d9" }}>
+                      <MapPin
+                        style={{ width: 20, height: 20, color: "#7c3aed" }}
+                      />
+                      <span
+                        style={{
+                          fontSize: 14,
+                          fontWeight: 500,
+                          color: "#6d28d9",
+                        }}
+                      >
                         {selectedRequestForCounter.distance}
                       </span>
                     </div>
@@ -274,13 +384,29 @@ export default function FixerApp() {
                         marginBottom: 8,
                       }}
                     >
-                      <span style={{ color: "#64748b", fontWeight: 500 }}>Original Price:</span>
-                      <span style={{ fontSize: 18, fontWeight: 700, color: "#111827" }}>
+                      <span style={{ color: "#64748b", fontWeight: 500 }}>
+                        Original Price:
+                      </span>
+                      <span
+                        style={{
+                          fontSize: 18,
+                          fontWeight: 700,
+                          color: "#111827",
+                        }}
+                      >
                         ${selectedRequestForCounter.pricing.amount}
                       </span>
                     </div>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                      <span style={{ color: "#64748b", fontWeight: 500 }}>Pricing Type:</span>
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                      }}
+                    >
+                      <span style={{ color: "#64748b", fontWeight: 500 }}>
+                        Pricing Type:
+                      </span>
                       <Badge
                         style={{
                           background: "#dbeafe",
@@ -294,14 +420,21 @@ export default function FixerApp() {
                     </div>
                   </div>
                   <div style={{ marginBottom: 16 }}>
-                    <label style={{ display: "block", fontWeight: 600, color: "#111827", marginBottom: 8 }}>
+                    <label
+                      style={{
+                        display: "block",
+                        fontWeight: 600,
+                        color: "#111827",
+                        marginBottom: 8,
+                      }}
+                    >
                       Your Counter Offer
                     </label>
                     <Input
                       prefix={<DollarSign style={{ color: "#10b981" }} />}
                       type="number"
                       value={counterOfferAmount}
-                      onChange={e => setCounterOfferAmount(e.target.value)}
+                      onChange={(e) => setCounterOfferAmount(e.target.value)}
                       placeholder="Enter your price"
                       style={{
                         height: 48,
@@ -318,14 +451,17 @@ export default function FixerApp() {
                       style={{
                         flex: 1,
                         height: 48,
-                        background: "linear-gradient(to right, #10b981, #22c55e)",
+                        background:
+                          "linear-gradient(to right, #10b981, #22c55e)",
                         border: 0,
                         fontWeight: 600,
                         borderRadius: 12,
                       }}
                       onClick={() => {
-                        antdMessage.success(`Counter offer submitted: $${counterOfferAmount}`)
-                        setShowCounterOfferScreen(false)
+                        antdMessage.success(
+                          `Counter offer submitted: $${counterOfferAmount}`
+                        );
+                        setShowCounterOfferScreen(false);
                       }}
                     >
                       Send Offer ${counterOfferAmount}
@@ -351,14 +487,30 @@ export default function FixerApp() {
         ) : acceptedJob ? (
           // Show accepted job details
           <div style={{ padding: 24 }}>
-            <Card style={{ border: 0, background: "linear-gradient(135deg, #e0e7ff 0%, #f3f4f6 100%)", boxShadow: "0 4px 24px 0 rgba(59,130,246,0.10)" }}>
+            <Card
+              style={{
+                border: 0,
+                background: "linear-gradient(135deg, #e0e7ff 0%, #f3f4f6 100%)",
+                boxShadow: "0 4px 24px 0 rgba(59,130,246,0.10)",
+              }}
+            >
               <div style={{ padding: 24 }}>
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    marginBottom: 16,
+                  }}
+                >
+                  <div
+                    style={{ display: "flex", alignItems: "center", gap: 16 }}
+                  >
                     <Avatar
                       size={48}
                       style={{
-                        background: "linear-gradient(to right, #2563eb, #6366f1)",
+                        background:
+                          "linear-gradient(to right, #2563eb, #6366f1)",
                         color: "#fff",
                         boxShadow: "0 2px 8px 0 rgba(59,130,246,0.15)",
                         border: "4px solid #fff",
@@ -368,10 +520,29 @@ export default function FixerApp() {
                       JM
                     </Avatar>
                     <div>
-                      <h3 style={{ fontSize: 18, fontWeight: 700, marginBottom: 4 }}>{acceptedJob.customer}</h3>
-                      <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 14 }}>
-                        <span style={{ color: "#f59e42", fontWeight: 600 }}>⭐ {acceptedJob.rating}</span>
-                        <span style={{ color: "#64748b" }}>({acceptedJob.reviews} reviews)</span>
+                      <h3
+                        style={{
+                          fontSize: 18,
+                          fontWeight: 700,
+                          marginBottom: 4,
+                        }}
+                      >
+                        {acceptedJob.customer}
+                      </h3>
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 8,
+                          fontSize: 14,
+                        }}
+                      >
+                        <span style={{ color: "#f59e42", fontWeight: 600 }}>
+                          ⭐ {acceptedJob.rating}
+                        </span>
+                        <span style={{ color: "#64748b" }}>
+                          ({acceptedJob.reviews} reviews)
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -391,10 +562,22 @@ export default function FixerApp() {
                   </div>
                 </div>
                 <div style={{ marginBottom: 24 }}>
-                  <h4 style={{ fontSize: 16, fontWeight: 700, marginBottom: 12 }}>Service Status</h4>
+                  <h4
+                    style={{ fontSize: 16, fontWeight: 700, marginBottom: 12 }}
+                  >
+                    Service Status
+                  </h4>
                   <div>
                     {acceptedJob.timeline.map((item, index) => (
-                      <div key={index} style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 8 }}>
+                      <div
+                        key={index}
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 16,
+                          marginBottom: 8,
+                        }}
+                      >
                         {getStatusIcon(item.step, item.completed, item.current)}
                         <div style={{ flex: 1 }}>
                           <span
@@ -437,9 +620,22 @@ export default function FixerApp() {
                     border: "1px solid #fff",
                   }}
                 >
-                  <h4 style={{ fontSize: 16, fontWeight: 700, marginBottom: 12 }}>Service Details</h4>
-                  <div style={{ marginBottom: 8, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <span style={{ color: "#64748b", fontWeight: 500 }}>Service Type:</span>
+                  <h4
+                    style={{ fontSize: 16, fontWeight: 700, marginBottom: 12 }}
+                  >
+                    Service Details
+                  </h4>
+                  <div
+                    style={{
+                      marginBottom: 8,
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }}
+                  >
+                    <span style={{ color: "#64748b", fontWeight: 500 }}>
+                      Service Type:
+                    </span>
                     <Badge
                       style={{
                         background: "#dbeafe",
@@ -451,23 +647,61 @@ export default function FixerApp() {
                       {acceptedJob.service}
                     </Badge>
                   </div>
-                  <div style={{ marginBottom: 8, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <span style={{ color: "#64748b", fontWeight: 500 }}>Pricing:</span>
+                  <div
+                    style={{
+                      marginBottom: 8,
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }}
+                  >
+                    <span style={{ color: "#64748b", fontWeight: 500 }}>
+                      Pricing:
+                    </span>
                     <span style={{ fontWeight: 700, color: "#111827" }}>
-                      {acceptedJob.pricing.type} Price - ${acceptedJob.pricing.amount}
+                      {acceptedJob.pricing.type} Price - $
+                      {acceptedJob.pricing.amount}
                     </span>
                   </div>
-                  <div style={{ marginBottom: 8, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <span style={{ color: "#64748b", fontWeight: 500 }}>Duration:</span>
-                    <span style={{ fontWeight: 600, color: "#334155" }}>{acceptedJob.estimatedTime}</span>
+                  <div
+                    style={{
+                      marginBottom: 8,
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }}
+                  >
+                    <span style={{ color: "#64748b", fontWeight: 500 }}>
+                      Duration:
+                    </span>
+                    <span style={{ fontWeight: 600, color: "#334155" }}>
+                      {acceptedJob.estimatedTime}
+                    </span>
                   </div>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: "2px solid #e5e7eb", paddingTop: 12 }}>
-                    <span style={{ color: "#334155", fontWeight: 700, fontSize: 18 }}>Total Estimate:</span>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      borderTop: "2px solid #e5e7eb",
+                      paddingTop: 12,
+                    }}
+                  >
+                    <span
+                      style={{
+                        color: "#334155",
+                        fontWeight: 700,
+                        fontSize: 18,
+                      }}
+                    >
+                      Total Estimate:
+                    </span>
                     <span
                       style={{
                         fontWeight: 700,
                         fontSize: 22,
-                        background: "linear-gradient(to right, #059669, #16a34a)",
+                        background:
+                          "linear-gradient(to right, #059669, #16a34a)",
                         WebkitBackgroundClip: "text",
                         WebkitTextFillColor: "transparent",
                       }}
@@ -487,7 +721,8 @@ export default function FixerApp() {
               <div
                 style={{
                   height: 288,
-                  background: "linear-gradient(135deg, #dbeafe 0%, #ede9fe 50%, #f3e8ff 100%)",
+                  background:
+                    "linear-gradient(135deg, #dbeafe 0%, #ede9fe 50%, #f3e8ff 100%)",
                   position: "relative",
                   overflow: "hidden",
                   boxShadow: "0 4px 24px 0 rgba(59,130,246,0.10)",
@@ -498,7 +733,8 @@ export default function FixerApp() {
                   style={{
                     position: "absolute",
                     inset: 0,
-                    background: "linear-gradient(135deg, #dbeafeCC 0%, #bbf7d0CC 100%)",
+                    background:
+                      "linear-gradient(135deg, #dbeafeCC 0%, #bbf7d0CC 100%)",
                     backdropFilter: "blur(4px)",
                     display: "flex",
                     alignItems: "center",
@@ -519,10 +755,22 @@ export default function FixerApp() {
                         boxShadow: "0 2px 16px 0 rgba(59,130,246,0.10)",
                       }}
                     >
-                      <MapPin style={{ width: 32, height: 32, color: "#2563eb" }} />
+                      <MapPin
+                        style={{ width: 32, height: 32, color: "#2563eb" }}
+                      />
                     </div>
-                    <p style={{ fontSize: 16, fontWeight: 600, color: "#334155" }}>Interactive Map</p>
-                    <p style={{ fontSize: 13, color: "#64748b" }}>Service requests in your area</p>
+                    <p
+                      style={{
+                        fontSize: 16,
+                        fontWeight: 600,
+                        color: "#334155",
+                      }}
+                    >
+                      Interactive Map
+                    </p>
+                    <p style={{ fontSize: 13, color: "#64748b" }}>
+                      Service requests in your area
+                    </p>
                   </div>
                 </div>
                 {/* Map Pins for Service Requests */}
@@ -568,15 +816,30 @@ export default function FixerApp() {
                     animation: "bounce 1s infinite",
                   }}
                 >
-                  <Navigation style={{ width: 20, height: 20, color: "#fff" }} />
+                  <Navigation
+                    style={{ width: 20, height: 20, color: "#fff" }}
+                  />
                 </div>
               </div>
               {/* Map Controls */}
-              <div style={{ position: "absolute", top: 24, right: 24, display: "flex", flexDirection: "column", gap: 12 }}>
+              <div
+                style={{
+                  position: "absolute",
+                  top: 24,
+                  right: 24,
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 12,
+                }}
+              >
                 <Button
                   type="text"
                   shape="circle"
-                  icon={<MapPin style={{ width: 20, height: 20, color: "#374151" }} />}
+                  icon={
+                    <MapPin
+                      style={{ width: 20, height: 20, color: "#374151" }}
+                    />
+                  }
                   style={{
                     width: 48,
                     height: 48,
@@ -588,7 +851,14 @@ export default function FixerApp() {
             </div>
             {/* Available Jobs Section */}
             <div style={{ padding: 24 }}>
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 24 }}>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  marginBottom: 24,
+                }}
+              >
                 <h2
                   style={{
                     fontSize: 20,
@@ -614,7 +884,9 @@ export default function FixerApp() {
                   showZero
                 />
               </div>
-              <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+              <div
+                style={{ display: "flex", flexDirection: "column", gap: 24 }}
+              >
                 {serviceRequests.map((request) => (
                   <Card
                     key={request.id}
@@ -626,12 +898,41 @@ export default function FixerApp() {
                     }}
                     bodyStyle={{ padding: 24 }}
                   >
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16 }}>
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "flex-start",
+                        marginBottom: 16,
+                      }}
+                    >
                       <div>
-                        <h3 style={{ fontSize: 18, fontWeight: 700, marginBottom: 4 }}>{request.service}</h3>
-                        <p style={{ color: "#64748b", fontWeight: 500, margin: 0 }}>{request.customer}</p>
+                        <h3
+                          style={{
+                            fontSize: 18,
+                            fontWeight: 700,
+                            marginBottom: 4,
+                          }}
+                        >
+                          {request.service}
+                        </h3>
+                        <p
+                          style={{
+                            color: "#64748b",
+                            fontWeight: 500,
+                            margin: 0,
+                          }}
+                        >
+                          {request.customer}
+                        </p>
                       </div>
-                      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 8,
+                        }}
+                      >
                         <Badge
                           style={{
                             ...getUrgencyColor(request.urgency),
@@ -692,7 +993,9 @@ export default function FixerApp() {
                           flex: 1,
                         }}
                       >
-                        <DollarSign style={{ width: 20, height: 20, color: "#059669" }} />
+                        <DollarSign
+                          style={{ width: 20, height: 20, color: "#059669" }}
+                        />
                         <span style={{ fontWeight: 600, color: "#065f46" }}>
                           {request.pricing.type}: ${request.pricing.amount}
                         </span>
@@ -708,8 +1011,12 @@ export default function FixerApp() {
                           flex: 1,
                         }}
                       >
-                        <Clock style={{ width: 20, height: 20, color: "#2563eb" }} />
-                        <span style={{ fontWeight: 600, color: "#1e40af" }}>{request.estimatedTime}</span>
+                        <Clock
+                          style={{ width: 20, height: 20, color: "#2563eb" }}
+                        />
+                        <span style={{ fontWeight: 600, color: "#1e40af" }}>
+                          {request.estimatedTime}
+                        </span>
                       </div>
                     </div>
                     <div
@@ -723,8 +1030,18 @@ export default function FixerApp() {
                         marginBottom: 24,
                       }}
                     >
-                      <MapPin style={{ width: 20, height: 20, color: "#7c3aed" }} />
-                      <span style={{ fontSize: 13, fontWeight: 500, color: "#6d28d9" }}>{request.location}</span>
+                      <MapPin
+                        style={{ width: 20, height: 20, color: "#7c3aed" }}
+                      />
+                      <span
+                        style={{
+                          fontSize: 13,
+                          fontWeight: 500,
+                          color: "#6d28d9",
+                        }}
+                      >
+                        {request.location}
+                      </span>
                     </div>
                     <div style={{ display: "flex", gap: 12 }}>
                       <Button
@@ -732,7 +1049,8 @@ export default function FixerApp() {
                         style={{
                           flex: 1,
                           height: 48,
-                          background: "linear-gradient(to right, #10b981, #22c55e)",
+                          background:
+                            "linear-gradient(to right, #10b981, #22c55e)",
                           border: 0,
                           fontWeight: 700,
                           borderRadius: 12,
@@ -764,5 +1082,5 @@ export default function FixerApp() {
         )}
       </div>
     </div>
-  )
+  );
 }

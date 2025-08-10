@@ -1,19 +1,19 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState, useRef, useCallback, useEffect } from "react"
-import { Button, Card, Checkbox, Modal, Spin, Alert } from "antd"
-import { 
-  CloseOutlined, 
-  CameraOutlined, 
-  RotateLeftOutlined, 
-  UploadOutlined, 
-  CheckCircleOutlined, 
-  ThunderboltOutlined 
-} from "@ant-design/icons"
-import * as tf from "@tensorflow/tfjs"
-import * as cocoSsd from "@tensorflow-models/coco-ssd"
+import { useState, useRef, useCallback, useEffect } from "react";
+import { Button, Card, Checkbox, Modal, Spin, Alert } from "antd";
+import {
+  CloseOutlined,
+  CameraOutlined,
+  RotateLeftOutlined,
+  UploadOutlined,
+  CheckCircleOutlined,
+  ThunderboltOutlined,
+} from "@ant-design/icons";
+import * as tf from "@tensorflow/tfjs";
+import * as cocoSsd from "@tensorflow-models/coco-ssd";
 
 // Object categories and their checklists
 const objectChecklists: { [key: string]: string[] } = {
@@ -49,291 +49,324 @@ const objectChecklists: { [key: string]: string[] } = {
   keyboard: ["Keys", "Connectivity", "Surface"],
   remote: ["Buttons", "Connectivity", "Battery"],
   "cell phone": ["Screen", "Battery", "Software"],
-  umbrella: ["Fabric", "Frame", "Mechanism"]
-}
+  umbrella: ["Fabric", "Frame", "Mechanism"],
+};
 
 interface CameraModalProps {
-  isOpen: boolean
-  onClose: () => void
-  onCapture: (imageData: string) => void
+  isOpen: boolean;
+  onClose: () => void;
+  onCapture: (imageData: string) => void;
 }
 
-export default function CameraModal({ isOpen, onClose, onCapture }: CameraModalProps) {
-  const [stream, setStream] = useState<MediaStream | null>(null)
-  const [capturedImage, setCapturedImage] = useState<string | null>(null)
-  const [isAnalyzing, setIsAnalyzing] = useState(false)
-  const [analysisResult, setAnalysisResult] = useState<any>(null)
-  const [selectedIssues, setSelectedIssues] = useState<{ [key: string]: boolean }>({})
-  const [facingMode, setFacingMode] = useState<"user" | "environment">("environment")
-  const [error, setError] = useState<string | null>(null)
-  const [isVideoReady, setIsVideoReady] = useState(false)
-  const [isInitializing, setIsInitializing] = useState(false)
-  const [model, setModel] = useState<cocoSsd.ObjectDetection | null>(null)
-  const [isModelLoading, setIsModelLoading] = useState(true)
+export default function CameraModal({
+  isOpen,
+  onClose,
+  onCapture,
+}: CameraModalProps) {
+  const [stream, setStream] = useState<MediaStream | null>(null);
+  const [capturedImage, setCapturedImage] = useState<string | null>(null);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [analysisResult, setAnalysisResult] = useState<any>(null);
+  const [selectedIssues, setSelectedIssues] = useState<{
+    [key: string]: boolean;
+  }>({});
+  const [facingMode, setFacingMode] = useState<"user" | "environment">(
+    "environment"
+  );
+  const [error, setError] = useState<string | null>(null);
+  const [isVideoReady, setIsVideoReady] = useState(false);
+  const [isInitializing, setIsInitializing] = useState(false);
+  const [model, setModel] = useState<cocoSsd.ObjectDetection | null>(null);
+  const [isModelLoading, setIsModelLoading] = useState(true);
 
-  const videoRef = useRef<HTMLVideoElement>(null)
-  const canvasRef = useRef<HTMLCanvasElement>(null)
-  const fileInputRef = useRef<HTMLInputElement>(null)
-  const detectionIntervalRef = useRef<NodeJS.Timeout | null>(null)
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const detectionIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   // Load COCO-SSD model
   useEffect(() => {
     const loadModel = async () => {
       try {
-        setIsModelLoading(true)
-        await tf.ready()
-        const loadedModel = await cocoSsd.load()
-        setModel(loadedModel)
-        console.log("COCO-SSD model loaded successfully")
+        setIsModelLoading(true);
+        await tf.ready();
+        const loadedModel = await cocoSsd.load();
+        setModel(loadedModel);
+        console.log("COCO-SSD model loaded successfully");
       } catch (err) {
-        console.error("Error loading COCO-SSD model:", err)
-        setError("Failed to load object detection model")
+        console.error("Error loading COCO-SSD model:", err);
+        setError("Failed to load object detection model");
       } finally {
-        setIsModelLoading(false)
+        setIsModelLoading(false);
       }
-    }
-    loadModel()
-  }, [])
+    };
+    loadModel();
+  }, []);
 
   // Run object detection
   const runObjectDetection = useCallback(async () => {
-    if (!videoRef.current || !canvasRef.current || !model) return
+    if (!videoRef.current || !canvasRef.current || !model) return;
 
-    const context = canvasRef.current.getContext("2d")
-    if (!context) return
+    const context = canvasRef.current.getContext("2d");
+    if (!context) return;
 
     const detectFrame = async () => {
-      if (!videoRef.current || !model || !canvasRef.current) return
+      if (!videoRef.current || !model || !canvasRef.current) return;
 
       try {
         // Detect objects in the current video frame
-        const predictions = await model.detect(videoRef.current)
+        const predictions = await model.detect(videoRef.current);
 
         // Clear canvas and draw video frame
-        context.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height)
-        context.drawImage(
-          videoRef.current,
-          0, 0,
+        context.clearRect(
+          0,
+          0,
           canvasRef.current.width,
           canvasRef.current.height
-        )
+        );
+        context.drawImage(
+          videoRef.current,
+          0,
+          0,
+          canvasRef.current.width,
+          canvasRef.current.height
+        );
 
         // Draw bounding boxes and labels
         predictions.forEach((prediction) => {
-          const [x, y, width, height] = prediction.bbox
-          context.beginPath()
-          context.rect(x, y, width, height)
-          context.lineWidth = 2
-          context.strokeStyle = "#00BCD4"
-          context.fillStyle = "#00BCD4"
-          context.stroke()
+          const [x, y, width, height] = prediction.bbox;
+          context.beginPath();
+          context.rect(x, y, width, height);
+          context.lineWidth = 2;
+          context.strokeStyle = "#00BCD4";
+          context.fillStyle = "#00BCD4";
+          context.stroke();
           context.fillText(
             `${prediction.class} (${Math.round(prediction.score * 100)}%)`,
             x,
             y > 10 ? y - 5 : 10
-          )
-        })
+          );
+        });
 
         // Continue detection loop
-        detectionIntervalRef.current = setTimeout(detectFrame, 100)
+        detectionIntervalRef.current = setTimeout(detectFrame, 100);
       } catch (err) {
-        console.error("Error during object detection:", err)
+        console.error("Error during object detection:", err);
       }
-    }
+    };
 
-    detectFrame()
-  }, [model])
+    detectFrame();
+  }, [model]);
 
   // Start camera stream
   const startCamera = useCallback(async () => {
     if (isInitializing) {
-      console.log("Camera initialization already in progress")
-      return
+      console.log("Camera initialization already in progress");
+      return;
     }
 
     try {
-      setIsInitializing(true)
-      setError(null)
-      setIsVideoReady(false)
+      setIsInitializing(true);
+      setError(null);
+      setIsVideoReady(false);
 
       const constraints = {
         video: {
-          facingMode: facingMode
-        }
-      }
+          facingMode: facingMode,
+        },
+      };
 
-      console.log("Requesting camera access...")
-      const mediaStream = await navigator.mediaDevices.getUserMedia(constraints)
-      console.log("Camera access granted")
+      console.log("Requesting camera access...");
+      const mediaStream = await navigator.mediaDevices.getUserMedia(
+        constraints
+      );
+      console.log("Camera access granted");
 
-      setStream(mediaStream)
-      
+      setStream(mediaStream);
+
       if (videoRef.current) {
-        const videoElement = videoRef.current
-        videoElement.srcObject = mediaStream
+        const videoElement = videoRef.current;
+        videoElement.srcObject = mediaStream;
 
         // Wait for video to be ready
         videoElement.onloadedmetadata = () => {
-          console.log("Video metadata loaded")
-          videoElement.play()
+          console.log("Video metadata loaded");
+          videoElement
+            .play()
             .then(() => {
-              console.log("Video playback started")
-              setIsVideoReady(true)
+              console.log("Video playback started");
+              setIsVideoReady(true);
               // Start object detection when video is ready
               if (model && !isModelLoading) {
-                runObjectDetection()
+                runObjectDetection();
               }
             })
-            .catch(err => {
-              console.error("Error playing video:", err)
-              setError("Error starting video stream")
-              stopCamera()
-            })
-        }
+            .catch((err) => {
+              console.error("Error playing video:", err);
+              setError("Error starting video stream");
+              stopCamera();
+            });
+        };
 
         videoElement.onerror = (err) => {
-          console.error("Video element error:", err)
-          setError("Error with video element")
-          stopCamera()
-        }
+          console.error("Video element error:", err);
+          setError("Error with video element");
+          stopCamera();
+        };
       } else {
-        console.error("Video element reference not found")
-        setError("Camera view not initialized properly")
+        console.error("Video element reference not found");
+        setError("Camera view not initialized properly");
       }
     } catch (err) {
-      console.error("Error accessing camera:", err)
+      console.error("Error accessing camera:", err);
       if (err instanceof Error) {
         if (err.name === "NotAllowedError") {
-          setError("Camera access denied. Please allow camera access in your browser settings.")
+          setError(
+            "Camera access denied. Please allow camera access in your browser settings."
+          );
         } else if (err.name === "NotFoundError") {
-          setError("No camera found. Please connect a camera and try again.")
+          setError("No camera found. Please connect a camera and try again.");
         } else if (err.name === "NotReadableError") {
-          setError("Camera is in use by another application. Please close other applications using the camera.")
+          setError(
+            "Camera is in use by another application. Please close other applications using the camera."
+          );
         } else {
-          setError(`Camera error: ${err.message}`)
+          setError(`Camera error: ${err.message}`);
         }
       } else {
-        setError("Unable to access camera. Please check permissions.")
+        setError("Unable to access camera. Please check permissions.");
       }
-      stopCamera()
+      stopCamera();
     } finally {
-      setIsInitializing(false)
+      setIsInitializing(false);
     }
-  }, [facingMode, model, isModelLoading, runObjectDetection])
+  }, [facingMode, model, isModelLoading, runObjectDetection]);
 
   // Stop camera stream
   const stopCamera = useCallback(() => {
     if (stream) {
-      stream.getTracks().forEach(track => {
-        track.stop()
-      })
-      setStream(null)
+      stream.getTracks().forEach((track) => {
+        track.stop();
+      });
+      setStream(null);
     }
     if (detectionIntervalRef.current) {
-      clearTimeout(detectionIntervalRef.current)
+      clearTimeout(detectionIntervalRef.current);
     }
-    setIsVideoReady(false)
-    setIsInitializing(false)
-    
+    setIsVideoReady(false);
+    setIsInitializing(false);
+
     if (videoRef.current) {
-      videoRef.current.srcObject = null
-      videoRef.current.onloadedmetadata = null
-      videoRef.current.onerror = null
+      videoRef.current.srcObject = null;
+      videoRef.current.onloadedmetadata = null;
+      videoRef.current.onerror = null;
     }
-  }, [stream])
+  }, [stream]);
 
   // Initialize camera when modal opens
   useEffect(() => {
     if (isOpen && !capturedImage && !isInitializing) {
-      startCamera()
+      startCamera();
     }
     return () => {
       if (!isOpen) {
-        stopCamera()
-        setCapturedImage(null)
-        setAnalysisResult(null)
-        setError(null)
+        stopCamera();
+        setCapturedImage(null);
+        setAnalysisResult(null);
+        setError(null);
       }
-    }
-  }, [isOpen, capturedImage, startCamera, stopCamera, isInitializing])
+    };
+  }, [isOpen, capturedImage, startCamera, stopCamera, isInitializing]);
 
   // Analyze captured image
   const analyzeImage = useCallback(async () => {
-    if (!capturedImage || !model) return
+    if (!capturedImage || !model) return;
 
-    setIsAnalyzing(true)
+    setIsAnalyzing(true);
     try {
       // Create a temporary image element
-      const img = new Image()
-      img.src = capturedImage
+      const img = new Image();
+      img.src = capturedImage;
       await new Promise<void>((resolve) => {
-        img.onload = () => resolve()
-      })
+        img.onload = () => resolve();
+      });
 
       // Detect objects in the image
-      const predictions = await model.detect(img)
-      
+      const predictions = await model.detect(img);
+
       // Process predictions and add mock data for home accessories
-      const processedResults = predictions.map(pred => {
-        const isPersonOrAnimal = ['person', 'dog', 'cat', 'bird', 'horse', 'sheep', 'cow', 'elephant', 'bear', 'zebra', 'giraffe'].includes(pred.class.toLowerCase())
-        
+      const processedResults = predictions.map((pred) => {
+        const isPersonOrAnimal = [
+          "person",
+          "dog",
+          "cat",
+          "bird",
+          "horse",
+          "sheep",
+          "cow",
+          "elephant",
+          "bear",
+          "zebra",
+          "giraffe",
+        ].includes(pred.class.toLowerCase());
+
         if (isPersonOrAnimal) {
           return {
             object: pred.class,
             confidence: pred.score,
             bbox: pred.bbox,
-            type: 'person_or_animal'
-          }
+            type: "person_or_animal",
+          };
         }
 
-        const objectName = pred.class.toLowerCase()
-        const checklist = objectChecklists[objectName] || []
-        
+        const objectName = pred.class.toLowerCase();
+        const checklist = objectChecklists[objectName] || [];
+
         // Initialize selected issues for this object
-        const initialSelectedIssues: { [key: string]: boolean } = {}
-        checklist.forEach(issue => {
-          initialSelectedIssues[issue] = false
-        })
-        setSelectedIssues(initialSelectedIssues)
+        const initialSelectedIssues: { [key: string]: boolean } = {};
+        checklist.forEach((issue) => {
+          initialSelectedIssues[issue] = false;
+        });
+        setSelectedIssues(initialSelectedIssues);
 
         return {
           object: pred.class,
           confidence: pred.score,
           bbox: pred.bbox,
-          type: 'home_accessory',
-          checklist: checklist
-        }
-      })
+          type: "home_accessory",
+          checklist: checklist,
+        };
+      });
 
-      setAnalysisResult(processedResults)
+      setAnalysisResult(processedResults);
     } catch (err) {
-      console.error("Error analyzing image:", err)
-      setError("Failed to analyze image")
+      console.error("Error analyzing image:", err);
+      setError("Failed to analyze image");
     } finally {
-      setIsAnalyzing(false)
+      setIsAnalyzing(false);
     }
-  }, [capturedImage, model])
+  }, [capturedImage, model]);
 
   // Capture photo
   const capturePhoto = useCallback(() => {
     if (videoRef.current && canvasRef.current) {
-      const video = videoRef.current
-      const canvas = canvasRef.current
-      const context = canvas.getContext("2d")
+      const video = videoRef.current;
+      const canvas = canvasRef.current;
+      const context = canvas.getContext("2d");
 
-      canvas.width = video.videoWidth
-      canvas.height = video.videoHeight
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
 
       if (context) {
-        context.drawImage(video, 0, 0)
-        const imageData = canvas.toDataURL("image/jpeg", 0.8)
-        setCapturedImage(imageData)
-        stopCamera()
+        context.drawImage(video, 0, 0);
+        const imageData = canvas.toDataURL("image/jpeg", 0.8);
+        setCapturedImage(imageData);
+        stopCamera();
       }
     }
-  }, [stopCamera])
+  }, [stopCamera]);
 
-  if (!isOpen) return null
+  if (!isOpen) return null;
 
   return (
     <Modal
@@ -345,16 +378,16 @@ export default function CameraModal({ isOpen, onClose, onCapture }: CameraModalP
       className="camera-modal"
       styles={{
         mask: {
-          backgroundColor: 'rgba(0, 0, 0, 0.8)',
-          backdropFilter: 'blur(4px)'
+          backgroundColor: "rgba(0, 0, 0, 0.8)",
+          backdropFilter: "blur(4px)",
         },
         content: {
-          backgroundColor: 'rgba(255, 255, 255, 0.95)',
-          backdropFilter: 'blur(10px)',
-          border: '1px solid rgba(0, 188, 212, 0.3)',
-          borderRadius: '20px',
-          boxShadow: '0 8px 32px rgba(0, 188, 212, 0.3)'
-        }
+          backgroundColor: "rgba(255, 255, 255, 0.95)",
+          backdropFilter: "blur(10px)",
+          border: "1px solid rgba(0, 188, 212, 0.3)",
+          borderRadius: "20px",
+          boxShadow: "0 8px 32px rgba(0, 188, 212, 0.3)",
+        },
       }}
     >
       <div className="space-y-4">
@@ -370,7 +403,9 @@ export default function CameraModal({ isOpen, onClose, onCapture }: CameraModalP
           <h2 className="text-2xl font-bold text-[#00838F]">Camera</h2>
           <div className="w-10" />
         </div>
-        <p className="text-[#00838F]/80 text-center">Take a photo or upload an image</p>
+        <p className="text-[#00838F]/80 text-center">
+          Take a photo or upload an image
+        </p>
 
         {/* Error Message */}
         {error && (
@@ -382,8 +417,8 @@ export default function CameraModal({ isOpen, onClose, onCapture }: CameraModalP
               <Button
                 size="small"
                 onClick={() => {
-                  setError(null)
-                  startCamera()
+                  setError(null);
+                  startCamera();
                 }}
               >
                 Retry
@@ -401,7 +436,9 @@ export default function CameraModal({ isOpen, onClose, onCapture }: CameraModalP
                 autoPlay
                 playsInline
                 muted
-                className={`w-full h-full object-cover ${!isVideoReady ? 'opacity-0' : 'opacity-100'} transition-opacity duration-300`}
+                className={`w-full h-full object-cover ${
+                  !isVideoReady ? "opacity-0" : "opacity-100"
+                } transition-opacity duration-300`}
               />
               <canvas
                 ref={canvasRef}
@@ -414,7 +451,9 @@ export default function CameraModal({ isOpen, onClose, onCapture }: CameraModalP
                   <div className="text-center">
                     <Spin size="large" />
                     <p className="text-sm text-[#00838F] mt-2">
-                      {isModelLoading ? "Loading AI model..." : "Initializing camera..."}
+                      {isModelLoading
+                        ? "Loading AI model..."
+                        : "Initializing camera..."}
                     </p>
                   </div>
                 </div>
@@ -424,9 +463,11 @@ export default function CameraModal({ isOpen, onClose, onCapture }: CameraModalP
               <Button
                 icon={<RotateLeftOutlined />}
                 onClick={() => {
-                  setFacingMode(prev => prev === "user" ? "environment" : "user")
-                  stopCamera()
-                  startCamera()
+                  setFacingMode((prev) =>
+                    prev === "user" ? "environment" : "user"
+                  );
+                  stopCamera();
+                  startCamera();
                 }}
                 className="text-[#00838F] hover:text-[#00BCD4]"
               >
@@ -445,7 +486,7 @@ export default function CameraModal({ isOpen, onClose, onCapture }: CameraModalP
                 icon={<UploadOutlined />}
                 onClick={() => {
                   if (fileInputRef.current) {
-                    fileInputRef.current.click()
+                    fileInputRef.current.click();
                   }
                 }}
                 className="text-[#00838F] hover:text-[#00BCD4]"
@@ -459,14 +500,14 @@ export default function CameraModal({ isOpen, onClose, onCapture }: CameraModalP
               accept="image/*"
               className="hidden"
               onChange={(e) => {
-                const file = e.target.files?.[0]
+                const file = e.target.files?.[0];
                 if (file) {
-                  const reader = new FileReader()
+                  const reader = new FileReader();
                   reader.onload = (e) => {
-                    const result = e.target?.result as string
-                    setCapturedImage(result)
-                  }
-                  reader.readAsDataURL(file)
+                    const result = e.target?.result as string;
+                    setCapturedImage(result);
+                  };
+                  reader.readAsDataURL(file);
                 }
               }}
             />
@@ -497,28 +538,37 @@ export default function CameraModal({ isOpen, onClose, onCapture }: CameraModalP
               <div className="bg-gradient-to-r from-[#00BCD4]/10 to-[#26C6DA]/10 backdrop-blur-[10px] rounded-[10px] p-4 border border-[#00BCD4]/30">
                 <div className="flex items-center gap-2 mb-3">
                   <CheckCircleOutlined className="text-[#4CAF50]" />
-                  <span className="font-semibold text-[#006064]">AI Detection Complete</span>
+                  <span className="font-semibold text-[#006064]">
+                    AI Detection Complete
+                  </span>
                 </div>
                 <div className="space-y-4">
                   {analysisResult.map((result: any, index: number) => (
                     <div key={index} className="space-y-3">
                       <div className="flex items-center justify-between">
                         <span className="text-sm text-[#00838F]">Object:</span>
-                        <span className="font-medium text-[#006064]">{result.object}</span>
+                        <span className="font-medium text-[#006064]">
+                          {result.object}
+                        </span>
                       </div>
-                      {result.type === 'home_accessory' && result.checklist && (
+                      {result.type === "home_accessory" && result.checklist && (
                         <div className="space-y-2">
-                          <span className="text-sm text-[#00838F]">Issue Checklist:</span>
+                          <span className="text-sm text-[#00838F]">
+                            Issue Checklist:
+                          </span>
                           <div className="space-y-2">
                             {result.checklist.map((issue: string) => (
-                              <div key={issue} className="flex items-center space-x-2">
+                              <div
+                                key={issue}
+                                className="flex items-center space-x-2"
+                              >
                                 <Checkbox
                                   checked={selectedIssues[issue] || false}
                                   onChange={(e) => {
-                                    setSelectedIssues(prev => ({
+                                    setSelectedIssues((prev) => ({
                                       ...prev,
-                                      [issue]: e.target.checked
-                                    }))
+                                      [issue]: e.target.checked,
+                                    }));
                                   }}
                                 >
                                   {issue}
@@ -529,7 +579,9 @@ export default function CameraModal({ isOpen, onClose, onCapture }: CameraModalP
                         </div>
                       )}
                       <div className="flex items-center justify-between">
-                        <span className="text-sm text-[#00838F]">Confidence:</span>
+                        <span className="text-sm text-[#00838F]">
+                          Confidence:
+                        </span>
                         <span className="font-medium text-[#006064]">
                           {Math.round(result.confidence * 100)}%
                         </span>
@@ -547,10 +599,10 @@ export default function CameraModal({ isOpen, onClose, onCapture }: CameraModalP
               <Button
                 icon={<RotateLeftOutlined />}
                 onClick={() => {
-                  setCapturedImage(null)
-                  setAnalysisResult(null)
-                  setSelectedIssues({})
-                  startCamera()
+                  setCapturedImage(null);
+                  setAnalysisResult(null);
+                  setSelectedIssues({});
+                  startCamera();
                 }}
                 className="text-[#00838F] hover:text-[#00BCD4]"
               >
@@ -592,5 +644,5 @@ export default function CameraModal({ isOpen, onClose, onCapture }: CameraModalP
         </div>
       </div>
     </Modal>
-  )
+  );
 }

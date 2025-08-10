@@ -168,31 +168,31 @@ const UserAddEditModal: React.FC<IUserModalProps> = (
                           maxLength={InputLength.DYNAMIC_INPUTS_LENGTH}
                         />
                       </Form.Item>
-                     </Col>
+                    </Col>
                   );
                 })}
 
-                <Col xs={24} sm={24} md={12}>
-                  <Form.Item
-                    required={true}
-                    name={"role"}
-                    label={"Roles"}
-                    rules={[{ message: `Role is required!`, required: true }]}
-                  >
-                    <CustomDropdown
-                      variant="filled"
-                      placeholder={"Select Role..."}
-                      options={Object.keys(UserRoles)?.map((key) => {
-                        return {
-                          label:
-                            key.charAt(0).toUpperCase() +
-                            key.slice(1).toLowerCase(),
-                          value: UserRoles[key as keyof typeof UserRoles],
-                        };
-                      })}
-                    />
-                  </Form.Item>
-                 </Col>
+              <Col xs={24} sm={24} md={12}>
+                <Form.Item
+                  required={true}
+                  name={"role"}
+                  label={"Roles"}
+                  rules={[{ message: `Role is required!`, required: true }]}
+                >
+                  <CustomDropdown
+                    variant="filled"
+                    placeholder={"Select Role..."}
+                    options={Object.keys(UserRoles)?.map((key) => {
+                      return {
+                        label:
+                          key.charAt(0).toUpperCase() +
+                          key.slice(1).toLowerCase(),
+                        value: UserRoles[key as keyof typeof UserRoles],
+                      };
+                    })}
+                  />
+                </Form.Item>
+              </Col>
               <Col xs={24} sm={24} md={12}>
                 <center>
                   <Form.Item

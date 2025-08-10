@@ -24,10 +24,30 @@ import {
 const { Title, Text } = Typography;
 
 const stats = [
-  { title: "Total Revenue", value: "$50.00", color: "#22c55e", icon: <DollarOutlined style={{ fontSize: 32, color: "#22c55e" }} /> },
-  { title: "Transaction Volume", value: "$500.00", color: "#2563eb", icon: <DollarOutlined style={{ fontSize: 32, color: "#2563eb" }} /> },
-  { title: "Completed", value: "3", color: "#22c55e", icon: <DollarOutlined style={{ fontSize: 32, color: "#22c55e" }} /> },
-  { title: "Disputes", value: "1", color: "#dc2626", icon: <DollarOutlined style={{ fontSize: 32, color: "#dc2626" }} /> },
+  {
+    title: "Total Revenue",
+    value: "$50.00",
+    color: "#22c55e",
+    icon: <DollarOutlined style={{ fontSize: 32, color: "#22c55e" }} />,
+  },
+  {
+    title: "Transaction Volume",
+    value: "$500.00",
+    color: "#2563eb",
+    icon: <DollarOutlined style={{ fontSize: 32, color: "#2563eb" }} />,
+  },
+  {
+    title: "Completed",
+    value: "3",
+    color: "#22c55e",
+    icon: <DollarOutlined style={{ fontSize: 32, color: "#22c55e" }} />,
+  },
+  {
+    title: "Disputes",
+    value: "1",
+    color: "#dc2626",
+    icon: <DollarOutlined style={{ fontSize: 32, color: "#dc2626" }} />,
+  },
 ];
 
 const transactions = [
@@ -91,8 +111,12 @@ const columns = [
     render: (id, record) => (
       <Space direction="vertical" size={0}>
         <Text strong>{id}</Text>
-        <Text type="secondary" style={{ fontSize: 12 }}>{record.processedAt}</Text>
-        <Text type="secondary" style={{ fontSize: 12 }}>Service: {record.serviceId}</Text>
+        <Text type="secondary" style={{ fontSize: 12 }}>
+          {record.processedAt}
+        </Text>
+        <Text type="secondary" style={{ fontSize: 12 }}>
+          Service: {record.serviceId}
+        </Text>
       </Space>
     ),
   },
@@ -103,7 +127,9 @@ const columns = [
     render: (user, record) => (
       <Space direction="vertical" size={0}>
         <Text>{user}</Text>
-        <Text type="secondary" style={{ fontSize: 12 }}>Fixer: {record.fixer}</Text>
+        <Text type="secondary" style={{ fontSize: 12 }}>
+          Fixer: {record.fixer}
+        </Text>
       </Space>
     ),
   },
@@ -150,8 +176,12 @@ export default function TransactionManagement() {
   return (
     <div style={{ padding: 24 }}>
       <div style={{ marginBottom: 32 }}>
-        <Title level={2} style={{ marginBottom: 0 }}>Transaction Management</Title>
-        <Text type="secondary">Monitor payments and financial transactions</Text>
+        <Title level={2} style={{ marginBottom: 0 }}>
+          Transaction Management
+        </Title>
+        <Text type="secondary">
+          Monitor payments and financial transactions
+        </Text>
       </div>
 
       {/* Stats Grid */}
@@ -159,10 +189,21 @@ export default function TransactionManagement() {
         {stats.map((stat, index) => (
           <Col xs={24} md={12} lg={6} key={index}>
             <Card>
-              <Space align="center" style={{ width: "100%", justifyContent: "space-between", display: "flex" }}>
+              <Space
+                align="center"
+                style={{
+                  width: "100%",
+                  justifyContent: "space-between",
+                  display: "flex",
+                }}
+              >
                 <div>
                   <Text type="secondary">{stat.title}</Text>
-                  <div style={{ fontSize: 28, fontWeight: 700, color: stat.color }}>{stat.value}</div>
+                  <div
+                    style={{ fontSize: 28, fontWeight: 700, color: stat.color }}
+                  >
+                    {stat.value}
+                  </div>
                 </div>
                 {stat.icon}
               </Space>
@@ -173,8 +214,17 @@ export default function TransactionManagement() {
 
       {/* Transactions Table */}
       <Card>
-        <div style={{ marginBottom: 16, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <span style={{ fontWeight: 600, fontSize: 18 }}>Recent Transactions</span>
+        <div
+          style={{
+            marginBottom: 16,
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <span style={{ fontWeight: 600, fontSize: 18 }}>
+            Recent Transactions
+          </span>
           <Space>
             <Input
               placeholder="Search transactions..."

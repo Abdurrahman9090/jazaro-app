@@ -223,9 +223,10 @@ export default function Users() {
           key: obj._id,
           role: obj.role,
           email: obj.email,
+          avatar: obj.avatar,
           username: obj.username,
           phone: obj.phone,
-          verified: obj.verified,
+          verify: obj.verify,
           modify: (
             <AntdButton
               size="small"

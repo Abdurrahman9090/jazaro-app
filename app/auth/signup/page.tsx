@@ -32,7 +32,6 @@ export default function Signup() {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
-     
       <Card
         className="w-full max-w-md bg-white/95 backdrop-blur-[10px] border border-[#00BCD4]/30 shadow-[0_8px_32px_rgba(0,188,212,0.3)] rounded-[20px]"
         style={{ borderRadius: "20px" }}

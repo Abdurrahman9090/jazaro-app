@@ -227,6 +227,7 @@ const CustomTable: React.FC<ITableProps> = (props: ITableProps) => {
               expandIcon: ({ expanded, onExpand, record, prefixCls }) => {
                 return (
                   <ExpandIconRenderer
+                    key={""}
                     expanded={expanded}
                     onExpand={onExpand}
                     record={record}

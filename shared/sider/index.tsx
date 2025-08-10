@@ -16,7 +16,7 @@ export const ClientSider: React.FC<IClientSiderProps> = (
   const { collapsed, menuItems, ...restProps } = props;
 
   return (
-    <Sider {...props}>
+    <Sider {...restProps}>
       <Link
         href={"/"}
         className="h-16 border flex items-center justify-center bg-[#26C6DA]"

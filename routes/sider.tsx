@@ -10,6 +10,7 @@ import {
   EnvironmentOutlined,
 } from "@ant-design/icons";
 import Link from "next/link";
+import { MenuItem } from "./getItem";
 
 export const siderClientRoutes: Array<SiderRoutes> = [
   {
@@ -74,38 +75,51 @@ export const siderAdminRoutes: Array<SiderRoutes> = [
   {
     title: "Categories",
     label: <Link href={"/admin/categories"}>Categories</Link>,
-    key: "5",
+    key: "4",
     icon: <AppstoreOutlined style={{ fontSize: 18 }} />,
     authenticatedUsers: [UserRoles.Admin],
   },
   {
     title: "Transaction",
     label: <Link href={"/admin/transaction"}>Transaction</Link>,
-    key: "6",
+    key: "5",
     icon: <DollarOutlined style={{ fontSize: 18 }} />,
     authenticatedUsers: [UserRoles.Admin],
   },
   {
     title: "Live Map",
     label: <Link href={"/admin/live-map"}>Live Map</Link>,
-    key: "7",
+    key: "6",
     icon: <EnvironmentOutlined style={{ fontSize: 18 }} />,
     authenticatedUsers: [UserRoles.Admin],
   },
   {
     title: "Account",
     label: <Link href={"/admin/account"}>Account</Link>,
-    key: "4",
+    key: "7",
     icon: <UserOutlined style={{ fontSize: 18 }} />,
     authenticatedUsers: [UserRoles.Admin],
   },
 ];
 
-export const getClientRoutes = (role: UserRoles | string) => {
-  return siderClientRoutes.filter((route) => {
-    if (role === UserRoles.Admin) {
-      return true;
-    }
-    return route.authenticatedUsers?.includes(role as UserRoles);
-  });
-};
+function getItem(
+  label: React.ReactNode,
+  key: React.Key,
+  icon?: React.ReactNode,
+  children?: MenuItem[]
+): MenuItem {
+  return {
+    key,
+    icon,
+    children,
+    label,
+  } as MenuItem;
+}
+
+export const siderClientMenuItems: MenuItem[] = siderClientRoutes.map((route) =>
+  getItem(route.label, route.key, route.icon)
+);
+
+export const siderAdminMenuItems: MenuItem[] = siderAdminRoutes.map((route) =>
+  getItem(route.label, route.key, route.icon)
+);

@@ -1,5 +1,6 @@
 import React from "react";
 import { UserRoles } from "@/types";
+import { MenuProps } from "antd";
 import { DashboardOutlined } from "@ant-design/icons";
 
 interface ISiderChildRoutes {

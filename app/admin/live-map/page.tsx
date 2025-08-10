@@ -124,8 +124,12 @@ export default function MapView() {
         {/* Map Area */}
         <Col xs={24} lg={18}>
           <Card>
-            <Space align="center" style={{ fontSize: 18, fontWeight: 600, marginBottom: 16 }}>
-              <EnvironmentOutlined style={{ fontSize: 20, marginRight: 8 }} /> Live Map
+            <Space
+              align="center"
+              style={{ fontSize: 18, fontWeight: 600, marginBottom: 16 }}
+            >
+              <EnvironmentOutlined style={{ fontSize: 20, marginRight: 8 }} />{" "}
+              Live Map
             </Space>
             <Card
               style={{
@@ -148,15 +152,23 @@ export default function MapView() {
               }}
             >
               <div style={{ textAlign: "center", width: "100%" }}>
-                <EnvironmentOutlined style={{ fontSize: 64, color: "#d1d5db", marginBottom: 16 }} />
-                <div style={{ fontSize: 18, color: "#4b5563", fontWeight: 500 }}>Interactive Map</div>
+                <EnvironmentOutlined
+                  style={{ fontSize: 64, color: "#d1d5db", marginBottom: 16 }}
+                />
+                <div
+                  style={{ fontSize: 18, color: "#4b5563", fontWeight: 500 }}
+                >
+                  Interactive Map
+                </div>
                 <div style={{ color: "#6b7280", fontSize: 14, marginTop: 8 }}>
                   Integrate with Google Maps or Apple MapKit
                 </div>
                 <Space style={{ marginTop: 24 }}>
                   <Badge
                     color="#22c55e"
-                    text={<span style={{ fontSize: 14 }}>Available Fixers</span>}
+                    text={
+                      <span style={{ fontSize: 14 }}>Available Fixers</span>
+                    }
                     style={{
                       background: "#fff",
                       borderRadius: 8,
@@ -166,7 +178,9 @@ export default function MapView() {
                   />
                   <Badge
                     color="#dc2626"
-                    text={<span style={{ fontSize: 14 }}>Service Requests</span>}
+                    text={
+                      <span style={{ fontSize: 14 }}>Service Requests</span>
+                    }
                     style={{
                       background: "#fff",
                       borderRadius: 8,
@@ -190,9 +204,17 @@ export default function MapView() {
               renderItem={(stat) => (
                 <List.Item>
                   <Statistic
-                    title={<span style={{ color: "#6b7280", fontSize: 14 }}>{stat.label}</span>}
+                    title={
+                      <span style={{ color: "#6b7280", fontSize: 14 }}>
+                        {stat.label}
+                      </span>
+                    }
                     value={stat.value}
-                    valueStyle={{ color: stat.color, fontWeight: 700, fontSize: 18 }}
+                    valueStyle={{
+                      color: stat.color,
+                      fontWeight: 700,
+                      fontSize: 18,
+                    }}
                   />
                 </List.Item>
               )}
@@ -242,7 +264,11 @@ export default function MapView() {
                   </Text>
                 </Space>
               </Space>
-              <Space direction="vertical" size={0} style={{ textAlign: "right" }}>
+              <Space
+                direction="vertical"
+                size={0}
+                style={{ textAlign: "right" }}
+              >
                 <Tag
                   color={
                     fixer.status === "Available"
@@ -285,10 +311,16 @@ export default function MapView() {
                 }}
                 bodyStyle={{ padding: 16 }}
               >
-                <Row justify="space-between" align="middle" style={{ marginBottom: 8 }}>
+                <Row
+                  justify="space-between"
+                  align="middle"
+                  style={{ marginBottom: 8 }}
+                >
                   <Col>
                     <Text strong>{request.id}</Text>
-                    <div style={{ fontSize: 13, color: "#6b7280" }}>{request.user}</div>
+                    <div style={{ fontSize: 13, color: "#6b7280" }}>
+                      {request.user}
+                    </div>
                   </Col>
                   <Col>
                     <Tag color={priorityColor[request.priority] || "default"}>
@@ -296,10 +328,16 @@ export default function MapView() {
                     </Tag>
                   </Col>
                 </Row>
-                <div style={{ fontSize: 14, color: "#111827", marginBottom: 8 }}>
+                <div
+                  style={{ fontSize: 14, color: "#111827", marginBottom: 8 }}
+                >
                   {request.issue}
                 </div>
-                <Row justify="space-between" align="middle" style={{ fontSize: 13, color: "#6b7280" }}>
+                <Row
+                  justify="space-between"
+                  align="middle"
+                  style={{ fontSize: 13, color: "#6b7280" }}
+                >
                   <Col>
                     <Space>
                       <EnvironmentOutlined />

@@ -55,9 +55,6 @@ const Fixers = () => {
   const dispatch = useAppDispatch();
   const { fixers, fixersLoading } = useSelector(FixerSelector);
 
-  const [profileModalVisible, setProfileModalVisible] = useState(false);
-  const [selectedFixer] = useState(null);
-
   const [form] = Form.useForm();
 
   const [loading, setLoading] = useState(false);
@@ -67,7 +64,6 @@ const Fixers = () => {
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   const [currentPage, setCurrentPage] = useState(DEFAULT_PAGE_NO);
   const [deleteBtnDisabled, setDeleteBtnDisabled] = useState(true);
-  const [selectedCategories, setSelectedCategories] = useState(Array<string>);
 
   useEffect(() => {
     if (fixers === null || fixersLoading) {
@@ -109,20 +105,24 @@ const Fixers = () => {
     })();
   }, []);
 
-  const tableData = fixers?.map((fixer) => {
+  const tableData = fixers?.map((fixer, _id) => {
     return {
+      key: _id,
       email: fixer.email,
       cnic: fixer.cnic,
       phoneNo: fixer.phone,
       avatar: fixer.avatar,
       username: fixer.username,
-      rating: fixer.fixerDetails.rating,
-      cnicImage: fixer.fixerDetails.cnicImage,
-      categorie: fixer.fixerDetails.categories,
-      subCategories: fixer.fixerDetails.subCategories,
-      reviewsCount: fixer.fixerDetails.reviewsCount,
-      completedJobs: fixer.fixerDetails.jobsCompleted,
-      status: fixer.fixerDetails.fixerRequestStatus,
+      rating: fixer.rating,
+      cnicImages: {
+        front: fixer.cnicFrontImage,
+        back: fixer.cnicBackImage,
+      },
+      categorie: fixer.categories,
+      subCategories: fixer.subCategories,
+      reviewsCount: fixer.reviewsCount,
+      completedJobs: fixer.jobsCompleted,
+      status: fixer.status,
       actions: (
         <Space>
           <Tooltip title="Accept">
@@ -138,6 +138,8 @@ const Fixers = () => {
       ),
     };
   });
+
+  console.log(tableData);
 
   return (
     <Row gutter={[10, 10]}>
@@ -229,7 +231,7 @@ const Fixers = () => {
               }}
               search={search}
               selectable
-              dataSource={tableData}
+              dataSource={tableData || []}
               loading={loading || fixersLoading}
               columns={IFixerColumns}
               hasSelectedTitle={"fixers"}
